@@ -196,6 +196,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-#define macro 25
-//Este es un comentario de prueba.
