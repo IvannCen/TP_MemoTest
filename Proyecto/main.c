@@ -8,7 +8,7 @@ typedef enum
     ESTADO_MENU,
     ESTADO_JUGANDO,
     ESTADO_GANO
-}EstadoJuego;
+} EstadoJuego;
 
 int main(int argc, char *argv[])
 {
@@ -34,8 +34,8 @@ int main(int argc, char *argv[])
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     //inicio las fuentes para que se vean en la pantalla
-    TTF_Font* fuenteGrande = TTF_OpenFont(FUENTE, 60);
-    TTF_Font* fuenteChica = TTF_OpenFont(FUENTE, 24);
+    TTF_Font* fuenteGrande = TTF_OpenFont(FUENTE, 50);
+    TTF_Font* fuenteChica = TTF_OpenFont(FUENTE, 16);
 
     if(!fuenteGrande || !fuenteChica)
     {
@@ -132,18 +132,38 @@ int main(int argc, char *argv[])
 
         if(estadoActual == ESTADO_MENU)
         {
-            //dibujo el menu
+//            //dibujo el menu
             SDL_Color colorTexto = {255,255,255};
             SDL_Surface* surf = TTF_RenderText_Solid(fuenteGrande, "MEMOTEST - TP", colorTexto);
             SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
-            SDL_Rect rect = {200,200,surf->w,surf->h};
-            SDL_RenderCopy(renderer,tex, NULL, &rect);
+            //SDL_Rect rect = {200,200,surf->w,surf->h};
+//            SDL_RenderCopy(renderer,tex, NULL, &rect);
+//
+//            //instrucciones en pantalla
+//            SDL_Surface* surf2 = TTF_RenderText_Solid(fuenteChica, "Presiona ENTER para Jugar", colorTexto);
+//            SDL_Texture* tex2 = SDL_CreateTextureFromSurface(renderer, surf2);
+//            SDL_Rect rect2 = {300,300,surf2->w, surf2->h};
+//            SDL_RenderCopy(renderer,tex2,NULL,&rect2);
+            SDL_Rect rect;
+            rect.w = surf->w;
+            rect.h = surf->h;
+            rect.x = (ANCHOVENTANA - rect.w) / 2;
+            rect.y = (ALTOVENTANA - rect.h) / 2 - 50;
 
-            //instrucciones en pantalla
+            SDL_RenderCopy(renderer, tex, NULL, &rect);
+
+            // --- SUBTITULO ---
             SDL_Surface* surf2 = TTF_RenderText_Solid(fuenteChica, "Presiona ENTER para Jugar", colorTexto);
             SDL_Texture* tex2 = SDL_CreateTextureFromSurface(renderer, surf2);
-            SDL_Rect rect2 = {300,300,surf2->w, surf2->h};
-            SDL_RenderCopy(renderer,tex2,NULL,&rect2);
+
+            SDL_Rect rect2;
+            rect2.w = surf2->w;
+            rect2.h = surf2->h;
+            rect2.x = (ANCHOVENTANA - rect2.w) / 2;
+            rect2.y = rect.y + rect.h + 20;
+
+            SDL_RenderCopy(renderer, tex2, NULL, &rect2);
+
 
             //libero la memoria temporal de superficies y texturas de texto
             SDL_FreeSurface(surf);
@@ -155,6 +175,31 @@ int main(int argc, char *argv[])
         {
             //dibujo el juego en si mismo
             tableroDibujar(&miTablero, renderer);
+            // -----------------------------
+            // HUD: PUNTAJE Y RACHA
+            // -----------------------------
+            SDL_Color blanco = {255,255,255};
+
+            char hud1[80];
+            sprintf(hud1, "Puntaje: %d", tableroGetPuntaje(&miTablero));
+            SDL_Surface* s1 = TTF_RenderText_Solid(fuenteChica, hud1, blanco);
+            SDL_Texture* t1 = SDL_CreateTextureFromSurface(renderer, s1);
+            SDL_Rect r1 = {20, 20, s1->w, s1->h};
+            SDL_RenderCopy(renderer, t1, NULL, &r1);
+            SDL_FreeSurface(s1);
+            SDL_DestroyTexture(t1);
+
+            char hud2[80];
+            sprintf(hud2, "Racha: %d  (Bonus: %.1f)",
+                    tableroGetRacha(&miTablero),
+                    tableroGetBonusRacha(&miTablero));
+
+            SDL_Surface* s2 = TTF_RenderText_Solid(fuenteChica, hud2, blanco);
+            SDL_Texture* t2 = SDL_CreateTextureFromSurface(renderer, s2);
+            SDL_Rect r2 = {20, 50, s2->w, s2->h};
+            SDL_RenderCopy(renderer, t2, NULL, &r2);
+            SDL_FreeSurface(s2);
+            SDL_DestroyTexture(t2);
         }
         else if(estadoActual == ESTADO_GANO)
         {
@@ -167,14 +212,38 @@ int main(int argc, char *argv[])
             SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer,surf);
 
             //centrado en la pantalla
-            SDL_Rect rect = {300,200,surf->w,surf->h};
-            SDL_RenderCopy(renderer,tex,NULL,&rect);
+//            SDL_Rect rect = {300,200,surf->w,surf->h};
+//            SDL_RenderCopy(renderer,tex,NULL,&rect);
+//
+//            SDL_Surface* surf2 = TTF_RenderText_Solid(fuenteChica,"Presiona SPACE para volver al Menu", colorVictoria);
+//            SDL_Texture* tex2 = SDL_CreateTextureFromSurface(renderer, surf2);
+//            SDL_Rect rect2 = {300,300,surf2->w,surf2->h};
+//            SDL_RenderCopy(renderer,tex2,NULL,&rect2);
 
-            SDL_Surface* surf2 = TTF_RenderText_Solid(fuenteChica,"Presiona SPACE para volver al Menu", colorVictoria);
+            SDL_Rect rect;
+            rect.w = surf->w;
+            rect.h = surf->h;
+            rect.x = (ANCHOVENTANA - rect.w) / 2;
+            rect.y = (ALTOVENTANA - rect.h) / 2 - 40;
+
+            SDL_RenderCopy(renderer, tex, NULL, &rect);
+
+            // --- TEXTO INFERIOR ---
+            SDL_Surface* surf2 = TTF_RenderText_Solid(
+                                     fuenteChica,
+                                     "Presiona SPACE para volver al Menu",
+                                     colorVictoria
+                                 );
+
             SDL_Texture* tex2 = SDL_CreateTextureFromSurface(renderer, surf2);
-            SDL_Rect rect2 = {300,300,surf2->w,surf2->h};
-            SDL_RenderCopy(renderer,tex2,NULL,&rect2);
 
+            SDL_Rect rect2;
+            rect2.w = surf2->w;
+            rect2.h = surf2->h;
+            rect2.x = (ANCHOVENTANA - rect2.w) / 2;
+            rect2.y = rect.y + rect.h + 20;
+
+            SDL_RenderCopy(renderer, tex2, NULL, &rect2);
             SDL_FreeSurface(surf);
             SDL_FreeSurface(surf2);
             SDL_DestroyTexture(tex);

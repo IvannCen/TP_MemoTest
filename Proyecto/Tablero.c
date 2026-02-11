@@ -1,6 +1,46 @@
 #include "Tablero.h"
 #include "Comun.h"
 
+
+static void tableroResetPuntuacion(Tablero* t)
+{
+    t->puntaje = 0;
+    t->racha = 0;
+
+    // Si hay N imagenes cargadas, asigno puntos base a esas parejas
+    // (ejemplo: 50..200 en saltos de 10)
+    for(int i=0; i<CANTIDADIMAGENES; i++)
+        t->puntosPorImagen[i] = 0;
+
+    for(int i=0; i<t->cantidadImagenesCargadas; i++)
+    {
+        int base = 50 + (rand() % 16) * 10; // 50..200
+        t->puntosPorImagen[i] = base;
+    }
+}
+
+float tableroGetBonusRacha(Tablero* t)
+{
+    if(!t) return 0.0f;
+    if(t->racha <= 0) return 0.0f;
+
+    // racha=1 -> 0.2
+    // racha=2 -> 0.3
+    // racha=3 -> 0.4 ...
+    return 0.1f * (t->racha + 1);
+}
+
+int tableroGetPuntaje(Tablero* t)
+{
+    if(!t) return 0;
+    return t->puntaje;
+}
+
+int tableroGetRacha(Tablero* t)
+{
+    if(!t) return 0;
+    return t->racha;
+}
 /*
 para recordar, en esta funcion estoy iniciando el tablero que se
 va a ver en pantalla, donde cant es la cantidad de cartas que se
@@ -33,15 +73,17 @@ void tableroIniciar(Tablero* t, int cant)
     t->cantidad = cant;
 
     t->cartaSeleccionada = NULL;
-
     t->cantidadImagenesCargadas = 0;
-
     t->dorso = NULL;
 
     for(int i=0;i<CANTIDADIMAGENES;i++)
     {
         t->imagenes[i] = NULL;
+        t->puntosPorImagen[i] = 0;
     }
+
+    t->puntaje = 0;
+    t->racha = 0;
 }
 
 void tableroDestruir(Tablero* t)
@@ -49,6 +91,7 @@ void tableroDestruir(Tablero* t)
     if(t->cartas)
     {
         free(t->cartas);
+        t->cartas = NULL;
         t->cantidad = 0;
     }
 
@@ -70,17 +113,17 @@ void tableroDestruir(Tablero* t)
 
 void tableroRellenar(Tablero* t)
 {
+    // Cada vez que se arranca una partida nueva, reseteo puntuacion + rachas
+    tableroResetPuntuacion(t);
+
     for(int i=0;i<t->cantidad;i++)
     {
-        int col = i % COLUMNAS; //va a ir de 0 a 3 siempre
-        int fil = i / COLUMNAS; //va a ser 0 hasta llegar al 4 y ahi se incrementa
-
-        //calculo de pixeles: uso una formula matematica para esto
-        //PosX = margen + (col * (ancho + separacion))
-        //PosX = margen + (fil * (alto + separacion))
+        int col = i % COLUMNAS; //0..3
+        int fil = i / COLUMNAS; //0..n
 
         int posX = MARGENX + (col * (ANCHOCARTA + SEPARACIONCARTA));
         int posY = MARGENY + (fil * (ALTOCARTA + SEPARACIONCARTA));
+
 
         //para el id de la imagen hago que se generen parejas
         //por lo cual uso una cuenta tambien, ya que si divido por 2
@@ -90,31 +133,23 @@ void tableroRellenar(Tablero* t)
         //ademas hago el modulo con la cantidad de imagenes cargadas
         //para asegurar que si hay mas cartas que imagenes, las
         //imagenes se repitan sin errores.
+
         int idImagen = (i/2) % t->cantidadImagenesCargadas;
 
-        //ahora llamo a la funcion de carta inicial
-
-        CartaInicial(&t->cartas[i],idImagen,posX,posY,ANCHOCARTA,ALTOCARTA);
+        CartaInicial(&t->cartas[i], idImagen, posX, posY, ANCHOCARTA, ALTOCARTA);
     }
 }
 
 //dibujo todas las cartas de adentro del tablero
 void tableroDibujar(Tablero* t, SDL_Renderer* render)
 {
-    if(!t || !t->cartas)
-    {
-        return;
-    }
+    if(!t || !t->cartas) return;
 
     for(int i=0;i<t->cantidad;i++)
     {
         SDL_Texture* texturaActual = NULL;
-        if(t->cartas[i].encontrada)
-        {
-            int id = t->cartas[i].idImagen;
-            texturaActual = t->imagenes[id];
-        }
-        else if(t->cartas[i].bocaArriba)
+
+        if(t->cartas[i].encontrada || t->cartas[i].bocaArriba)
         {
             int id = t->cartas[i].idImagen;
             texturaActual = t->imagenes[id];
@@ -124,7 +159,7 @@ void tableroDibujar(Tablero* t, SDL_Renderer* render)
             texturaActual = t->dorso;
         }
 
-        CartaDibujar(&t->cartas[i],render, texturaActual);
+        CartaDibujar(&t->cartas[i], render, texturaActual);
     }
 }
 
@@ -135,12 +170,36 @@ forzar el dibujo con el render. por lo cual tengo que modificar
 el prototipo para que reciba el render para dibujar no solo la
 imagen seleccionada, sino tambien la segunda imagen que se elija
 */
+
+static void aplicarAcierto(Tablero* t, int idImagen)
+{
+    int base = 0;
+    if(idImagen >= 0 && idImagen < CANTIDADIMAGENES)
+        base = t->puntosPorImagen[idImagen];
+
+    // aumento racha primero
+    t->racha++;
+
+    float bonus = tableroGetBonusRacha(t);      // 0.2, 0.3, ...
+    float total = (float)base * (1.0f + bonus); // base + base*bonus
+
+    // redondeo a int
+    int suma = (int)(total + 0.5f);
+    t->puntaje += suma;
+
+    printf("ACIERTO: base=%d, racha=%d, bonus=%.1f, suma=%d, puntaje=%d\n",
+           base, t->racha, bonus, suma, t->puntaje);
+}
+
+static void aplicarFallo(Tablero* t)
+{
+    t->racha = 0;
+    printf("FALLO: racha reseteada a 0\n");
+}
+
 void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
 {
-    if(!t)
-    {
-        return;
-    }
+    if(!t) return;
 
     int i = 0;
     int clicResuelto = 0;
@@ -167,9 +226,8 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                 {
                     cartaActual->bocaArriba = 1;
                     t->cartaSeleccionada = cartaActual;//guardo la dir
-                    printf("Seleccion 1: id %d (dir: %p)\n", cartaActual->idImagen, (void*)cartaActual);
+                     printf("Seleccion 1: id %d (dir: %p)\n", cartaActual->idImagen, (void*)cartaActual);
                 }
-
                 //segundo clic
                 else
                 {
@@ -179,26 +237,29 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                     //muestro la carta en pantalla
                     carta2->bocaArriba = 1;
 
+
                     //refresco la pantalla (de manera forzada)
                     //debo forzar el dibujo, ya que cuando probre sin hacer
                     //esto la pantalla se congelo antes de mostrar la carta
                     //creo que es un problema de la funcion de Delay
+                    //refresco forzado para mostrar la segunda carta antes del delay
                     SDL_SetRenderDrawColor(render,50,50,50,255);
                     SDL_RenderClear(render);
                     tableroDibujar(t,render);
                     SDL_RenderPresent(render);
 
+
                     //hago la comparacion de punteros para ver si hubo coinicidencia
                     printf("Comparando ID %d con ID %d..\n", carta1->idImagen, carta2->idImagen);
-
                     if(carta1->idImagen == carta2->idImagen)
                     {
                         printf("Hubo coincidencia\n");
-
                         //asigno los valores
                         carta1->encontrada = 1;
                         carta2->encontrada = 1;
 
+                        // --- PUNTUACION + RACHA ---
+                        aplicarAcierto(t, carta1->idImagen);
                     }
                     else
                     {
@@ -206,6 +267,9 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                         SDL_Delay(DELAY);
                         carta1->bocaArriba = 0;
                         carta2->bocaArriba = 0;
+
+                        // --- FALLO: reset racha ---
+                        aplicarFallo(t);
                     }
 
                     t->cartaSeleccionada = NULL;
@@ -218,21 +282,16 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
 
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
 {
-    if(!t)
-    {
-        return;
-    }
+    if(!t) return;
 
     //primero uso la funcion IMG_LoadTexture para abrir el archivo
     //y para subir el dorso a memoria
-    t->dorso = IMG_LoadTexture(render, "dorso.png");
-
     //hago la verificacion de si se pudo cargar con exito
+    t->dorso = IMG_LoadTexture(render, "dorso.png");
     if(!t->dorso)
     {
         printf("Error al cargar el archivo 'dorso.png'.SDL_image error: %s\n", IMG_GetError());
     }
-
     //ahora hago la carga de las imagenes
 
     int i=0;
@@ -264,14 +323,12 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
 
 void tableroMezclar(Tablero* t)
 {
-    if(!t)
-    {
-        return;
-    }
+    if(!t) return;
 
     //ciclo para recorrer la cantidad de cartas en el juego
     //uso la cantidad de cartas que hay, en este caso sobre
     //el tablero van a haber 16 cartas, por lo cual uso esa cantidad
+
     for(int i=0;i<t->cantidad;i++)
     {
         //debo elegir una posicion al azar usando el resto
@@ -283,19 +340,15 @@ void tableroMezclar(Tablero* t)
         t->cartas[i].idImagen = t->cartas[j].idImagen;
         t->cartas[j].idImagen = aux;
 
-        //solo cambio su id, no su posicion de x e y, ni el puntero
+         //solo cambio su id, no su posicion de x e y, ni el puntero
         //del SDL_Rect, asi que en teoria siguien en su lugar las
         //cartas, solo que con otra foto
     }
 }
 
-////////////////////////////////////////////////////////////////////
 int tableroCompleto(Tablero* t)
 {
-    if(!t)
-    {
-        return 0;
-    }
+    if(!t) return 0;
 
     for(int i=0;i<t->cantidad;i++)
     {
