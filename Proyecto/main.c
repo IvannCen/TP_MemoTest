@@ -6,6 +6,7 @@
 typedef enum
 {
     ESTADO_MENU,
+    ESTADO_INGRESO_NOMBRE,   // <-- NUEVO ESTADO
     ESTADO_JUGANDO,
     ESTADO_GANO
 } EstadoJuego;
@@ -41,6 +42,14 @@ int main(int argc, char *argv[])
     {
         printf("Error en la fuente ingresada: %s\n", TTF_GetError());
     }
+
+    // --- VARIABLES PARA NOMBRE DEL JUGADOR (NUEVO) ---
+    #define MAX_NOMBRE 24
+    char nombreJugador[MAX_NOMBRE + 1];
+    int nombreLen = 0;
+    int nombreError = 0;
+    nombreJugador[0] = '\0';
+
     // 2. LOGICA (El TDA Tablero se encarga de todo)
 
     EstadoJuego estadoActual = ESTADO_MENU; //el juego arranca en el menu
@@ -92,15 +101,71 @@ int main(int argc, char *argv[])
             {
                 if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
                 {
-                    //si en el menu se apreta ENTER, empieza el juego
-                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
-                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
-                    estadoActual = ESTADO_JUGANDO;
+                    //si en el menu se apreta ENTER, ahora pasa a pedir nombre (NO consola)
+                    nombreLen = 0;
+                    nombreJugador[0] = '\0';
+                    nombreError = 0;
+
+                    SDL_StartTextInput();
+                    estadoActual = ESTADO_INGRESO_NOMBRE;
+                }
+            }
+
+            //ingresos en la pantalla de nombre (NUEVO)
+            else if(estadoActual == ESTADO_INGRESO_NOMBRE)
+            {
+                if(e.type == SDL_TEXTINPUT)
+                {
+                    // tomo solo el primer caracter (ASCII simple)
+                    char c = e.text.text[0];
+
+                    if(nombreLen < MAX_NOMBRE)
+                    {
+                        // filtro minimo
+                        if((c >= 'a' && c <= 'z') ||
+                           (c >= 'A' && c <= 'Z') ||
+                           (c >= '0' && c <= '9') ||
+                           c == ' ' || c == '_' || c == '-')
+                        {
+                            nombreJugador[nombreLen++] = c;
+                            nombreJugador[nombreLen] = '\0';
+                            nombreError = 0;
+                        }
+                    }
+                }
+
+                if(e.type == SDL_KEYDOWN)
+                {
+                    if(e.key.keysym.sym == SDLK_BACKSPACE && nombreLen > 0)
+                    {
+                        nombreLen--;
+                        nombreJugador[nombreLen] = '\0';
+                    }
+                    else if(e.key.keysym.sym == SDLK_RETURN)
+                    {
+                        if(nombreLen > 0)
+                        {
+                            SDL_StopTextInput();
+
+                            // ahora si empieza el juego
+                            tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+                            tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+                            estadoActual = ESTADO_JUGANDO;
+                        }
+                        else
+                        {
+                            nombreError = 1;
+                        }
+                    }
+                    else if(e.key.keysym.sym == SDLK_ESCAPE)
+                    {
+                        SDL_StopTextInput();
+                        estadoActual = ESTADO_MENU;
+                    }
                 }
             }
 
             //ingresos en el juego
-
             else if(estadoActual == ESTADO_JUGANDO)
             {
                 if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button==SDL_BUTTON_LEFT)
@@ -144,6 +209,7 @@ int main(int argc, char *argv[])
 //            SDL_Texture* tex2 = SDL_CreateTextureFromSurface(renderer, surf2);
 //            SDL_Rect rect2 = {300,300,surf2->w, surf2->h};
 //            SDL_RenderCopy(renderer,tex2,NULL,&rect2);
+
             SDL_Rect rect;
             rect.w = surf->w;
             rect.h = surf->h;
@@ -164,17 +230,74 @@ int main(int argc, char *argv[])
 
             SDL_RenderCopy(renderer, tex2, NULL, &rect2);
 
-
             //libero la memoria temporal de superficies y texturas de texto
             SDL_FreeSurface(surf);
             SDL_FreeSurface(surf2);
             SDL_DestroyTexture(tex);
             SDL_DestroyTexture(tex2);
         }
+        else if(estadoActual == ESTADO_INGRESO_NOMBRE)
+        {
+            SDL_Color blanco = {255,255,255};
+
+            SDL_Surface* s1 = TTF_RenderText_Solid(fuenteChica, "Ingrese su nombre y presione ENTER", blanco);
+            SDL_Texture* t1 = SDL_CreateTextureFromSurface(renderer, s1);
+            SDL_Rect r1 = {(ANCHOVENTANA - s1->w)/2, 160, s1->w, s1->h};
+            SDL_RenderCopy(renderer, t1, NULL, &r1);
+
+            // caja input
+            SDL_Rect caja = {220, 220, 560, 70};
+            SDL_SetRenderDrawColor(renderer, 80,80,80,255);
+            SDL_RenderFillRect(renderer, &caja);
+            SDL_SetRenderDrawColor(renderer, 200,200,200,255);
+            SDL_RenderDrawRect(renderer, &caja);
+
+            // texto escrito
+            if(nombreLen > 0)
+            {
+                SDL_Surface* s2 = TTF_RenderText_Solid(fuenteGrande, nombreJugador, blanco);
+                SDL_Texture* t2 = SDL_CreateTextureFromSurface(renderer, s2);
+                SDL_Rect r2 = {caja.x + 10, caja.y + 10, s2->w, s2->h};
+                SDL_RenderCopy(renderer, t2, NULL, &r2);
+                SDL_FreeSurface(s2);
+                SDL_DestroyTexture(t2);
+            }
+            else
+            {
+                SDL_Surface* s2 = TTF_RenderText_Solid(fuenteChica, "(escriba aqui)", blanco);
+                SDL_Texture* t2 = SDL_CreateTextureFromSurface(renderer, s2);
+                SDL_Rect r2 = {caja.x + 10, caja.y + 22, s2->w, s2->h};
+                SDL_RenderCopy(renderer, t2, NULL, &r2);
+                SDL_FreeSurface(s2);
+                SDL_DestroyTexture(t2);
+            }
+
+            if(nombreError)
+            {
+                SDL_Color rojo = {255,80,80};
+                SDL_Surface* s3 = TTF_RenderText_Solid(fuenteChica, "Nombre invalido (no puede estar vacio)", rojo);
+                SDL_Texture* t3 = SDL_CreateTextureFromSurface(renderer, s3);
+                SDL_Rect r3 = {(ANCHOVENTANA - s3->w)/2, 310, s3->w, s3->h};
+                SDL_RenderCopy(renderer, t3, NULL, &r3);
+                SDL_FreeSurface(s3);
+                SDL_DestroyTexture(t3);
+            }
+
+            SDL_Surface* s4 = TTF_RenderText_Solid(fuenteChica, "ESC: volver", blanco);
+            SDL_Texture* t4 = SDL_CreateTextureFromSurface(renderer, s4);
+            SDL_Rect r4 = {20, ALTOVENTANA - 40, s4->w, s4->h};
+            SDL_RenderCopy(renderer, t4, NULL, &r4);
+
+            SDL_FreeSurface(s1);
+            SDL_FreeSurface(s4);
+            SDL_DestroyTexture(t1);
+            SDL_DestroyTexture(t4);
+        }
         else if(estadoActual == ESTADO_JUGANDO)
         {
             //dibujo el juego en si mismo
             tableroDibujar(&miTablero, renderer);
+
             // -----------------------------
             // HUD: PUNTAJE Y RACHA
             // -----------------------------
@@ -200,6 +323,16 @@ int main(int argc, char *argv[])
             SDL_RenderCopy(renderer, t2, NULL, &r2);
             SDL_FreeSurface(s2);
             SDL_DestroyTexture(t2);
+
+            // (opcional) mostrar nombre del jugador
+            char hud3[80];
+            sprintf(hud3, "Jugador: %s", nombreJugador);
+            SDL_Surface* s3 = TTF_RenderText_Solid(fuenteChica, hud3, blanco);
+            SDL_Texture* t3 = SDL_CreateTextureFromSurface(renderer, s3);
+            SDL_Rect r3 = {20, 80, s3->w, s3->h};
+            SDL_RenderCopy(renderer, t3, NULL, &r3);
+            SDL_FreeSurface(s3);
+            SDL_DestroyTexture(t3);
         }
         else if(estadoActual == ESTADO_GANO)
         {
@@ -244,10 +377,21 @@ int main(int argc, char *argv[])
             rect2.y = rect.y + rect.h + 20;
 
             SDL_RenderCopy(renderer, tex2, NULL, &rect2);
+
+            // (opcional) mostrar puntaje final
+            char finalTxt[80];
+            sprintf(finalTxt, "Puntaje final: %d", tableroGetPuntaje(&miTablero));
+            SDL_Surface* surf3 = TTF_RenderText_Solid(fuenteChica, finalTxt, colorVictoria);
+            SDL_Texture* tex3 = SDL_CreateTextureFromSurface(renderer, surf3);
+            SDL_Rect rect3 = {(ANCHOVENTANA - surf3->w)/2, rect2.y + rect2.h + 20, surf3->w, surf3->h};
+            SDL_RenderCopy(renderer, tex3, NULL, &rect3);
+
             SDL_FreeSurface(surf);
             SDL_FreeSurface(surf2);
+            SDL_FreeSurface(surf3);
             SDL_DestroyTexture(tex);
             SDL_DestroyTexture(tex2);
+            SDL_DestroyTexture(tex3);
         }
 
         SDL_RenderPresent(renderer);
