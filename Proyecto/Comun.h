@@ -8,14 +8,15 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
-#define ANCHOVENTANA 1000
-#define ALTOVENTANA 800
+#define ANCHOVENTANA 1200
+#define ALTOVENTANA 950
 
 #define ANCHOCARTA 130
 #define ALTOCARTA 170
 #define SEPARACIONCARTA 15
 #define MARGENX 180
 #define MARGENY 50
+#define HUD_ALTO 150
 
 #define COLUMNAS 4
 

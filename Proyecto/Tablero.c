@@ -41,6 +41,54 @@ int tableroGetRacha(Tablero* t)
     if(!t) return 0;
     return t->racha;
 }
+
+// -----------------------------
+// NUEVO: CONFIGURACION + STATS
+// -----------------------------
+void tableroSetDimensiones(Tablero* t, int filas, int cols)
+{
+    if(!t) return;
+    t->filas = filas;
+    t->cols = cols;
+}
+
+void tableroSetSetFiguras(Tablero* t, int setFiguras)
+{
+    if(!t) return;
+    t->setFiguras = setFiguras; // 0=A, 1=B
+}
+
+int tableroGetIntentos(Tablero* t)
+{
+    if(!t) return 0;
+    return t->intentos;
+}
+
+int tableroGetAciertos(Tablero* t)
+{
+    if(!t) return 0;
+    return t->aciertos;
+}
+
+int tableroGetFallos(Tablero* t)
+{
+    if(!t) return 0;
+    return t->fallos;
+}
+
+int tableroGetTiempoSegundos(Tablero* t)
+{
+    if(!t) return 0;
+    if(t->inicioMs == 0) return 0;
+
+    Uint32 ahora = SDL_GetTicks();
+
+    if(t->terminado && t->finMs != 0)
+        ahora = t->finMs;
+
+    return (int)((ahora - t->inicioMs) / 1000);
+}
+
 /*
 para recordar, en esta funcion estoy iniciando el tablero que se
 va a ver en pantalla, donde cant es la cantidad de cartas que se
@@ -76,7 +124,7 @@ void tableroIniciar(Tablero* t, int cant)
     t->cantidadImagenesCargadas = 0;
     t->dorso = NULL;
 
-    for(int i=0;i<CANTIDADIMAGENES;i++)
+    for(int i=0; i<CANTIDADIMAGENES; i++)
     {
         t->imagenes[i] = NULL;
         t->puntosPorImagen[i] = 0;
@@ -84,6 +132,19 @@ void tableroIniciar(Tablero* t, int cant)
 
     t->puntaje = 0;
     t->racha = 0;
+
+    // --- NUEVO: valores por defecto para configuracion ---
+    t->filas = 4;
+    t->cols = 4;
+    t->setFiguras = 0;
+
+    // --- NUEVO: estadisticas ---
+    t->intentos = 0;
+    t->aciertos = 0;
+    t->fallos = 0;
+    t->inicioMs = 0;
+    t->finMs = 0;
+    t->terminado = 0;
 }
 
 void tableroDestruir(Tablero* t)
@@ -101,7 +162,7 @@ void tableroDestruir(Tablero* t)
         t->dorso = NULL;
     }
 
-    for(int i=0;i<CANTIDADIMAGENES;i++)
+    for(int i=0; i<CANTIDADIMAGENES; i++)
     {
         if(t->imagenes[i])
         {
@@ -116,27 +177,42 @@ void tableroRellenar(Tablero* t)
     // Cada vez que se arranca una partida nueva, reseteo puntuacion + rachas
     tableroResetPuntuacion(t);
 
-    for(int i=0;i<t->cantidad;i++)
+    // --- NUEVO: reset estadisticas ---
+    t->intentos = 0;
+    t->aciertos = 0;
+    t->fallos = 0;
+    t->inicioMs = SDL_GetTicks();
+    t->finMs = 0;
+    t->terminado = 0;
+
+    for(int i=0; i<t->cantidad; i++)
     {
-        int col = i % COLUMNAS; //0..3
-        int fil = i / COLUMNAS; //0..n
+        int col = i % t->cols;
+        int fil = i / t->cols;
 
-        int posX = MARGENX + (col * (ANCHOCARTA + SEPARACIONCARTA));
-        int posY = MARGENY + (fil * (ALTOCARTA + SEPARACIONCARTA));
+        // ancho total del tablero
+        int anchoTablero = t->cols * ANCHOCARTA +
+                           (t->cols - 1) * SEPARACIONCARTA;
 
+        // alto total del tablero
+        int altoTablero = t->filas * ALTOCARTA +
+                          (t->filas - 1) * SEPARACIONCARTA;
 
-        //para el id de la imagen hago que se generen parejas
-        //por lo cual uso una cuenta tambien, ya que si divido por 2
-        //se obtienen siempre parejas, porque va a ser 0 o 1
+        // centrado horizontal
+        int inicioX = (ANCHOVENTANA - anchoTablero) / 2;
 
+        // centrado vertical debajo del HUD
+        int inicioY = HUD_ALTO +
+                      (ALTOVENTANA - HUD_ALTO - altoTablero) / 2;
 
-        //ademas hago el modulo con la cantidad de imagenes cargadas
-        //para asegurar que si hay mas cartas que imagenes, las
-        //imagenes se repitan sin errores.
+        int posX = inicioX + col * (ANCHOCARTA + SEPARACIONCARTA);
+        int posY = inicioY + fil * (ALTOCARTA + SEPARACIONCARTA);
 
         int idImagen = (i/2) % t->cantidadImagenesCargadas;
 
-        CartaInicial(&t->cartas[i], idImagen, posX, posY, ANCHOCARTA, ALTOCARTA);
+        CartaInicial(&t->cartas[i], idImagen,
+                     posX, posY,
+                     ANCHOCARTA, ALTOCARTA);
     }
 }
 
@@ -145,7 +221,7 @@ void tableroDibujar(Tablero* t, SDL_Renderer* render)
 {
     if(!t || !t->cartas) return;
 
-    for(int i=0;i<t->cantidad;i++)
+    for(int i=0; i<t->cantidad; i++)
     {
         SDL_Texture* texturaActual = NULL;
 
@@ -226,7 +302,7 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                 {
                     cartaActual->bocaArriba = 1;
                     t->cartaSeleccionada = cartaActual;//guardo la dir
-                     printf("Seleccion 1: id %d (dir: %p)\n", cartaActual->idImagen, (void*)cartaActual);
+                    printf("Seleccion 1: id %d (dir: %p)\n", cartaActual->idImagen, (void*)cartaActual);
                 }
                 //segundo clic
                 else
@@ -251,6 +327,10 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
 
                     //hago la comparacion de punteros para ver si hubo coinicidencia
                     printf("Comparando ID %d con ID %d..\n", carta1->idImagen, carta2->idImagen);
+
+                    // --- NUEVO: estadisticas (un intento por cada comparacion de 2 cartas) ---
+                    t->intentos++;
+
                     if(carta1->idImagen == carta2->idImagen)
                     {
                         printf("Hubo coincidencia\n");
@@ -258,12 +338,19 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                         carta1->encontrada = 1;
                         carta2->encontrada = 1;
 
+                        // --- NUEVO: estadisticas ---
+                        t->aciertos++;
+
                         // --- PUNTUACION + RACHA ---
                         aplicarAcierto(t, carta1->idImagen);
                     }
                     else
                     {
                         printf("No hubo coincidencia\n");
+
+                        // --- NUEVO: estadisticas ---
+                        t->fallos++;
+
                         SDL_Delay(DELAY);
                         carta1->bocaArriba = 0;
                         carta2->bocaArriba = 0;
@@ -287,7 +374,10 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
     //primero uso la funcion IMG_LoadTexture para abrir el archivo
     //y para subir el dorso a memoria
     //hago la verificacion de si se pudo cargar con exito
-    t->dorso = IMG_LoadTexture(render, "dorso.png");
+    if(t->setFiguras == 0)
+        t->dorso = IMG_LoadTexture(render, "A/dorso.png");
+    else
+        t->dorso = IMG_LoadTexture(render, "B/dorso.png");
     if(!t->dorso)
     {
         printf("Error al cargar el archivo 'dorso.png'.SDL_image error: %s\n", IMG_GetError());
@@ -296,13 +386,20 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
 
     int i=0;
     int seguirBuscando = 1;
-    char nombreArchivo[20];
+    char nombreArchivo[64];
 
     while(i<CANTIDADIMAGENES && seguirBuscando == 1)
     {
         //uso sprintf para escribir el numero de la imagen en el
         //nombre del archivo a abrir
-        sprintf(nombreArchivo, "%d.png", i);
+        //sprintf(nombreArchivo, "%d.png", i);
+
+        // NUEVO: dos sets de figuras
+        // Requiere carpetas A/ y B/ con 0.png, 1.png, 2.png...
+        if(t->setFiguras == 0)
+            sprintf(nombreArchivo, "A/%d.png", i);
+        else
+            sprintf(nombreArchivo, "B/%d.png", i);
 
         SDL_Texture* temp = IMG_LoadTexture(render, nombreArchivo);
         if(temp)
@@ -329,7 +426,7 @@ void tableroMezclar(Tablero* t)
     //uso la cantidad de cartas que hay, en este caso sobre
     //el tablero van a haber 16 cartas, por lo cual uso esa cantidad
 
-    for(int i=0;i<t->cantidad;i++)
+    for(int i=0; i<t->cantidad; i++)
     {
         //debo elegir una posicion al azar usando el resto
         int j = rand() % t->cantidad;
@@ -340,7 +437,7 @@ void tableroMezclar(Tablero* t)
         t->cartas[i].idImagen = t->cartas[j].idImagen;
         t->cartas[j].idImagen = aux;
 
-         //solo cambio su id, no su posicion de x e y, ni el puntero
+        //solo cambio su id, no su posicion de x e y, ni el puntero
         //del SDL_Rect, asi que en teoria siguien en su lugar las
         //cartas, solo que con otra foto
     }
@@ -350,7 +447,7 @@ int tableroCompleto(Tablero* t)
 {
     if(!t) return 0;
 
-    for(int i=0;i<t->cantidad;i++)
+    for(int i=0; i<t->cantidad; i++)
     {
         //si hay cartas que no fueron encontradas, el juego sigue
         if(t->cartas[i].encontrada==0)
@@ -359,6 +456,12 @@ int tableroCompleto(Tablero* t)
             return 0;//devuelvo 0 porque el juego no termino
         }
     }
-    printf("Victoria detectada");
-    return 1;//devuelvo 1 si todas fueron encontradas
+    // Si llega aca es victoria
+    if(!t->terminado)   // <-- IMPORTANTE (para que no lo resetee varias veces)
+    {
+        printf("Victoria detectada\n");
+        t->terminado = 1;
+        t->finMs = SDL_GetTicks();
+    }
+    return 1;
 }

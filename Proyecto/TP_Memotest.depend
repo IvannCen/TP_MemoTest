@@ -5,7 +5,7 @@
 1770847434 d:\repo\tp_memotest\proyecto\carta.h
 	"Comun.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\comun.h
+1770940329 d:\repo\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -466,15 +466,26 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770855749 source:d:\repo\tp_memotest\proyecto\main.c
+1770942313 source:d:\repo\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Comun.h"
+	"config.h"
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
 
-1770851675 d:\repo\tp_memotest\proyecto\tablero.h
+1770942096 d:\repo\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 
-1770852306 source:d:\repo\tp_memotest\proyecto\tablero.c
+1770942253 source:d:\repo\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 	"Comun.h"
+
+1770943139 source:d:\repo\tp_memotest\proyecto\config.c
+	"config.h"
+	<stdio.h>
+
+1770943101 d:\repo\tp_memotest\proyecto\config.h
 
