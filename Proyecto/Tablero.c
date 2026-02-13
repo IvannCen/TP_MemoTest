@@ -1,7 +1,9 @@
 #include "Tablero.h"
 #include "Comun.h"
 
+//hay que revisar estas funciones
 
+/*
 static void tableroResetPuntuacion(Tablero* t)
 {
     t->puntaje = 0;
@@ -89,6 +91,8 @@ int tableroGetTiempoSegundos(Tablero* t)
     return (int)((ahora - t->inicioMs) / 1000);
 }
 
+*/
+
 /*
 para recordar, en esta funcion estoy iniciando el tablero que se
 va a ver en pantalla, donde cant es la cantidad de cartas que se
@@ -127,24 +131,24 @@ void tableroIniciar(Tablero* t, int cant)
     for(int i=0; i<CANTIDADIMAGENES; i++)
     {
         t->imagenes[i] = NULL;
-        t->puntosPorImagen[i] = 0;
+        //t->puntosPorImagen[i] = 0;
     }
 
-    t->puntaje = 0;
-    t->racha = 0;
-
-    // --- NUEVO: valores por defecto para configuracion ---
-    t->filas = 4;
-    t->cols = 4;
-    t->setFiguras = 0;
-
-    // --- NUEVO: estadisticas ---
-    t->intentos = 0;
-    t->aciertos = 0;
-    t->fallos = 0;
-    t->inicioMs = 0;
-    t->finMs = 0;
-    t->terminado = 0;
+//    t->puntaje = 0;
+//    t->racha = 0;
+//
+//     --- NUEVO: valores por defecto para configuracion ---
+//    t->filas = 4;
+//    t->cols = 4;
+//    t->setFiguras = 0;
+//
+//     --- NUEVO: estadisticas ---
+//    t->intentos = 0;
+//    t->aciertos = 0;
+//    t->fallos = 0;
+//    t->inicioMs = 0;
+//    t->finMs = 0;
+//    t->terminado = 0;
 }
 
 void tableroDestruir(Tablero* t)
@@ -182,7 +186,7 @@ void tableroRellenar(Tablero* t)
 {
     //lo de las rachas esta copado, habria que hacer una funcion aparte y ademas modificar las rachas, ya que solo se queda en 0.2, y deberia ir subiendo
     //esta bueno, solo hay que revisar y modificar un par de cosas
-    
+
     /*
     // Cada vez que se arranca una partida nueva, reseteo puntuacion + rachas
     tableroResetPuntuacion(t);
@@ -486,15 +490,23 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
 
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
 {
-    if(!t) return;
+    if(!t)
+    {
+        return;
+    }
 
     //primero uso la funcion IMG_LoadTexture para abrir el archivo
     //y para subir el dorso a memoria
     //hago la verificacion de si se pudo cargar con exito
+    t->dorso = IMG_LoadTexture(render, "dorso.png");
+
+    /*
     if(t->setFiguras == 0)
         t->dorso = IMG_LoadTexture(render, "A/dorso.png");
     else
         t->dorso = IMG_LoadTexture(render, "B/dorso.png");
+    */
+
     if(!t->dorso)
     {
         printf("Error al cargar el archivo 'dorso.png'.SDL_image error: %s\n", IMG_GetError());
@@ -511,6 +523,9 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
         //nombre del archivo a abrir
         //sprintf(nombreArchivo, "%d.png", i);
 
+        sprintf(nombreArchivo, "B/%d.png", i);
+
+        /*
         // NUEVO: dos sets de figuras
         // Requiere carpetas A/ y B/ con 0.png, 1.png, 2.png...
         if(t->setFiguras == 0)
@@ -518,6 +533,7 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
         else
             sprintf(nombreArchivo, "B/%d.png", i);
 
+        */
         SDL_Texture* temp = IMG_LoadTexture(render, nombreArchivo);
         if(temp)
         {
@@ -562,7 +578,10 @@ void tableroMezclar(Tablero* t)
 
 int tableroCompleto(Tablero* t)
 {
-    if(!t) return 0;
+    if(!t)
+    {
+        return 0;
+    }
 
     for(int i=0; i<t->cantidad; i++)
     {
@@ -573,6 +592,8 @@ int tableroCompleto(Tablero* t)
             return 0;//devuelvo 0 porque el juego no termino
         }
     }
+
+    /*
     // Si llega aca es victoria
     if(!t->terminado)   // <-- IMPORTANTE (para que no lo resetee varias veces)
     {
@@ -580,6 +601,8 @@ int tableroCompleto(Tablero* t)
         t->terminado = 1;
         t->finMs = SDL_GetTicks();
     }
+    */
+    printf("Victoria detectada\n");
     return 1;
 }
 

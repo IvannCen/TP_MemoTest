@@ -140,9 +140,10 @@ int main(int argc, char *argv[])
     tableroSetDimensiones(&miTablero, cfg.filas, cfg.cols);
     tableroSetSetFiguras(&miTablero, cfg.setFiguras);
     tableroCargarImagenes(&miTablero, renderer); //cargo las imagenes
-    ContextoJuego juego;
     */
-    
+
+    ContextoJuego juego;
+
     //variables del juego
     juego.nivelActual = 1;
     juego.puntos = 0;
@@ -175,7 +176,7 @@ int main(int argc, char *argv[])
     // Botones menu config
     SDL_Rect btnDim, btnSet, btnJug, btnSave, btnPlay;
     */
-    
+
     // loop del juego
     int corriendo = 1;
     SDL_Event e;
@@ -210,7 +211,7 @@ int main(int argc, char *argv[])
 //                    tableroClic(&miTablero, x, y, renderer);
 //                }
 //            }
-            
+
 
 //hay que revisar porque el ingreso del nombre no debe ser al inicio del menu, sino al momento de entrar en los modos de juego
 //aparte se cambia por completo el menu de esta manera, y ademas toda la logica de ingreso y variables para el mismo deben estar en una funcion
@@ -658,9 +659,9 @@ int main(int argc, char *argv[])
         {
             //dibujo el juego en si mismo
             tableroDibujar(&miTablero, renderer);
-            
+
             //esta idea esta buena, habria que modificarla para que queden centrados los datos pero esta copado
-            
+
             /*
             // -----------------------------
             // HUD: PUNTAJE Y RACHA
@@ -727,10 +728,10 @@ int main(int argc, char *argv[])
 
             //dibujo el texto encima del tablero
             dibujarTextoCentrados(renderer, fuenteGrande,"NIVEL COMPLETADO",200,colorVerde);
-            
+
             //hay que revisar porque son distintos niveles y deberia continuar, ademas es depende del modo de juego que se este jugando
             //ademas lo mismo, habria que hacer funciones aparte para que hagan esto sin rellenar el main tanto
-            
+
             /*
             //centrado en la pantalla
 //            SDL_Rect rect = {300,200,surf->w,surf->h};
