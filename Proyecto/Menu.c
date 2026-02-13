@@ -10,7 +10,7 @@ void menuIniciar(Menu* m, SDL_Renderer* renderer)
 
     //creo los titulos una sola vez
     SDL_Color color = {255,215,0};
-    SDL_Surface* surf = TTF_RenderText_Solid(m->fuenteTitulo, "MEMOTEST MASTER", color);
+    SDL_Surface* surf = TTF_RenderText_Blended(m->fuenteTitulo, "MEMOTEST MASTER", color);
     m->texturaTitulo = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_FreeSurface(surf);
 }
@@ -98,7 +98,7 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer)
         }
 
         //ahora renderizo el color
-        SDL_Surface* surf = TTF_RenderText_Solid(m->fuenteOpciones, opciones[i], color);
+        SDL_Surface* surf = TTF_RenderText_Blended(m->fuenteOpciones, opciones[i], color);
         SDL_Texture* textura = SDL_CreateTextureFromSurface(renderer, surf);
 
         //lo centro en el centro de manera horizontal
