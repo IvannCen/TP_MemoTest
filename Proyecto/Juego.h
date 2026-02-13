@@ -11,10 +11,12 @@ typedef struct
 }ContextoJuego;
 
 //esta estructura enum va a asignar valores a los distintos estados donde
-//se encuentre el menu. por defecto ESTADO_MENU=0, ESTADO_JUGANDO=1 y asi
+//se encuentre el menu. por defecto ESTADO_MENU=0, ESTADO_DIFICULTAD=1 y asi
 typedef enum
 {
     ESTADO_MENU,
+    ESTADO_DIFICULTAD,
+    ESTADO_NOMBRE,
     ESTADO_JUGANDO,
     ESTADO_GANO
 }EstadoJuego;

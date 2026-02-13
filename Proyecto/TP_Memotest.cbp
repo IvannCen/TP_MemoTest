@@ -71,6 +71,10 @@
 		<Unit filename="Carta.h" />
 		<Unit filename="Comun.h" />
 		<Unit filename="Juego.h" />
+		<Unit filename="Menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Menu.h" />
 		<Unit filename="Tablero.c">
 			<Option compilerVar="CC" />
 		</Unit>

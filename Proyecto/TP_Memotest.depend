@@ -5,10 +5,11 @@
 1770950674 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
 
-1770950885 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
+1770996075 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
+	<string.h>
 	<SDL2/SDL.h>
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
@@ -466,7 +467,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770955482 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1770955860 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 	"Comun.h"
 
@@ -475,21 +476,23 @@
 	"Carta.h"
 	"Juego.h"
 
-1770954637 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1770996062 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Comun.h"
-	"config.h"
-	<stdio.h>
-	<stdlib.h>
-	<time.h>
-	<string.h>
+	"Menu.h"
 	"Juego.h"
 
-1770950674 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+1770997383 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
 
 1770950517 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.c
 	"config.h"
 	<stdio.h>
 
 1770950517 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.h
+
+1770992538 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
+	"Comun.h"
+
+1770996441 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+	"Menu.h"
 

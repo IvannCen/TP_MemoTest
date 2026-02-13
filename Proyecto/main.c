@@ -1,11 +1,6 @@
 #include "Tablero.h"
 #include "Comun.h"
-#include "config.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
+#include "Menu.h"
 
 //todo esto que esta comentado hay que revisarlo porque la estructura de los estados esta ya en el Juego.h por lo cual esta de mas ponerlo
 //y las funciones estaticas deberian estar en una header aparte si se quiere ya que a los profes no les gusta las funciones de ese estilo
@@ -130,6 +125,10 @@ int main(int argc, char *argv[])
 
     */
 
+    //sistema del menu
+    Menu menuPrincipal;
+    menuIniciar(&menuPrincipal, renderer);
+
     //logica inicial para arrancar en el menu
     EstadoJuego estadoActual = ESTADO_MENU;
     Tablero miTablero;
@@ -180,8 +179,8 @@ int main(int argc, char *argv[])
     // loop del juego
     int corriendo = 1;
     SDL_Event e;
-    int w = ANCHOVENTANA;
-    int h = ALTOVENTANA;
+    //int w = ANCHOVENTANA;
+    //int h = ALTOVENTANA;
 
     while (corriendo)
     {
@@ -390,23 +389,59 @@ int main(int argc, char *argv[])
 
             if(estadoActual == ESTADO_MENU)
             {
-                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+//                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+//                {
+//                    //aca arranca una nueva partida
+//                    juego.nivelActual = 1;
+//                    juego.puntos = 0;
+//                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+//
+//                    //inicio el nivel 1
+//                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+//
+//                    //si en el menu se apreta ENTER, empieza el juego
+//                    tableroIniciar(&miTablero, cartas);
+//                    tableroCargarImagenes(&miTablero,renderer);
+//                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+//                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+//                    tableroCargado = 1;
+//                    estadoActual = ESTADO_JUGANDO;
+//                }
+
+                int seleccion = menuManejarOpciones(&menuPrincipal, &e);
+
+                if(seleccion != -1)
                 {
-                    //aca arranca una nueva partida
-                    juego.nivelActual = 1;
-                    juego.puntos = 0;
-                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
-
-                    //inicio el nivel 1
-                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
-
-                    //si en el menu se apreta ENTER, empieza el juego
-                    tableroIniciar(&miTablero, cartas);
-                    tableroCargarImagenes(&miTablero,renderer);
-                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
-                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
-                    tableroCargado = 1;
-                    estadoActual = ESTADO_JUGANDO;
+                    switch (seleccion)
+                    {
+                    case OPCION_AVENTURA:
+                        //aca va la seleccion de la dificultad (para despues)
+                        //...
+                        //aca arranca una nueva partida
+                        juego.nivelActual = 1;
+                        juego.puntos = 0;
+                        juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+                        //cargo el nivel 1
+                        tableroIniciar(&miTablero, obtenerCartasPorNivel(1));
+                        tableroCargarImagenes(&miTablero,renderer);
+                        tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+                        tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+                        tableroCargado = 1;
+                        estadoActual = ESTADO_JUGANDO;
+                        break;
+                    case OPCION_COMPETITIVO:
+                        printf("Proximamente Modo Competitivo\n");
+                        break;
+                    case OPCION_ESTADISTICAS:
+                        printf("Proximamente Ranking\n");
+                        break;
+                    case OPCION_CONFIGURACION:
+                        printf("Proximamente Configuracion\n");
+                        break;
+                    case OPCION_SALIR:
+                        corriendo = 0; //cierro el juego
+                        break;
+                    }
                 }
             }
 
@@ -484,7 +519,7 @@ int main(int argc, char *argv[])
         }
 
         //Renderizado segun el estado en el que este el juego(Dibujar)
-        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255); // Fondo Gris oscuro
+        SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255); // Fondo Gris oscuro
         SDL_RenderClear(renderer);
 
         if(estadoActual == ESTADO_MENU)
@@ -531,9 +566,7 @@ int main(int argc, char *argv[])
             */
 
             //dibujo el menu
-            SDL_Color colorTexto = {255,255,0};
-            dibujarTextoCentrados(renderer,fuenteGrande,"MEMOTEST - TP",200, colorTexto);
-            dibujarTextoCentrados(renderer,fuenteChica,"Presiona ENTER para comenzar",400,colorTexto);
+            menuDibujar(&menuPrincipal, renderer);
 
         }
         //lo mismo, hay que cambiar la configuracion del menu para que quede todo en otro header y .c antes de sobrecargar el main
@@ -797,6 +830,7 @@ int main(int argc, char *argv[])
     }
 
     //limpio todas las variables
+    menuDestruir(&menuPrincipal);
     TTF_CloseFont(fuenteGrande);
     TTF_CloseFont(fuenteChica);
     if(tableroCargado)
