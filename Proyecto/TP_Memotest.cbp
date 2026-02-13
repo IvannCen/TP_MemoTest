@@ -86,6 +86,10 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="sonidos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sonidos.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
