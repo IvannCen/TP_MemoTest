@@ -28,6 +28,6 @@
 
 #define DELAYCHICO 500 //medio segundo
 
-#define FUENTE "garamond.ttf"
+#define FUENTE "fnt/jersey.ttf"
 
 #endif // COMUN
