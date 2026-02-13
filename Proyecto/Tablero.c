@@ -617,7 +617,11 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
 
     //dibujo los puntos
     sprintf(buffer, "Puntos: %d", juego->puntos);
-    dibujarTexto(render, font, buffer, (ANCHOVENTANA/2)-50, INTERFAZMARGENSUPERIOR, colorBlanco);
+    dibujarTexto(render, font, buffer, ((ANCHOVENTANA/2)/2)-50, INTERFAZMARGENSUPERIOR, colorBlanco);
+
+    //dibujo el nombre en pantalla
+    sprintf(buffer, "Jugador: %s", juego->nombreJugador);
+    dibujarTexto(render, font, buffer, (((ANCHOVENTANA/2)/2)+(ANCHOVENTANA/2))-50, INTERFAZMARGENSUPERIOR, colorBlanco);
 
     //dibujo el tiempo
     Uint32 segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;

@@ -5,7 +5,7 @@
 1770950674 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
 
-1770996075 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
+1771023999 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -467,7 +467,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770955860 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771024773 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 	"Comun.h"
 
@@ -476,7 +476,7 @@
 	"Carta.h"
 	"Juego.h"
 
-1770997771 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771023999 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Comun.h"
 	"Menu.h"
@@ -490,9 +490,11 @@
 
 1770950517 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.h
 
-1770992538 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
+1771024140 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
+	"Juego.h"
 
-1770996441 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771024773 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
+	"Tablero.h"
 

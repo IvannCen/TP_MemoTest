@@ -387,135 +387,287 @@ int main(int argc, char *argv[])
             }
             */
 
-            if(estadoActual == ESTADO_MENU)
+            switch(estadoActual)
             {
-//                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
-//                {
-//                    //aca arranca una nueva partida
-//                    juego.nivelActual = 1;
-//                    juego.puntos = 0;
-//                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
-//
-//                    //inicio el nivel 1
-//                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
-//
-//                    //si en el menu se apreta ENTER, empieza el juego
-//                    tableroIniciar(&miTablero, cartas);
-//                    tableroCargarImagenes(&miTablero,renderer);
-//                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
-//                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
-//                    tableroCargado = 1;
-//                    estadoActual = ESTADO_JUGANDO;
-//                }
-
-                int seleccion = menuManejarOpciones(&menuPrincipal, &e);
-
-                if(seleccion != -1)
+            case ESTADO_MENU:
                 {
-                    switch (seleccion)
+                    int seleccion = menuManejarOpciones(&menuPrincipal, &e);
+                    if(seleccion != -1)
                     {
-                    case OPCION_AVENTURA:
-                        //aca va la seleccion de la dificultad (para despues)
-                        //...
-                        //aca arranca una nueva partida
+                        if(seleccion == OPCION_AVENTURA)
+                        {
+                            menuPrincipal.opcionSeleccionada = 0;
+                            estadoActual = ESTADO_DIFICULTAD;
+                        }
+                        else if(seleccion == OPCION_SALIR)
+                        {
+                            corriendo = 0;
+                        }
+                        else if(seleccion == OPCION_COMPETITIVO)
+                        {
+                            printf("Proximamente Modo Competitivo\n");
+                        }
+                        else if(seleccion == OPCION_ESTADISTICAS)
+                        {
+                            printf("Proximamente Ranking\n");
+                        }
+                        else if(seleccion == OPCION_CONFIGURACION)
+                        {
+                            printf("Proximamente Configuracion\n");
+                        }
+                    }
+                    break;
+                }
+            case ESTADO_DIFICULTAD:
+                {
+                    int dif = menuDificultadOpciones(&menuPrincipal, &e);
+                    if(dif != -1)
+                    {
+                        if(dif==VOLVER)
+                        {
+                            menuPrincipal.opcionSeleccionada=0;
+                            estadoActual = ESTADO_MENU;
+                        }
+                        else
+                        {
+                            //guardo la dificultad seleccionada
+                            juego.dificultad=dif;
+                            ingresoNombreIniciar(&menuPrincipal.nombre);
+                            estadoActual = ESTADO_NOMBRE;
+                        }
+                    }
+                    break;
+                }
+            case ESTADO_NOMBRE:
+                {
+                    int confirmado = ingresoNombreOpciones(&menuPrincipal.nombre, &e, &juego);
+                    if(confirmado)
+                    {
+                        printf("Jugador: %s - Dificultad: %d\n", juego.nombreJugador, juego.dificultad);
+
                         juego.nivelActual = 1;
                         juego.puntos = 0;
                         juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
-                        //cargo el nivel 1
-                        tableroIniciar(&miTablero, obtenerCartasPorNivel(1));
+                        //aca deberia modificar la funcion de obtenerCartas para cada nivel
+                        //de dificultad, pero para probar pongo hardcodeado
+                        int cartasInicial = 6;
+                        if(juego.dificultad == NORMAL)
+                        {
+                            cartasInicial = 16;
+                        }
+                        if(juego.dificultad == DIFICIL)
+                        {
+                            cartasInicial = 20;
+                        }
+                        tableroIniciar(&miTablero, cartasInicial);
                         tableroCargarImagenes(&miTablero,renderer);
                         tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
                         tableroMezclar(&miTablero); //mezclo las cartas en el tablero
                         tableroCargado = 1;
                         estadoActual = ESTADO_JUGANDO;
-                        break;
-                    case OPCION_COMPETITIVO:
-                        printf("Proximamente Modo Competitivo\n");
-                        break;
-                    case OPCION_ESTADISTICAS:
-                        printf("Proximamente Ranking\n");
-                        break;
-                    case OPCION_CONFIGURACION:
-                        printf("Proximamente Configuracion\n");
-                        break;
-                    case OPCION_SALIR:
-                        corriendo = 0; //cierro el juego
-                        break;
                     }
+                    break;
                 }
-            }
-
-
-            //ingresos en el juego
-            else if(estadoActual == ESTADO_JUGANDO)
-            {
-                if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+            case ESTADO_JUGANDO:
                 {
-                    //obtengo los puntos obtenidos de la funcion de clic
-                    int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer);
-
-                    //sumo los puntos a la variable (o los resto dependiendo del resultado
-                    juego.puntos += puntos;
-
-                    //si hay puntaje negativo los evito
-                    if(juego.puntos<0)
+                    if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                     {
-                        juego.puntos = 0;
+                        //obtengo los puntos obtenidos de la funcion de clic
+                        int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer);
+
+                        //sumo los puntos a la variable (o los resto dependiendo del resultado
+                        juego.puntos += puntos;
+
+                        //si hay puntaje negativo los evito
+                        if(juego.puntos<0)
+                        {
+                            juego.puntos = 0;
+                        }
+                        //verifico si hubo una victoria luego del clic
+                        if(tableroCompleto(&miTablero))
+                        {
+//                            printf("Nivel completado!\n");
+//                            juego.puntos += 500; // Bonus por nivel
+                            printf("Nivel %d Completado en %d segundos\n", juego.nivelActual, tiempoActual);
+                            SDL_Delay(DELAYCHICO); //delay de medio segundo, como una pausa chica
+                            estadoActual=ESTADO_GANO;
+                        }
                     }
-                    //verifico si hubo una victoria luego del clic
-                    if(tableroCompleto(&miTablero))
-                    {
-//                        printf("Nivel completado!\n");
-//                        juego.puntos += 500; // Bonus por nivel
-                        printf("Nivel %d Completado en %d segundos\n", juego.nivelActual, tiempoActual);
-                        SDL_Delay(DELAYCHICO); //delay de medio segundo, como una pausa chica
-                        estadoActual=ESTADO_GANO;
-                    }
+                    break;
                 }
-            }
-
-            //ingresos de cuando se gano el juego
-            else if(estadoActual == ESTADO_GANO)
-            {
-                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
+            case ESTADO_GANO:
                 {
-                    //aumento el nivel en el que estoy
-                    juego.nivelActual++;
-
-                    //elimino el tablero del nivel anterior
-                    if(tableroCargado)
+                    if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
                     {
-                        tableroDestruir(&miTablero);
-                        tableroCargado = 0;
+                        //aumento el nivel en el que estoy
+                        juego.nivelActual++;
+
+                        //elimino el tablero del nivel anterior
+                        if(tableroCargado)
+                        {
+                            tableroDestruir(&miTablero);
+                            tableroCargado = 0;
+                        }
+
+                        //calculo el nivel de dificultad otra vez para el siguiente nivel
+                        int cartas = obtenerCartasPorNivel(juego.nivelActual);
+
+                        if(cartas > 0 && juego.nivelActual <= CANTIDADNIVELES)
+                        {
+                            //cargo el siguiente nivel
+                            tableroIniciar(&miTablero, cartas);
+                            tableroCargarImagenes(&miTablero,renderer);//reinicio las texturas
+                            tableroRellenar(&miTablero);
+                            tableroMezclar(&miTablero);
+                            tableroCargado = 1;
+
+                            //aca es una decision a tomar, ya que podriamos o dejar el tiempo que siga corriendo
+                            //o podriamos reiniciarlo, eso depende de como queremos que sea el tiempo para las
+                            //estadisticas de cada jugador
+                            //juego.tiempoInicio = SDL_GetTicks();//Reinicia el reloj
+
+                            estadoActual = ESTADO_JUGANDO;
+                        }
+                        else
+                        {
+                            //ya no hay mas niveles, se vuelve al menu de inicio
+                            printf("Juego Completado\n");
+                            estadoActual=ESTADO_MENU;
+                        }
                     }
-
-                    //calculo el nivel de dificultad otra vez para el siguiente nivel
-                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
-
-                    if(cartas > 0 && juego.nivelActual <= CANTIDADNIVELES)
-                    {
-                        //cargo el siguiente nivel
-                        tableroIniciar(&miTablero, cartas);
-                        tableroCargarImagenes(&miTablero,renderer);//reinicio las texturas
-                        tableroRellenar(&miTablero);
-                        tableroMezclar(&miTablero);
-                        tableroCargado = 1;
-
-                        //aca es una decision a tomar, ya que podriamos o dejar el tiempo que siga corriendo
-                        //o podriamos reiniciarlo, eso depende de como queremos que sea el tiempo para las
-                        //estadisticas de cada jugador
-                        //juego.tiempoInicio = SDL_GetTicks();//Reinicia el reloj
-
-                        estadoActual = ESTADO_JUGANDO;
-                    }
-                    else
-                    {
-                        //ya no hay mas niveles, se vuelve al menu de inicio
-                        printf("Juego Completado\n");
-                        estadoActual=ESTADO_MENU;
-                    }
+                    break;
                 }
+
             }
+//            if(estadoActual == ESTADO_MENU)
+//            {
+////                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+////                {
+////                    //aca arranca una nueva partida
+////                    juego.nivelActual = 1;
+////                    juego.puntos = 0;
+////                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+////
+////                    //inicio el nivel 1
+////                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+////
+////                    //si en el menu se apreta ENTER, empieza el juego
+////                    tableroIniciar(&miTablero, cartas);
+////                    tableroCargarImagenes(&miTablero,renderer);
+////                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+////                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+////                    tableroCargado = 1;
+////                    estadoActual = ESTADO_JUGANDO;
+////                }
+//
+//                int seleccion = menuManejarOpciones(&menuPrincipal, &e);
+//
+//                if(seleccion != -1)
+//                {
+//                    switch (seleccion)
+//                    {
+//                    case OPCION_AVENTURA:
+//                        //aca va la seleccion de la dificultad (para despues)
+//                        //...
+//                        //aca arranca una nueva partida
+//                        juego.nivelActual = 1;
+//                        juego.puntos = 0;
+//                        juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+//                        //cargo el nivel 1
+//                        tableroIniciar(&miTablero, obtenerCartasPorNivel(1));
+//                        tableroCargarImagenes(&miTablero,renderer);
+//                        tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+//                        tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+//                        tableroCargado = 1;
+//                        estadoActual = ESTADO_JUGANDO;
+//                        break;
+//                    case OPCION_COMPETITIVO:
+//                        printf("Proximamente Modo Competitivo\n");
+//                        break;
+//                    case OPCION_ESTADISTICAS:
+//                        printf("Proximamente Ranking\n");
+//                        break;
+//                    case OPCION_CONFIGURACION:
+//                        printf("Proximamente Configuracion\n");
+//                        break;
+//                    case OPCION_SALIR:
+//                        corriendo = 0; //cierro el juego
+//                        break;
+//                    }
+//                }
+//            }
+//
+//
+//            //ingresos en el juego
+//            else if(estadoActual == ESTADO_JUGANDO)
+//            {
+//                if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+//                {
+//                    //obtengo los puntos obtenidos de la funcion de clic
+//                    int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer);
+//
+//                    //sumo los puntos a la variable (o los resto dependiendo del resultado
+//                    juego.puntos += puntos;
+//
+//                    //si hay puntaje negativo los evito
+//                    if(juego.puntos<0)
+//                    {
+//                        juego.puntos = 0;
+//                    }
+//                    //verifico si hubo una victoria luego del clic
+//                    if(tableroCompleto(&miTablero))
+//                    {
+////                        printf("Nivel completado!\n");
+////                        juego.puntos += 500; // Bonus por nivel
+//                        printf("Nivel %d Completado en %d segundos\n", juego.nivelActual, tiempoActual);
+//                        SDL_Delay(DELAYCHICO); //delay de medio segundo, como una pausa chica
+//                        estadoActual=ESTADO_GANO;
+//                    }
+//                }
+//            }
+//
+//            //ingresos de cuando se gano el juego
+//            else if(estadoActual == ESTADO_GANO)
+//            {
+//                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
+//                {
+//                    //aumento el nivel en el que estoy
+//                    juego.nivelActual++;
+//
+//                    //elimino el tablero del nivel anterior
+//                    if(tableroCargado)
+//                    {
+//                        tableroDestruir(&miTablero);
+//                        tableroCargado = 0;
+//                    }
+//
+//                    //calculo el nivel de dificultad otra vez para el siguiente nivel
+//                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+//
+//                    if(cartas > 0 && juego.nivelActual <= CANTIDADNIVELES)
+//                    {
+//                        //cargo el siguiente nivel
+//                        tableroIniciar(&miTablero, cartas);
+//                        tableroCargarImagenes(&miTablero,renderer);//reinicio las texturas
+//                        tableroRellenar(&miTablero);
+//                        tableroMezclar(&miTablero);
+//                        tableroCargado = 1;
+//
+//                        //aca es una decision a tomar, ya que podriamos o dejar el tiempo que siga corriendo
+//                        //o podriamos reiniciarlo, eso depende de como queremos que sea el tiempo para las
+//                        //estadisticas de cada jugador
+//                        //juego.tiempoInicio = SDL_GetTicks();//Reinicia el reloj
+//
+//                        estadoActual = ESTADO_JUGANDO;
+//                    }
+//                    else
+//                    {
+//                        //ya no hay mas niveles, se vuelve al menu de inicio
+//                        printf("Juego Completado\n");
+//                        estadoActual=ESTADO_MENU;
+//                    }
+//                }
+//            }
         }
 
         //Renderizado segun el estado en el que este el juego(Dibujar)
@@ -688,6 +840,15 @@ int main(int argc, char *argv[])
         }
 
         */
+        else if(estadoActual == ESTADO_DIFICULTAD)
+        {
+            menuDificultadDibujar(&menuPrincipal, renderer);
+        }
+        else if(estadoActual == ESTADO_NOMBRE)
+        {
+            dibujarTexto(renderer,fuenteGrande, "Ingrese el nombre del jugador", (ANCHOVENTANA/2)-50,100,(SDL_Color){255,255,0});
+            ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
+        }
         else if(estadoActual == ESTADO_JUGANDO)
         {
             //dibujo el juego en si mismo

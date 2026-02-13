@@ -24,10 +24,12 @@
 
 #define CANTIDADNIVELES 2
 
+#define LETRASNOMBRE 4
+
 #define DELAY 1000 //1000 milisegundos es 1 segundo
 
 #define DELAYCHICO 500 //medio segundo
 
-#define FUENTE "garamond.ttf"
+#define FUENTE "jersey.ttf"
 
 #endif // COMUN
