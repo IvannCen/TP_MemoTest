@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1770847434 source:d:\repo\tp_memotest\proyecto\carta.c
+1770925109 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\carta.h
+1770754753 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
 
-1770940329 d:\repo\tp_memotest\proyecto\comun.h
+1770950297 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -13,7 +13,7 @@
 	<SDL2/SDL_image.h>
 	<SDL2/SDL_ttf.h>
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl.h
 	"SDL_main.h"
 	"SDL_stdinc.h"
 	"SDL_assert.h"
@@ -51,12 +51,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_main.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_main.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_stdinc.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_stdinc.h
 	"SDL_config.h"
 	<sys/types.h>
 	<stdio.h>
@@ -88,7 +88,7 @@
 	<stdio.h>
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config.h
 	"SDL_platform.h"
 	"SDL_config_windows.h"
 	"SDL_config_winrt.h"
@@ -102,7 +102,7 @@
 	"SDL_config_ngage.h"
 	"SDL_config_minimal.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_platform.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_platform.h
 	<AvailabilityMacros.h>
 	<TargetConditionals.h>
 	<TargetConditionals.h>
@@ -110,55 +110,55 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\begin_code.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\begin_code.h
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\close_code.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\close_code.h
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_windows.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_windows.h
 	"SDL_platform.h"
 	<winsdkver.h>
 	<sdkddkver.h>
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_winrt.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_winrt.h
 	"SDL_platform.h"
 	<sdkddkver.h>
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_wingdk.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_wingdk.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_xbox.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_xbox.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_macosx.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_macosx.h
 	"SDL_platform.h"
 	<AvailabilityMacros.h>
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_iphoneos.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_iphoneos.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_android.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_android.h
 	"SDL_platform.h"
 	<stdarg.h>
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_os2.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_os2.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_emscripten.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_emscripten.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_ngage.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_ngage.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_minimal.h
+1735757272 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_config_minimal.h
 	"SDL_platform.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_assert.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_assert.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	<signal.h>
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_atomic.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_atomic.h
 	"SDL_stdinc.h"
 	"SDL_platform.h"
 	"begin_code.h"
@@ -166,7 +166,7 @@
 	<mbarrier.h>
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_audio.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_audio.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_endian.h"
@@ -176,12 +176,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_error.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_error.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_endian.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_endian.h
 	"SDL_stdinc.h"
 	<intrin.h>
 	<endian.h>
@@ -191,13 +191,13 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_mutex.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_mutex.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_thread.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_thread.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_atomic.h"
@@ -208,18 +208,18 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_rwops.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_rwops.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_clipboard.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_clipboard.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_cpuinfo.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_cpuinfo.h
 	"SDL_stdinc.h"
 	<intrin.h>
 	<intrin.h>
@@ -241,7 +241,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_events.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_events.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
@@ -255,7 +255,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_video.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_video.h
 	"SDL_stdinc.h"
 	"SDL_pixels.h"
 	"SDL_rect.h"
@@ -263,13 +263,13 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_pixels.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_pixels.h
 	"SDL_stdinc.h"
 	"SDL_endian.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_rect.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_rect.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_pixels.h"
@@ -277,7 +277,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_surface.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_surface.h
 	"SDL_stdinc.h"
 	"SDL_pixels.h"
 	"SDL_rect.h"
@@ -286,11 +286,11 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_blendmode.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_blendmode.h
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_keyboard.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_keyboard.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_keycode.h"
@@ -298,21 +298,21 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_keycode.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_keycode.h
 	"SDL_stdinc.h"
 	"SDL_scancode.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_scancode.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_scancode.h
 	"SDL_stdinc.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_mouse.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_mouse.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_joystick.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_joystick.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_guid.h"
@@ -320,13 +320,13 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_guid.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_guid.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_gamecontroller.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_gamecontroller.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_rwops.h"
@@ -335,17 +335,17 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_sensor.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_sensor.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_quit.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_quit.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_gesture.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_gesture.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
@@ -353,70 +353,70 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_touch.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_touch.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_filesystem.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_filesystem.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_haptic.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_haptic.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"SDL_joystick.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_hidapi.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_hidapi.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_hints.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_hints.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_loadso.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_loadso.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_log.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_log.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_messagebox.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_messagebox.h
 	"SDL_stdinc.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_metal.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_metal.h
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_power.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_power.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_render.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_render.h
 	"SDL_stdinc.h"
 	"SDL_rect.h"
 	"SDL_video.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_shape.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_shape.h
 	"SDL_stdinc.h"
 	"SDL_pixels.h"
 	"SDL_rect.h"
@@ -425,7 +425,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_system.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_system.h
 	"SDL_stdinc.h"
 	"SDL_keyboard.h"
 	"SDL_render.h"
@@ -433,59 +433,52 @@
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_timer.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_timer.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_version.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_version.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_locale.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_locale.h
 	"SDL_stdinc.h"
 	"SDL_error.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_misc.h
+1748917206 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2-2.32.8\x86_64-w64-mingw32\include\sdl2\sdl_misc.h
 	"SDL_stdinc.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2_image-2.8.8\x86_64-w64-mingw32\include\sdl2\sdl_image.h
+1741049608 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2_image-2.8.8\x86_64-w64-mingw32\include\sdl2\sdl_image.h
 	"SDL.h"
 	"SDL_version.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770847434 d:\repo\tp_memotest\proyecto\lib\sdl2_ttf-2.24.0\x86_64-w64-mingw32\include\sdl2\sdl_ttf.h
+1735843588 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\lib\sdl2_ttf-2.24.0\x86_64-w64-mingw32\include\sdl2\sdl_ttf.h
 	"SDL.h"
 	"begin_code.h"
 	"close_code.h"
 
-1770942313 source:d:\repo\tp_memotest\proyecto\main.c
+1770950233 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 	"Comun.h"
-	"config.h"
-	<stdio.h>
-	<stdlib.h>
-	<time.h>
-	<string.h>
 
-1770942096 d:\repo\tp_memotest\proyecto\tablero.h
+1770919770 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
+	"Juego.h"
 
-1770942253 source:d:\repo\tp_memotest\proyecto\tablero.c
+1770919753 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Comun.h"
+	"Juego.h"
 
-1770943139 source:d:\repo\tp_memotest\proyecto\config.c
-	"config.h"
-	<stdio.h>
-
-1770943101 d:\repo\tp_memotest\proyecto\config.h
+1770754956 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
 

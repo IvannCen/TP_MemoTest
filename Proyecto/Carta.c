@@ -59,3 +59,22 @@ int cartaAdentro(Carta* c, int x, int y)
 
     return SDL_PointInRect(&clic, &c->posicion);
 }
+
+int obtenerCartasPorNivel(int nivel)
+{
+    switch(nivel)
+    {
+    case 1:
+        return 6;
+    case 2:
+        return 12;
+    case 3:
+        return 20;
+    case 4:
+        return 30;
+    case 5:
+        return 42;
+    default:
+        return 0; //el 0 es que el nivel termino.
+    }
+}

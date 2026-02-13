@@ -7,6 +7,11 @@
 #include <time.h>
 #include <string.h>
 
+//todo esto que esta comentado hay que revisarlo porque la estructura de los estados esta ya en el Juego.h por lo cual esta de mas ponerlo
+//y las funciones estaticas deberian estar en una header aparte si se quiere ya que a los profes no les gusta las funciones de ese estilo
+//ademas habiamos quedado que el tema del nombre se iba a poner al momento de elegir el modo de juego, no al iniciar porque sino no se puede crear rankings por jugador
+
+/*
 #define CONFIG_PATH "config.bin"
 
 #define MAX_NOMBRE 24
@@ -62,6 +67,10 @@ static void recrear_tablero(Tablero* t, SDL_Renderer* renderer, const Config* cf
     // tableroMezclar(t);
 }
 
+*/
+#include "Juego.h"
+
+
 int main(int argc, char *argv[])
 {
     // 1. INICIALIZACION
@@ -73,17 +82,31 @@ int main(int argc, char *argv[])
 
     srand(time(NULL)); //para generar la aleatoriedad en el programa
 
-    SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(IMG_INIT_PNG);
-    TTF_Init(); //inicio las fuentes del juego para las letras
+    if(SDL_Init(SDL_INIT_VIDEO) < 0)
+    {
+        return 1;
+    }
+    if(IMG_Init(IMG_INIT_PNG)==0)
+    {
+        return 1;
+    }
+    if(TTF_Init()==-1) //inicio las fuentes del juego para las letras
+    {
+        return 1;
+    }
 
     // Usamos tus constantes de Comun.h
+    //NOTA: agrego "| SDL_WINDOW_RESIZABLE" para habilitar los botones de maximizar y los
+    //que modifican el tamanio de la ventana.
     SDL_Window *window = SDL_CreateWindow("TP Memotest",
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                           ANCHOVENTANA, ALTOVENTANA,
-                                          SDL_WINDOW_SHOWN);
+                                          SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    //funcion inteligente que sirve para el manejo de la pantalla
+    SDL_RenderSetLogicalSize(renderer,ANCHOVENTANA,ALTOVENTANA);
 
     //inicio las fuentes para que se vean en la pantalla
     TTF_Font* fuenteGrande = TTF_OpenFont(FUENTE, 50);
@@ -94,6 +117,7 @@ int main(int argc, char *argv[])
         printf("Error en la fuente ingresada: %s\n", TTF_GetError());
     }
 
+    /*
     // --- CONFIG persistente ---
     Config cfg;
     config_cargar(&cfg, CONFIG_PATH);
@@ -104,16 +128,35 @@ int main(int argc, char *argv[])
     int nombreError = 0;
     nombreJugador[0] = '\0';
 
-    // 2. LOGICA (El TDA Tablero se encarga de todo)
-    EstadoJuego estadoActual = ESTADO_MENU; //el juego arranca en el menu
+    */
 
+    //logica inicial para arrancar en el menu
+    EstadoJuego estadoActual = ESTADO_MENU;
     Tablero miTablero;
 
+    /*
     // Creo tablero con la config cargada
     tableroIniciar(&miTablero, cfg.filas * cfg.cols);    // Pedir memoria (malloc)
     tableroSetDimensiones(&miTablero, cfg.filas, cfg.cols);
     tableroSetSetFiguras(&miTablero, cfg.setFiguras);
     tableroCargarImagenes(&miTablero, renderer); //cargo las imagenes
+    ContextoJuego juego;
+    */
+    
+    //variables del juego
+    juego.nivelActual = 1;
+    juego.puntos = 0;
+
+    //variable para ver si hay un tablero en memoria
+    int tableroCargado = 0;
+
+//     2. LOGICA (El TDA Tablero se encarga de todo)
+//
+//    EstadoJuego estadoActual = ESTADO_MENU; //el juego arranca en el menu
+//
+//    Tablero miTablero;
+//    tableroIniciar(&miTablero, 16);    // Pedir memoria (malloc)
+//    tableroCargarImagenes(&miTablero, renderer); //cargo las imagenes
 
 //    tableroCargarImagenes(&miTablero, renderer); //cargo las imagenes
 //
@@ -128,10 +171,12 @@ int main(int argc, char *argv[])
 //
 //    tableroMezclar(&miTablero);
 
+    /*
     // Botones menu config
     SDL_Rect btnDim, btnSet, btnJug, btnSave, btnPlay;
-
-    // 3. GAME LOOP
+    */
+    
+    // loop del juego
     int corriendo = 1;
     SDL_Event e;
     int w = ANCHOVENTANA;
@@ -139,6 +184,14 @@ int main(int argc, char *argv[])
 
     while (corriendo)
     {
+        //aca aplico la logica para gestionar el tiempo
+        Uint32 tiempoActual = 0;
+        if(estadoActual==ESTADO_JUGANDO)
+        {
+            //calculo el tiempo dividiendo por mil para que este en segundos
+            tiempoActual = (SDL_GetTicks() - juego.tiempoInicio) / 1000;
+        }
+
         // proceso los ingresos segun el estado en el que se encuentre el juego
         while (SDL_PollEvent(&e))
         {
@@ -157,7 +210,12 @@ int main(int argc, char *argv[])
 //                    tableroClic(&miTablero, x, y, renderer);
 //                }
 //            }
+            
 
+//hay que revisar porque el ingreso del nombre no debe ser al inicio del menu, sino al momento de entrar en los modos de juego
+//aparte se cambia por completo el menu de esta manera, y ademas toda la logica de ingreso y variables para el mismo deben estar en una funcion
+//sino se carga el main de miles de cosas y no es la idea (por favor revisar)
+            /*
             //ingresos en el menu
             if(estadoActual == ESTADO_MENU)
             {
@@ -310,19 +368,71 @@ int main(int argc, char *argv[])
                         SDL_StopTextInput();
                         estadoActual = ESTADO_MENU_CONFIG;
                     }
+                    //aca arranca una nueva partida
+                    juego.nivelActual = 1;
+                    juego.puntos = 0;
+                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+
+                    //inicio el nivel 1
+                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+
+                    //si en el menu se apreta ENTER, empieza el juego
+                    tableroIniciar(&miTablero, cartas);
+                    tableroCargarImagenes(&miTablero,renderer);
+                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+                    tableroCargado = 1;
+                    estadoActual = ESTADO_JUGANDO;
                 }
             }
+            */
+
+            if(estadoActual == ESTADO_MENU)
+            {
+                if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN)
+                {
+                    //aca arranca una nueva partida
+                    juego.nivelActual = 1;
+                    juego.puntos = 0;
+                    juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
+
+                    //inicio el nivel 1
+                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+
+                    //si en el menu se apreta ENTER, empieza el juego
+                    tableroIniciar(&miTablero, cartas);
+                    tableroCargarImagenes(&miTablero,renderer);
+                    tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+                    tableroMezclar(&miTablero); //mezclo las cartas en el tablero
+                    tableroCargado = 1;
+                    estadoActual = ESTADO_JUGANDO;
+                }
+            }
+
 
             //ingresos en el juego
             else if(estadoActual == ESTADO_JUGANDO)
             {
-                if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button==SDL_BUTTON_LEFT)
+                if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                 {
-                    tableroClic(&miTablero,e.button.x,e.button.y, renderer);
+                    //obtengo los puntos obtenidos de la funcion de clic
+                    int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer);
+
+                    //sumo los puntos a la variable (o los resto dependiendo del resultado
+                    juego.puntos += puntos;
+
+                    //si hay puntaje negativo los evito
+                    if(juego.puntos<0)
+                    {
+                        juego.puntos = 0;
+                    }
                     //verifico si hubo una victoria luego del clic
                     if(tableroCompleto(&miTablero))
                     {
-                        printf("Juego Terminado\n");
+//                        printf("Nivel completado!\n");
+//                        juego.puntos += 500; // Bonus por nivel
+                        printf("Nivel %d Completado en %d segundos\n", juego.nivelActual, tiempoActual);
+                        SDL_Delay(DELAYCHICO); //delay de medio segundo, como una pausa chica
                         estadoActual=ESTADO_GANO;
                     }
                 }
@@ -333,18 +443,54 @@ int main(int argc, char *argv[])
             {
                 if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
                 {
-                    //si se pulsa el espacio, se vuelve al menu principal
-                    estadoActual = ESTADO_MENU;
+                    //aumento el nivel en el que estoy
+                    juego.nivelActual++;
+
+                    //elimino el tablero del nivel anterior
+                    if(tableroCargado)
+                    {
+                        tableroDestruir(&miTablero);
+                        tableroCargado = 0;
+                    }
+
+                    //calculo el nivel de dificultad otra vez para el siguiente nivel
+                    int cartas = obtenerCartasPorNivel(juego.nivelActual);
+
+                    if(cartas > 0 && juego.nivelActual <= CANTIDADNIVELES)
+                    {
+                        //cargo el siguiente nivel
+                        tableroIniciar(&miTablero, cartas);
+                        tableroCargarImagenes(&miTablero,renderer);//reinicio las texturas
+                        tableroRellenar(&miTablero);
+                        tableroMezclar(&miTablero);
+                        tableroCargado = 1;
+
+                        //aca es una decision a tomar, ya que podriamos o dejar el tiempo que siga corriendo
+                        //o podriamos reiniciarlo, eso depende de como queremos que sea el tiempo para las
+                        //estadisticas de cada jugador
+                        //juego.tiempoInicio = SDL_GetTicks();//Reinicia el reloj
+
+                        estadoActual = ESTADO_JUGANDO;
+                    }
+                    else
+                    {
+                        //ya no hay mas niveles, se vuelve al menu de inicio
+                        printf("Juego Completado\n");
+                        estadoActual=ESTADO_MENU;
+                    }
                 }
             }
         }
 
         //Renderizado segun el estado en el que este el juego(Dibujar)
-        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Fondo Gris
+        SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255); // Fondo Gris oscuro
         SDL_RenderClear(renderer);
 
         if(estadoActual == ESTADO_MENU)
         {
+            //revisar esta parte porque el menu debe estar en otro header para no sobrecargar el main
+
+            /*
 //            //dibujo el menu
             SDL_Color colorTexto = {255,255,255};
             SDL_Surface* surf = TTF_RenderText_Solid(fuenteGrande, "MEMOTEST - TP", colorTexto);
@@ -381,7 +527,16 @@ int main(int argc, char *argv[])
             SDL_FreeSurface(surf2);
             SDL_DestroyTexture(tex);
             SDL_DestroyTexture(tex2);
+            */
+
+            //dibujo el menu
+            SDL_Color colorTexto = {255,255,0};
+            dibujarTextoCentrados(renderer,fuenteGrande,"MEMOTEST - TP",200, colorTexto);
+            dibujarTextoCentrados(renderer,fuenteChica,"Presiona ENTER para comenzar",400,colorTexto);
+
         }
+        //lo mismo, hay que cambiar la configuracion del menu para que quede todo en otro header y .c antes de sobrecargar el main
+        /*
         else if(estadoActual == ESTADO_MENU_CONFIG)
         {
             SDL_Color blanco = {255,255,255};
@@ -497,11 +652,16 @@ int main(int argc, char *argv[])
             SDL_DestroyTexture(t1);
             SDL_DestroyTexture(t4);
         }
+
+        */
         else if(estadoActual == ESTADO_JUGANDO)
         {
             //dibujo el juego en si mismo
             tableroDibujar(&miTablero, renderer);
-
+            
+            //esta idea esta buena, habria que modificarla para que queden centrados los datos pero esta copado
+            
+            /*
             // -----------------------------
             // HUD: PUNTAJE Y RACHA
             // -----------------------------
@@ -536,17 +696,42 @@ int main(int argc, char *argv[])
             sprintf(hud4, "Tablero: %dx%d | Set: %s | Jugadores: %d",
                     cfg.filas, cfg.cols, (cfg.setFiguras==0)?"A":"B", cfg.jugadores);
             render_texto(renderer, fuenteChica, hud4, blanco, 20, 120);
+            */
+
+            //dibujo las estadisticas del nivel
+            dibujarEstadisticas(renderer, fuenteChica, &juego);
         }
         else if(estadoActual == ESTADO_GANO)
         {
-            //dibujo la pantalla de victoria, con el tablero de fondo
-            //tableroDibujar(&miTablero, renderer);
+            if(tableroCargado)
+            {
+                //dibujo la pantalla de victoria, con el tablero de fondo
+                tableroDibujar(&miTablero, renderer);
+            }
+
+            //dibujo el fondo transparente de fondo
+            //activo un blending para que se acepten transparencias
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            //agrego el color negro para el cuadrado, poniendo 200 de alpha, que le da solides al color
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200); // Negro con opacidad al 80
+            //hago el rectangulo donde va a ir el texto de Ganaste
+            SDL_Rect rect = {0, 0, ANCHOVENTANA, ALTOVENTANA};
+            SDL_RenderFillRect(renderer, &rect);
+            //desactivo el blending para que lo demas se dibuje
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+
+            //color de los textos
+            SDL_Color colorVerde = {50, 255, 50};
+            SDL_Color colorBlanco = {255, 255, 255};
+            SDL_Color colorAmarillo = {255, 255, 0};
 
             //dibujo el texto encima del tablero
-            SDL_Color colorVictoria = {255,215,0}; //color dorado
-            SDL_Surface* surf = TTF_RenderText_Solid(fuenteGrande,"GANASTE",colorVictoria);
-            SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer,surf);
-
+            dibujarTextoCentrados(renderer, fuenteGrande,"NIVEL COMPLETADO",200,colorVerde);
+            
+            //hay que revisar porque son distintos niveles y deberia continuar, ademas es depende del modo de juego que se este jugando
+            //ademas lo mismo, habria que hacer funciones aparte para que hagan esto sin rellenar el main tanto
+            
+            /*
             //centrado en la pantalla
 //            SDL_Rect rect = {300,200,surf->w,surf->h};
 //            SDL_RenderCopy(renderer,tex,NULL,&rect);
@@ -599,15 +784,24 @@ int main(int argc, char *argv[])
             SDL_DestroyTexture(tex);
             SDL_DestroyTexture(tex2);
             SDL_DestroyTexture(tex3);
-        }
 
+            */
+
+            char puntajeBuffer[50];
+            sprintf(puntajeBuffer, "Puntos Totales: %d", juego.puntos);
+            dibujarTextoCentrados(renderer, fuenteChica, puntajeBuffer, 350, colorAmarillo);
+            dibujarTextoCentrados(renderer,fuenteChica,"Presiona SPACE para continuar",500,colorBlanco);
+        }
         SDL_RenderPresent(renderer);
     }
 
     //limpio todas las variables
     TTF_CloseFont(fuenteGrande);
     TTF_CloseFont(fuenteChica);
-    tableroDestruir(&miTablero); //libero el vector dinamico
+    if(tableroCargado)
+    {
+        tableroDestruir(&miTablero); //libero el vector dinamico
+    }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     TTF_Quit(); // cierro el TTF

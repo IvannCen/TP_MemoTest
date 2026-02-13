@@ -20,4 +20,7 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura);
 //funcion que devuelve un 1 si el clic esta adentro de la coordenada x e y, 0 si no
 int cartaAdentro(Carta* c, int x, int y);
 
+//funcion para obtener la cantidad de cartas por nivel
+int obtenerCartasPorNivel(int nivel);
+
 #endif // CARTA

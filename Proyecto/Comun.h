@@ -7,9 +7,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
-
-#define ANCHOVENTANA 1200
-#define ALTOVENTANA 950
+#define ANCHOVENTANA 1366
+#define ALTOVENTANA 768
 
 #define ANCHOCARTA 130
 #define ALTOCARTA 170
@@ -18,11 +17,14 @@
 #define MARGENY 50
 #define HUD_ALTO 150
 
-#define COLUMNAS 4
+#define ALTOINTERFAZ 80
+#define INTERFAZMARGENLATERAL 30 // Margen izquierdo/derecho para textos
 
 #define CANTIDADIMAGENES 10
 
 #define DELAY 1000 //1000 milisegundos es 1 segundo
+
+#define DELAYCHICO 500 //medio segundo
 
 #define FUENTE "garamond.ttf"
 
