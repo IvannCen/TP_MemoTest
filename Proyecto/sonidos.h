@@ -7,7 +7,8 @@
 #define FREC_MUESTREO 44100
 
 //Formatos de audio soportados
-typedef enum {
+typedef enum
+{
     SONIDO_ERR = -1,
     SONIDO_WAV =  0,
     SONIDO_MP3 =  1,
@@ -15,7 +16,11 @@ typedef enum {
 } tFormatosSnd;
 
 //Se usa Mix_Chunk porque son efectos cortos cargados desde la unidad de almacenamiento
-typedef struct sSonido tSonido;
+typedef struct
+{
+    Mix_Chunk* chunk;
+    //int esTono;   //Por ahora no vamos a generar ningún tono generado por buffer de audio, pero lo dejo en caso de que cambiemos de opinion
+} tSonido;
 
 tFormatosSnd sonidos_inicializar(void);
 
@@ -30,7 +35,7 @@ tFormatosSnd sonidos_inicializar(void);
 tSonido* sonidos_cargar(const char *path);
 
 //Reproduce un sonido "n" veces, determinado por el parametro cantVeces
-//void sonidos_reproducir(const tSonido *sonido, int32_t cantVeces) //(const tSonido *sonido, int32_t cantVeces)
+void sonidos_reproducir(const tSonido *sonido, int cantVeces); //(const tSonido *sonido, int32_t cantVeces)
 
 //Libera memoria asociada al sonido
 void sonidos_destruir(tSonido *sonido);

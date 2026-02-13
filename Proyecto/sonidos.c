@@ -6,12 +6,6 @@
 #define BUFFER_AUDIO 1024    // Tamanio del buffer de memoria
 #define ESTEREO 2            // 2 canales, sonido estereo
 
-struct sSonido{
-    Mix_Chunk* chunk;
-    //int esTono;   //Por ahora no vamos a generar ningún tono generado por buffer de audio, pero lo dejo en caso de que cambiemos de opinion
-};
-
-
 tFormatosSnd sonidos_inicializar(void)
 {
     tFormatosSnd formatosSnd = SONIDO_WAV; // Soporte para WAV ya incluido
@@ -63,15 +57,14 @@ tSonido* sonidos_cargar(const char *path)
     return sonido;
 }
 
-//Revisar, no funciona
-/*void sonidos_reproducir(const tSonido *sonido, int32_t cantVeces) //(const tSonido *sonido, int32_t cantVeces)
+void sonidos_reproducir(const tSonido *sonido, int cantVeces) //(const tSonido *sonido, int32_t cantVeces)
 {
     if (!sonido->chunk)
     {
         return;
     }
 
-    int32_t loops; //el tipo de dato era originalmente int32_t
+    int loops; //el tipo de dato era originalmente int32_t
 
     if (cantVeces == -1)
     {
@@ -86,7 +79,7 @@ tSonido* sonidos_cargar(const char *path)
     {
         fprintf(stderr, "No se pudo reproducir el sonido: %s\n", Mix_GetError());
     }
-}*/
+}
 
 void sonidos_destruir(tSonido *sonido)
 {
