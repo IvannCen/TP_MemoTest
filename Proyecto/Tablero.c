@@ -631,7 +631,7 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
 
 void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x, int y, SDL_Color color)
 {
-    SDL_Surface* surface = TTF_RenderText_Solid(font, texto, color);
+    SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);
     if(surface)
     {
         SDL_Texture* textura = SDL_CreateTextureFromSurface(render, surface);
@@ -647,7 +647,7 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
 
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color)
 {
-    SDL_Surface* surface = TTF_RenderText_Solid(font, texto, color);
+    SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);
     if(surface)
     {
         SDL_Texture* textura = SDL_CreateTextureFromSurface(render, surface);
