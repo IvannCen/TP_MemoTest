@@ -471,12 +471,12 @@
 	"Tablero.h"
 	"Comun.h"
 
-1770953998 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
+1771183565 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
 
-1771024886 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771183565 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Comun.h"
 	"Menu.h"
