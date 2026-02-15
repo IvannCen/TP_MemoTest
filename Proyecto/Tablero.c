@@ -610,6 +610,16 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
 {
     SDL_Color colorBlanco = {255,255,255};
     char buffer[50];
+//    int anchoSector;
+//    SDL_Rect areaSector;
+//    Uint32 segundos;
+
+//    //Dividimos el ancho de la pantalla en 4 sectores iguales
+//    anchoSector = ANCHOVENTANA/4; //quizás sea mejor definir una macro que sea para la cant de sectores/columnas
+//
+//    areaSector.y = INTERFAZMARGENSUPERIOR;
+//    areaSector.w = ALTOINTERFAZ;
+//    areaSector.x = anchoSector;
 
     //dibujo el nivel
     sprintf(buffer, "Nivel: %d", juego->nivelActual);
@@ -627,6 +637,27 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
     Uint32 segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;
     sprintf(buffer, "Tiempo: %d", segundos);
     dibujarTexto(render, font, buffer, ANCHOVENTANA - INTERFAZMARGENLATERAL - 120, INTERFAZMARGENSUPERIOR, colorBlanco);
+
+//    //Dibujamos el sector 1 (nivel)
+//    areaSector.x = 0; //anchoSector * 0
+//    sprintf(buffer, "Nivel: %d", juego->nivelActual);
+//    dibujarTextoCentradoEnRect(render, font, buffer, areaSector, colorBlanco);
+//
+//    //Dibujamos el sector 2 (puntos)
+//    areaSector.x = anchoSector; //anchoSector * 1 (se mueve un sector a la derecha)
+//    sprintf(buffer, "Puntos: %d", juego->puntos);
+//    dibujarTextoCentradoEnRect(render, font, buffer, areaSector, colorBlanco);
+//
+//    //Dibujamos el sector 3 (nombre del jugador)
+//    areaSector.x = anchoSector * 2;
+//    sprintf(buffer, "Jugador: %s", juego->nombreJugador);
+//    dibujarTextoCentradoEnRect(render, font, buffer, areaSector, colorBlanco);
+//
+//    //Dibujamos el sector 4 (tiempo)
+//    areaSector.x = anchoSector * 3;
+//    segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;
+//    sprintf(buffer, "Tiempo: %d", (int)segundos);
+//    dibujarTextoCentradoEnRect(render, font, buffer, areaSector, colorBlanco);
 }
 
 void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x, int y, SDL_Color color)
@@ -637,14 +668,16 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
         SDL_Texture* textura = SDL_CreateTextureFromSurface(render, surface);
         if(textura)
         {
-            SDL_Rect destinoRect = {x,y,surface->w,surface->h};
-            SDL_RenderCopy(render,textura,NULL,&destinoRect);
+            SDL_Rect destinoRect = {x, y, surface->w, surface->h};
+            SDL_RenderCopy(render, textura, NULL, &destinoRect);
             SDL_DestroyTexture(textura);
         }
         SDL_FreeSurface(surface);
     }
 }
 
+//Revisar si esta funcion es realmente necesaria, podríamos mandar el valor x como parametro
+//reutilizando la función dibujarTexto()
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color)
 {
     SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);
@@ -655,10 +688,50 @@ void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* tex
         {
             //calculo la variable para centrar los textos
             int x = (ANCHOVENTANA - surface->w) / 2;
-            SDL_Rect destinoRect = {x,y,surface->w,surface->h};
-            SDL_RenderCopy(render,textura,NULL,&destinoRect);
+            SDL_Rect destinoRect = {x, y, surface->w, surface->h};
+            SDL_RenderCopy(render, textura, NULL, &destinoRect);
             SDL_DestroyTexture(textura);
         }
         SDL_FreeSurface(surface);
     }
 }
+
+//void dibujarTextoCentradoEnRect(SDL_Renderer* render, TTF_Font* font, const char* texto, SDL_Rect area, SDL_Color color)
+//{
+//    SDL_Surface* surface;
+//    SDL_Texture* textura;
+//    SDL_Rect destinoRect;
+//
+//    if (!render || !font || !texto)
+//    {
+//        return;
+//    }
+//
+//    surface = TTF_RenderText_Blended(font, texto, color);
+//    if (!surface)
+//    {
+//        return;
+//    }
+//
+//    textura = SDL_CreateTextureFromSurface(render, surface);
+//    if (!textura)
+//    {
+//        SDL_FreeSurface(surface);
+//        return;
+//    }
+//
+//    /*
+//       Logica de centrado matematico:   X = inicioCaja + (anchoCaja - anchoTexto) / 2
+//                                        Y = inicioCaja + (altoCaja - altoTexto) / 2
+//    */
+//
+//    destinoRect.w = surface->w;
+//    destinoRect.h = surface->h;
+//    destinoRect.x = area.x + (area.w - surface->w) / 2;
+//    destinoRect.y = area.y + (area.h - surface->h) / 2;
+//
+//    SDL_RenderCopy(render, textura, NULL, &destinoRect);
+//
+//    SDL_DestroyTexture(textura);
+//    SDL_FreeSurface(surface);
+//}

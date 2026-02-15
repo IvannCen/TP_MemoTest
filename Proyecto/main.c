@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
     //inicio las fuentes para que se vean en la pantalla
     TTF_Font* fuenteGrande = TTF_OpenFont(FUENTE, 50);
     TTF_Font* fuenteChica = TTF_OpenFont(FUENTE, 16);
+    TTF_Font* fuenteHUD= TTF_OpenFont(FUENTE, 30);
 
     if(!fuenteGrande || !fuenteChica)
     {
@@ -894,7 +895,7 @@ int main(int argc, char *argv[])
             */
 
             //dibujo las estadisticas del nivel
-            dibujarEstadisticas(renderer, fuenteChica, &juego);
+            dibujarEstadisticas(renderer, fuenteHUD, &juego);
         }
         else if(estadoActual == ESTADO_GANO)
         {
@@ -921,7 +922,7 @@ int main(int argc, char *argv[])
             SDL_Color colorAmarillo = {255, 255, 0};
 
             //dibujo el texto encima del tablero
-            dibujarTextoCentrados(renderer, fuenteGrande,"NIVEL COMPLETADO",200,colorVerde);
+            dibujarTextoCentrados(renderer, fuenteGrande, "NIVEL COMPLETADO", 200, colorVerde);
 
             //hay que revisar porque son distintos niveles y deberia continuar, ademas es depende del modo de juego que se este jugando
             //ademas lo mismo, habria que hacer funciones aparte para que hagan esto sin rellenar el main tanto
@@ -984,8 +985,8 @@ int main(int argc, char *argv[])
 
             char puntajeBuffer[50];
             sprintf(puntajeBuffer, "Puntos Totales: %d", juego.puntos);
-            dibujarTextoCentrados(renderer, fuenteChica, puntajeBuffer, 350, colorAmarillo);
-            dibujarTextoCentrados(renderer,fuenteChica,"Presiona SPACE para continuar",500,colorBlanco);
+            dibujarTextoCentrados(renderer, fuenteHUD, puntajeBuffer, 350, colorAmarillo);
+            dibujarTextoCentrados(renderer,fuenteHUD,"Presiona SPACE para continuar",500,colorBlanco);
         }
         SDL_RenderPresent(renderer);
     }
