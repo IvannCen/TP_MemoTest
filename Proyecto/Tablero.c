@@ -409,9 +409,9 @@ void tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                     */
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
+int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego)
 {
-    if(!t)
+    if(!t || !juego)
     {
         return 0;
     }
@@ -436,6 +436,9 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
             //primer clic
             if(!t->cartaSeleccionada)
             {
+                //Reproducir sonido de seleccion (1 vez)
+                sonidos_reproducir(juego->sndSeleccion, 1);
+
                 t->cartas[i].bocaArriba = 1;
                 t->cartaSeleccionada = &t->cartas[i];//guardo la dir
                 printf("Seleccion 1: id %d (dir: %p)\n", t->cartas[i].idImagen, (void*)&t->cartas[i]);
@@ -464,6 +467,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                 if(carta1->idImagen == carta2->idImagen)
                 {
                     printf("Hubo coincidencia\n");
+                    sonidos_reproducir(juego->sndAcierto, 1);
 
                     //asigno los valores
                     carta1->encontrada = 1;
@@ -474,6 +478,8 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render)
                 else
                 {
                     printf("No hubo coincidencia\n");
+                    sonidos_reproducir(juego->sndFallo, 1);
+
                     SDL_Delay(DELAY);
                     carta1->bocaArriba = 0;
                     carta2->bocaArriba = 0;

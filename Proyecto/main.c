@@ -1,6 +1,7 @@
 #include "Tablero.h"
 #include "Comun.h"
 #include "Menu.h"
+#include "sonidos.h" //despues debería estar modularizado correctamente, se va a encontrar en juego.h
 
 //todo esto que esta comentado hay que revisarlo porque la estructura de los estados esta ya en el Juego.h por lo cual esta de mas ponerlo
 //y las funciones estaticas deberian estar en una header aparte si se quiere ya que a los profes no les gusta las funciones de ese estilo
@@ -90,6 +91,14 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    //Inicializo el subsistema de sonido
+    tFormatosSnd formatos = sonidos_inicializar();
+
+    if(formatos == SONIDO_ERR)
+    {
+        return 1;
+    }
+
     // Usamos tus constantes de Comun.h
     //NOTA: agrego "| SDL_WINDOW_RESIZABLE" para habilitar los botones de maximizar y los
     //que modifican el tamanio de la ventana.
@@ -147,6 +156,12 @@ int main(int argc, char *argv[])
     //variables del juego
     juego.nivelActual = 1;
     juego.puntos = 0;
+
+    // Usamos sonidos_cargar.
+    // IMPORTANTE: Asegurate de tener la carpeta /snd con estos archivos
+    juego.sndSeleccion = sonidos_cargar(SELECCION);
+    juego.sndAcierto   = sonidos_cargar(ACIERTO);
+    juego.sndFallo     = sonidos_cargar(FALLO);
 
     //variable para ver si hay un tablero en memoria
     int tableroCargado = 0;
@@ -474,7 +489,7 @@ int main(int argc, char *argv[])
                     if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                     {
                         //obtengo los puntos obtenidos de la funcion de clic
-                        int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer);
+                        int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer, &juego); // tableroClic necesita acceder a juego->sndSeleccion, etc.
 
                         //sumo los puntos a la variable (o los resto dependiendo del resultado
                         juego.puntos += puntos;
@@ -993,6 +1008,13 @@ int main(int argc, char *argv[])
 
     //limpio todas las variables
     menuDestruir(&menuPrincipal);
+
+    sonidos_destruir(juego.sndSeleccion);
+    sonidos_destruir(juego.sndAcierto);
+    sonidos_destruir(juego.sndFallo);
+
+    sonidos_finalizar();
+
     TTF_CloseFont(fuenteGrande);
     TTF_CloseFont(fuenteChica);
     if(tableroCargado)
