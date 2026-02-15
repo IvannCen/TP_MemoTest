@@ -289,5 +289,5 @@ void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer)
     //instrucciones en pantalla
     SDL_Color colorAmarillo = {255, 255, 0};
     dibujarTextoCentrados(renderer,ing->fuenteChica,"Utilice las fechas del teclado para moverse entre caracteres",600,colorAmarillo);
-    dibujarTextoCentrados(renderer,ing->fuenteChica,"Luego precione ENTER en el boton confirmar",650,colorAmarillo);
+    dibujarTextoCentrados(renderer,ing->fuenteChica,"Luego presione ENTER en el boton confirmar",650,colorAmarillo);
 }

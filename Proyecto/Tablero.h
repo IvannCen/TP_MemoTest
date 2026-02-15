@@ -109,3 +109,6 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
 //funcion para dibujar los textos pero centrados en la pantalla
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color);
 #endif // TABLERO
+
+//funcion para dibujar un texto centrado matemáticamente dentro del area especificada
+//void dibujarTextoCentradoEnRect(SDL_Renderer* render, TTF_Font* font, const char* texto, SDL_Rect area, SDL_Color color);
