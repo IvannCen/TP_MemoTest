@@ -128,7 +128,7 @@ void tableroIniciar(Tablero* t, int cant)
     t->cantidadImagenesCargadas = 0;
     t->dorso = NULL;
 
-    for(int i=0; i<CANTIDADIMAGENES; i++)
+    for(int i=0; i<cant; i++)
     {
         t->imagenes[i] = NULL;
         //t->puntosPorImagen[i] = 0;
