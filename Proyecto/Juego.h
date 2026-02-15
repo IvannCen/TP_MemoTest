@@ -1,6 +1,8 @@
 #ifndef JUEGO
 #define JUEGO
 
+#include "sonidos.h"
+
 typedef struct
 {
     int nivelActual;
@@ -8,6 +10,11 @@ typedef struct
     Uint32 tiempoInicio; //tiempo para el cronometro
     int dificultad; //0=Facil, 1=Normal, 2=Dificil
     char nombreJugador[4]; //tres caracteres como juegos retro: AAA
+
+    //Pongo estos campos temporalmente, hasta que modularizemos bien la logica
+    tSonido* sndSeleccion;
+    tSonido* sndAcierto;
+    tSonido* sndFallo;
 }ContextoJuego;
 
 //esta estructura enum va a asignar valores a los distintos estados donde

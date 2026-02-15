@@ -4,6 +4,7 @@
 #include "Comun.h"
 #include "Carta.h"
 #include "Juego.h"
+#include "sonidos.h"
 
 //hay que revisar la estructura, ya que tiene muchas cosas, que se podrian dividir en estructuras aparte y hacer puntero a estructura
 //igual con el tema de las configuraciones y eso del menu y rankings hay que verlo para mandarlo al header correspondiente
@@ -63,7 +64,7 @@ void tableroRellenar(Tablero* t);
 void tableroDibujar(Tablero* t, SDL_Renderer* render);
 
 //funcion que maneja los clics en el tablero
-int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render);
+int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego);
 
 //funcion que va a cargar las imagenes
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render);
