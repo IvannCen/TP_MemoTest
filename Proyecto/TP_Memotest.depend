@@ -994,7 +994,7 @@
 	"Comun.h"
 	"Juego.h"
 
-1771204290 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
+1771207977 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
@@ -1006,7 +1006,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1771184569 c:\users\matias\documents\github\tp_memotest\proyecto\sonidos.h
+1771209818 c:\users\matias\documents\github\tp_memotest\proyecto\sonidos.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_mixer.h>
 

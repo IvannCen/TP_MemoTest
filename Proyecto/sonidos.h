@@ -6,9 +6,9 @@
 
 #define FREC_MUESTREO 44100
 
-#define SELECCION   "snd/click.mp3"
-#define ACIERTO     "snd/winner.mp3"
-#define FALLO       "snd/racha.mp3"   //CARGAR SONIDOS, ESTOS LOS USAMOS DE PRUEBA
+#define SELECCION   "snd/seleccion.wav"
+#define ACIERTO     "snd/acierto.wav"
+#define FALLO       "snd/fallo.wav"
 
 //Formatos de audio soportados
 typedef enum
