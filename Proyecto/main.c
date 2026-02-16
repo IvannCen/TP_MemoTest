@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     juego.sndSeleccion = sonidos_cargar(SELECCION);
     juego.sndAcierto = sonidos_cargar(ACIERTO);
     juego.sndFallo = sonidos_cargar(FALLO);
-    Mix_Volume(-1, 30); // Reducion del volumen al 30% de forma fija a efectos de no molestar a quien inicie esta demo
+    Mix_Volume(-1, 40); // Reducion del volumen al 40% de forma fija a efectos de no molestar a quien inicie esta demo
 
     while (corriendo)
     {
@@ -168,6 +168,12 @@ int main(int argc, char *argv[])
                             SDL_Delay(DELAYCHICO); //delay de medio segundo, como una pausa chica
                             estadoActual=ESTADO_GANO;
                         }
+                    }
+                    //manejo del hover
+                    else if(e.type == SDL_MOUSEMOTION)
+                    {
+                        //le pasamos las coordenadas del mouse al tablero
+                        tableroManejarHover(&miTablero, e.motion.x, e.motion.y);
                     }
                     break;
                 }

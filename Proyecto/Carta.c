@@ -10,6 +10,7 @@ void CartaInicial(Carta* c, int id, int x, int y, int w,int h)
     c->idImagen = id;
     c->bocaArriba = 0;
     c->encontrada = 0;
+    c->hover = 0;
 
     c->posicion.x = x;
     c->posicion.y = y;
@@ -27,7 +28,7 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mous
     if(textura)
     {
         //esta funcion copia una textura (imagen) sobre el renderer (lienzo)
-        //los parametros son: el renderer, la textura, NULL(para usar toda la imagen) y la posicion y tamaño destino
+        //los parametros son: el renderer, la textura, NULL(para usar toda la imagen) y la posicion y tamaï¿½o destino
         SDL_RenderCopy(render, textura, NULL, &c->posicion);
     }
     else
@@ -45,23 +46,33 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mous
         SDL_RenderFillRect(render, &c->posicion);
     }
 
-    int esHover = 0;
-    if(!c->bocaArriba && !c->encontrada)
+    //solo aplico el hover si la carta no fue revelada (es decir, no fue encontrada ni dada vuelta)
+    if(c->hover && !c->encontrada && !c->bocaArriba)
     {
-        if(cartaAdentro(c,mouseX,mouseY))
-        {
-            esHover = 1;
-        }
+        SDL_SetRenderDrawColor(render, 0, 255, 255, 255); //color cyan
+
+        //Dibujamos un borde mas grueso
+        SDL_Rect r = c->posicion;
+        SDL_RenderDrawRect(render, &r); //rectangulo 1, externo
+
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r); //rectangulo 2,
+
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r); //Segundo borde interno
     }
-    if(esHover)
-    {
-        SDL_SetRenderDrawColor(render,0,255,255,255); //color cyan
-        SDL_RenderDrawRect(render, &c->posicion);
-    }
+
     else
     {
-        SDL_SetRenderDrawColor(render,255,255,255,255);
-        SDL_RenderDrawRect(render, &c->posicion);
+        //Borde blanco
+        SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+        SDL_RenderDrawRect(render, &(c->posicion));
     }
 }
 
@@ -77,36 +88,3 @@ int cartaAdentro(Carta* c, int x, int y)
     //funcion matematica que devuelve true si el punto esta en el rect
     return SDL_PointInRect(&clic, &c->posicion);
 }
-
-//int obtenerCartasPorDificultad(int dificultad)
-//{
-//    switch(dificultad)
-//    {
-//    case FACIL:
-//        return 12; //3x4
-//    case NORMAL:
-//        return 16; //4x4
-//    case DIFICIL:
-//        return 20; //4x5
-//    default:
-//        return 16; //por defecto el nivel normal
-//    }
-//}
-//int obtenerCartasPorNivel(int nivel)
-//{
-//    switch(nivel)
-//    {
-//    case 1:
-//        return 12; //3x4
-//    case 2:
-//        return 16; //4x4
-//    case 3:
-//        return 20; //4x5
-//    case 4:
-//        return 30; //6x5
-//    case 5:
-//        return 42; //7x6
-//    default:
-//        return 0; //el 0 es que el nivel termino.
-//    }
-//}

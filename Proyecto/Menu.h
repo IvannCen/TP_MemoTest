@@ -51,7 +51,7 @@ typedef struct
 void menuIniciar(Menu* m, SDL_Renderer* renderer);
 void menuDestruir(Menu* m);
 
-//funciones del manejo de flechas: "-1" si no eligio nada, o la OPCION si se presiona Enter
+//funciones del manejo de flechas: "-1" si no eligio nada, o la opcion si se presiona enter
 int menuManejarOpciones(Menu* m, SDL_Event* e);
 void menuDibujar(Menu* m, SDL_Renderer* renderer);
 
@@ -71,5 +71,7 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
 //funciones extra
 char siguienteCaracter(char c);
 char anteriorCaracter(char c);
+const char* menuObtenerTexto(int opcion); //conecta el enum con el texto
+const char* menuDificultadObtenerTexto(int opcion); //idem con dificultad (ESTO SE VA A MODIFICAR CUANDO CAMBIEMOS LA CONFIG)
 
 #endif // MENU

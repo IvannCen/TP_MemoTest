@@ -6,9 +6,10 @@
 
 typedef struct
 {
-    int idImagen;   //cada imagen se identifica con un numero.
+    int idImagen;       //cada imagen se identifica con un numero.
     int bocaArriba;     //0=boca abajo y 1=boca arriba.
     int encontrada;     //0=no encontrada y 1=encontrada(se hizo una pareja).
+    int hover;          //0 = el mouse no esta encima, 1 = mouse encima
     SDL_Rect posicion;  //estructura que contiene las coordenadas de la carta.
 }Carta;
 
