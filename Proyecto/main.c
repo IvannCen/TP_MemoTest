@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     juego.sndSeleccion = sonidos_cargar(SELECCION);
     juego.sndAcierto = sonidos_cargar(ACIERTO);
     juego.sndFallo = sonidos_cargar(FALLO);
-    Mix_Volume(-1, 50); // Reducion del volumen al 50% de forma fija a efectos de no molestar a quien inicie esta demo
+    Mix_Volume(-1, 30); // Reducion del volumen al 30% de forma fija a efectos de no molestar a quien inicie esta demo
 
     while (corriendo)
     {

@@ -4,6 +4,8 @@
 void menuIniciar(Menu* m, SDL_Renderer* renderer)
 {
     m->opcionSeleccionada = 0; //arranca desde la primer opcion del menu
+    m->confirmaSalida = 0; //arranca desactivado
+    m->opcionSalida = 1; //por defecto, arranca en no
 
     //cargo las fuentes y ajusto los tamaños como quiera
     m->fuenteTitulo = TTF_OpenFont(FUENTE, 80);
@@ -42,6 +44,7 @@ void menuDestruir(Menu* m)
 
 int menuManejarOpciones(Menu* m, SDL_Event* e)
 {
+    /*
     if(e->type == SDL_KEYDOWN)
     {
         switch (e->key.keysym.sym)
@@ -65,6 +68,80 @@ int menuManejarOpciones(Menu* m, SDL_Event* e)
     }
 
     return -1; //devuelvo -1 si sigue en el menu y no eligio nada
+    */
+
+    if(e->type == SDL_KEYDOWN)
+    {
+        // ---------------------------------------------------------
+        // CASO 1: ESTAMOS DENTRO DEL POPUP DE CONFIRMACION
+        // ---------------------------------------------------------
+        if (m->confirmaSalida)
+        {
+            switch (e->key.keysym.sym)
+            {
+                case SDLK_LEFT:
+                case SDLK_RIGHT:
+                    // Cambia entre 0 (SI) y 1 (NO)
+                    // Usamos ! para invertir el valor booleano (0 pasa a 1, 1 pasa a 0)
+                    m->opcionSalida = !m->opcionSalida;
+                    break;
+
+                case SDLK_RETURN: // Enter normal
+                case SDLK_KP_ENTER: // Enter numerico
+                    if (m->opcionSalida == 0) // Si eligio "SI" (asumimos 0 = SI)
+                    {
+                        // Aca SI devolvemos la senial para que el main cierre el juego
+                        return OPCION_SALIR;
+                    }
+                    else // Si eligio "NO"
+                    {
+                        m->confirmaSalida = 0; // Apagamos el popup
+                        // No devolvemos nada, seguimos en el menu
+                    }
+                    break;
+
+                case SDLK_ESCAPE:
+                    // Si aprieta Escape, cancelamos la salida tambien
+                    m->confirmaSalida = 0;
+                    break;
+            }
+            return -1; // Retornamos -1 para que el juego siga corriendo
+        }
+
+        // ---------------------------------------------------------
+        // CASO 2: ESTAMOS EN EL MENU NORMAL (Navegacion Vertical)
+        // ---------------------------------------------------------
+        switch (e->key.keysym.sym)
+        {
+        case SDLK_UP:
+            m->opcionSeleccionada--;
+            if(m->opcionSeleccionada < 0)
+                m->opcionSeleccionada = CANTIDADOPCIONES - 1;
+            break;
+
+        case SDLK_DOWN:
+            m->opcionSeleccionada++;
+            if(m->opcionSeleccionada >= CANTIDADOPCIONES)
+                m->opcionSeleccionada = 0;
+            break;
+
+        case SDLK_RETURN:
+        case SDLK_KP_ENTER:
+            // Revisamos qué opción eligió
+            if (m->opcionSeleccionada == OPCION_SALIR)
+            {
+                // ¡NO salimos todavía! Activamos el modo confirmación
+                m->confirmaSalida = 1;
+                m->opcionSalida = 1; // Ponemos el cursor en "NO" por seguridad
+                return -1; // Devolvemos -1 para que el main espere
+            }
+
+            // Si es cualquier otra opción (Aventura, Config, etc), la devolvemos normal
+            return m->opcionSeleccionada;
+        }
+    }
+
+    return -1; // Si no se apretó nada relevante
 }
 
 void menuDibujar(Menu* m, SDL_Renderer* renderer)
@@ -86,6 +163,39 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer)
     {
         SDL_Color color = (i==m->opcionSeleccionada) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
         dibujarTextoCentrados(renderer, m->fuenteOpciones, opciones[i], inicioY + (i * separacion), color);
+    }
+
+    // === DIBUJADO DEL POPUP DE SALIDA ===
+    if (m->confirmaSalida)
+    {
+        // 1. Fondo semitransparente (Overlay)
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200); // Negro con opacidad
+        SDL_Rect overlay = {0, 0, ANCHOVENTANA, ALTOVENTANA};
+        SDL_RenderFillRect(renderer, &overlay);
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+
+        // 2. Cuadro del diálogo (Borde blanco opcional)
+        SDL_Rect caja = { (ANCHOVENTANA/2)-200, (ALTOVENTANA/2)-100, 400, 200 };
+        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Gris oscuro fondo caja
+        SDL_RenderFillRect(renderer, &caja);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Borde blanco
+        SDL_RenderDrawRect(renderer, &caja);
+
+        // 3. Texto de pregunta
+        SDL_Color colorPregunta = {255, 255, 255};
+        dibujarTextoCentrados(renderer, m->fuenteOpciones, "Seguro desea salir?", (ALTOVENTANA/2)-60, colorPregunta);
+
+        // 4. Opciones SI / NO
+        // Opcion SI (0)
+        SDL_Color colorSi = (m->opcionSalida == 0) ? (SDL_Color){0, 255, 0} : (SDL_Color){150, 150, 150};
+        // Opcion NO (1)
+        SDL_Color colorNo = (m->opcionSalida == 1) ? (SDL_Color){255, 0, 0} : (SDL_Color){150, 150, 150};
+
+        // Dibujamos "SI" un poco a la izquierda y "NO" a la derecha
+        // (Nota: puedes ajustar las coordenadas X e Y a tu gusto)
+        dibujarTexto(renderer, m->fuenteOpciones, "SI", (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, colorSi);
+        dibujarTexto(renderer, m->fuenteOpciones, "NO", (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, colorNo);
     }
 }
 

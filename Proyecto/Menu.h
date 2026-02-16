@@ -43,6 +43,8 @@ typedef struct
     TTF_Font* fuenteOpciones;
     SDL_Texture* texturaTitulo; //guardo la textura para no generarla en cada frame del menu
     IngresoNombre nombre;
+    int confirmaSalida; //0 = no muestra el cartel, 1 = muestra el cartel
+    int opcionSalida; //0 = si, 1 = no;
 }Menu;
 
 //funciones del menu

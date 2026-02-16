@@ -500,13 +500,14 @@
 	"Menu.h"
 	"Tablero.h"
 
-1770985626 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
+1771204290 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
-1770985626 c:\users\matias\documents\github\tp_memotest\proyecto\carta.h
+1771204290 c:\users\matias\documents\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
+	"Menu.h"
 
-1771168682 c:\users\matias\documents\github\tp_memotest\proyecto\comun.h
+1771204290 c:\users\matias\documents\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -974,14 +975,13 @@
 
 1770985626 c:\users\matias\documents\github\tp_memotest\proyecto\config.h
 
-1771185011 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
+1771205480 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
-	"Comun.h"
-	"Menu.h"
-	"sonidos.h"
 	"Juego.h"
+	"Menu.h"
+	"Carta.h"
 
-1771185011 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
+1771204290 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
@@ -990,17 +990,16 @@
 1771185021 c:\users\matias\documents\github\tp_memotest\proyecto\juego.h
 	"sonidos.h"
 
-1771168682 c:\users\matias\documents\github\tp_memotest\proyecto\menu.h
+1771207949 c:\users\matias\documents\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
 	"Juego.h"
 
-1771172297 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
+1771204290 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
-1771185046 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
+1771204290 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
-	"Comun.h"
 
 1771005643 source:c:\users\matias\documents\github\tp_memotest\proyecto\sonidos.c
 	"sonidos.h"
