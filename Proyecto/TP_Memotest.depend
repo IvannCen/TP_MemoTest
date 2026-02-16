@@ -477,7 +477,7 @@
 	"Juego.h"
 	"sonidos.h"
 
-1771197221 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771211997 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
@@ -492,11 +492,11 @@
 
 1770950517 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.h
 
-1771193944 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
+1771211997 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
 	"Juego.h"
 
-1771194582 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771211997 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
@@ -1024,7 +1024,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1771185435 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
+1771211998 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_mixer.h>
 
