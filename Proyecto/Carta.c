@@ -10,6 +10,7 @@ void CartaInicial(Carta* c, int id, int x, int y, int w,int h)
     c->idImagen = id;
     c->bocaArriba = 0;
     c->encontrada = 0;
+    c->hover = 0;
 
     c->posicion.x = x;
     c->posicion.y = y;
@@ -45,10 +46,41 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura)
         SDL_RenderFillRect(render, &c->posicion);
     }
 
+    //solo aplico el hover si la carta no fue revelada (es decir, no fue encontrada ni dada vuelta)
+    if(c->hover && !c->encontrada && !c->bocaArriba)
+    {
+        SDL_SetRenderDrawColor(render, 0, 255, 255, 255); //color cyan
+
+        //Dibujamos un borde mas grueso
+        SDL_Rect r = c->posicion;
+        SDL_RenderDrawRect(render, &r); //rectangulo 1, externo
+
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r); //rectangulo 2,
+
+
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r); //Segundo borde interno
+    }
+
+    else
+    {
+        //Borde blanco
+        SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+        SDL_RenderDrawRect(render, &(c->posicion));
+    }
+/*
     //tambien dibujo un borde negro para distinguir a las cartas
     //el color negro en el render es: 0 - 0 - 0 - 255
     SDL_SetRenderDrawColor(render,0,0,0,255);
     SDL_RenderDrawRect(render, &(c->posicion));
+*/
 }
 
 int cartaAdentro(Carta* c, int x, int y)

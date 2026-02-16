@@ -287,6 +287,27 @@ void tableroMezclar(Tablero* t)
     }
 }
 
+void tableroManejarHover(Tablero* t, int x, int y)
+{
+    if(!t || !t->cartas)
+    {
+        return;
+    }
+
+    for(int i = 0; i<t->cantidad; i++)
+    {
+        //solo marcamos hover si la carta no esta boca arriba y no esta encontrada
+        if(cartaAdentro(&t->cartas[i], x, y) && !t->cartas[i].encontrada && !t->cartas[i].bocaArriba)
+        {
+            t->cartas[i].hover = 1;
+        }
+        else
+        {
+            t->cartas[i].hover = 0;
+        }
+    }
+}
+
 int tableroCompleto(Tablero* t)
 {
     if(!t)

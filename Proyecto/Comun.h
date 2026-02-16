@@ -25,7 +25,7 @@
 
 //recursos
 #define CANTIDADIMAGENES 10
-#define FUENTE "jersey.ttf"
+#define FUENTE "fnt/jersey.ttf"
 #define FUENTEGRANDE 100
 #define FUENTEMEDIA 65
 #define FUENTECHICA 30
