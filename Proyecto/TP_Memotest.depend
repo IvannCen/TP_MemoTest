@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1770950674 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
+1771197221 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
-1770950674 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
+1771190310 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
+	"Menu.h"
 
-1771025146 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
+1771193771 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -467,22 +468,23 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771024773 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771196923 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
-	"Comun.h"
 
-1771183565 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
+1771190310 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
+	"sonidos.h"
 
-1771183565 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771197221 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
-	"Comun.h"
-	"Menu.h"
 	"Juego.h"
+	"Menu.h"
+	"Carta.h"
 
-1770997383 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+1771185434 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+	"sonidos.h"
 
 1770950517 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.c
 	"config.h"
@@ -490,11 +492,11 @@
 
 1770950517 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.h
 
-1771024140 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
+1771193944 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
 	"Juego.h"
 
-1771025067 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771194582 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
@@ -1023,7 +1025,7 @@
 	<stdio.h>
 	<stdlib.h>
 
-1771025067 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
+1771185435 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_mixer.h>
 

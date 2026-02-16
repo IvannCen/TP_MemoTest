@@ -7,7 +7,7 @@
 //defino las opciones del menu enumeradas
 typedef enum
 {
-    OPCION_AVENTURA = 0,
+    OPCION_AVENTURA,
     OPCION_COMPETITIVO,
     OPCION_ESTADISTICAS,
     OPCION_CONFIGURACION,
@@ -18,7 +18,7 @@ typedef enum
 //menu de dificultad
 typedef enum
 {
-    FACIL = 0,
+    FACIL,
     NORMAL,
     DIFICIL,
     VOLVER,
@@ -32,10 +32,10 @@ typedef struct
     char nombre[LETRASNOMBRE]; //nombre temporal "AAA"
     TTF_Font* fuenteGrande;
     TTF_Font* fuenteChica;
+    TTF_Font* fuenteMedia;
 }IngresoNombre;
 
 //struct del menu
-
 typedef struct
 {
     int opcionSeleccionada; //una de las 5 opciones (de 0 a 4)
@@ -62,6 +62,7 @@ void ingresoNombreIniciar(IngresoNombre* ing); //funcion que resetea el ingreso 
 void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer);
 int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego); //devuelve un 1 si se confirmo
 
+//funciones extra
 char siguienteCaracter(char c);
 char anteriorCaracter(char c);
 
