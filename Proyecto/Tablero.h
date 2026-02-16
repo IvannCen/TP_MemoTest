@@ -14,29 +14,32 @@ typedef struct
     SDL_Texture* imagenes[CANTIDADIMAGENES]; //vector dinamico con las imagenes
     int cantidadImagenesCargadas; //cantidad de imagenes cargadas
     Carta* cartaSeleccionada; //dir de la carta seleccionada
+    int rachaActual; //cant de aciertos consecutivos
+    int movimientos; //cont de intentos para las estadisticas
+    int parejasEncontradas; //cont para saber si gano
 }Tablero;
 
 //funciones que manejan la memoria
 //inicio el tablero reservando memoria para la cantidad de cartas
-void tableroIniciar(Tablero* t, int cant);
+void tableroIniciar(Tablero* t, Configuracion* config);
 //destruyo el tablero, ya que se trata de un vector dinamico
 void tableroDestruir(Tablero* t);
 
 //funciones que manejan la logica del juego
 //relleno el trablero, configurando las cartas que contiene
-void tableroRellenar(Tablero* t);
+void tableroRellenar(Tablero* t, int filas, int columnas);
 //funcion para saber si todas las cartas fueron encontradas
 int tableroCompleto(Tablero* t);
 //funcion que maneja los clics en el tablero
 int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego);
 //funcion que va a cargar las imagenes
-void tableroCargarImagenes(Tablero* t, SDL_Renderer* render);
+void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet);
 //funcion para mezclar las cartas en el tablero
 void tableroMezclar(Tablero* t);
 
 //funciones de renderizado
 //dibujo todas las cartas de adentro del tablero
-void tableroDibujar(Tablero* t, SDL_Renderer* render);
+void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY);
 //funcion para dibujar las estadisticas por nivel
 void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego);
 

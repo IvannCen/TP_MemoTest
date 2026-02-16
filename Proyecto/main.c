@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     TTF_Font* fuenteChica = TTF_OpenFont(FUENTE, FUENTECHICA);
     TTF_Font* fuenteMedia= TTF_OpenFont(FUENTE, FUENTEMEDIA);
 
-    if(!fuenteGrande || !fuenteChica)
+    if(!fuenteGrande || !fuenteChica || !fuenteMedia)
     {
         printf("Error en la fuente ingresada: %s\n", TTF_GetError());
     }
@@ -53,12 +53,16 @@ int main(int argc, char *argv[])
     menuIniciar(&menuPrincipal, renderer);
 
     //logica inicial para arrancar en el menu
-    EstadoJuego estadoActual = ESTADO_MENU;
     Tablero miTablero;
+
+    //estructura de datos de configuracion
+    Configuracion config;
     ContextoJuego juego;
 
-    //variables del juego
-    juego.puntos = 0;
+    //cargo las configuraciones
+    cargarConfiguracion(&config);
+    EstadoJuego estadoActual = ESTADO_MENU;
+
     //variable para ver si hay un tablero en memoria
     int tableroCargado = 0;
     // loop del juego
@@ -91,8 +95,8 @@ int main(int argc, char *argv[])
                     {
                         if(seleccion == OPCION_AVENTURA)
                         {
-                        menuPrincipal.opcionSeleccionada = 0;
-                        estadoActual = ESTADO_DIFICULTAD;
+                            ingresoNombreIniciar(&menuPrincipal.nombre);
+                            estadoActual = ESTADO_NOMBRE;
                         }
                         else if(seleccion == OPCION_SALIR)
                         {
@@ -108,28 +112,20 @@ int main(int argc, char *argv[])
                         }
                         else if(seleccion == OPCION_CONFIGURACION)
                         {
-                            printf("Proximamente Configuracion\n");
+                            menuPrincipal.opcionSeleccionada = 0;
+                            estadoActual = ESTADO_CONFIGURACION;
                         }
                     }
                     break;
                 }
-                case ESTADO_DIFICULTAD:
+                case ESTADO_CONFIGURACION:
                 {
-                    int dif = menuDificultadOpciones(&menuPrincipal, &e);
-                    if(dif != -1)
+                    int salir = menuConfiguracionOpciones(&menuPrincipal, &e, &config);
+                    if(salir)
                     {
-                        if(dif==VOLVER)
-                        {
-                            menuPrincipal.opcionSeleccionada=0;
-                            estadoActual = ESTADO_MENU;
-                        }
-                        else
-                        {
-                            //guardo la dificultad seleccionada
-                            juego.dificultad=dif;
-                            ingresoNombreIniciar(&menuPrincipal.nombre);
-                            estadoActual = ESTADO_NOMBRE;
-                        }
+                        guardarConfiguracion(&config);
+                        menuPrincipal.opcionSeleccionada = 0;
+                        estadoActual = ESTADO_MENU;
                     }
                     break;
                 }
@@ -138,15 +134,13 @@ int main(int argc, char *argv[])
                     int confirmado = ingresoNombreOpciones(&menuPrincipal.nombre, &e, &juego);
                     if(confirmado)
                     {
-                        juego.nivelActual = 1;
+                        juego.turnoJugador = 1;
                         juego.puntos = 0;
                         juego.tiempoInicio = SDL_GetTicks();//esta funcion resetea el reloj
-                        //aca deberia modificar la funcion de obtenerCartas para cada nivel
-                        //de dificultad, pero para probar pongo hardcodeado
-                        int cartas = obtenerCartasPorDificultad(juego.dificultad);
-                        tableroIniciar(&miTablero, cartas);
-                        tableroCargarImagenes(&miTablero,renderer);
-                        tableroRellenar(&miTablero); //reinicio las posiciones de las cartas
+
+                        tableroIniciar(&miTablero, &config);
+                        tableroCargarImagenes(&miTablero,renderer, config.idSetImagenes);
+                        tableroRellenar(&miTablero,config.filas,config.columnas); //reinicio las posiciones de las cartas
                         tableroMezclar(&miTablero); //mezclo las cartas en el tablero
                         tableroCargado = 1;
                         estadoActual = ESTADO_JUGANDO;
@@ -181,9 +175,6 @@ int main(int argc, char *argv[])
                 {
                     if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
                     {
-                        //aumento el nivel en el que estoy
-                        juego.nivelActual++;
-
                         //elimino el tablero del nivel anterior
                         if(tableroCargado)
                         {
@@ -191,23 +182,8 @@ int main(int argc, char *argv[])
                             tableroCargado = 0;
                         }
 
-                        //calculo el nivel de dificultad otra vez para el siguiente nivel
-                        int cartas = obtenerCartasPorNivel(juego.nivelActual);
+                        estadoActual=ESTADO_MENU;
 
-                        if(cartas > 0)
-                        {
-                            //cargo el siguiente nivel
-                            tableroIniciar(&miTablero, cartas);
-                            tableroCargarImagenes(&miTablero,renderer);//reinicio las texturas
-                            tableroRellenar(&miTablero);
-                            tableroMezclar(&miTablero);
-                            tableroCargado = 1;
-                            estadoActual = ESTADO_JUGANDO;
-                        }
-                        else
-                        {
-                            estadoActual=ESTADO_MENU;
-                        }
                     }
                     break;
                 }
@@ -223,9 +199,9 @@ int main(int argc, char *argv[])
             menuDibujar(&menuPrincipal, renderer);
 
         }
-        else if(estadoActual == ESTADO_DIFICULTAD)
+        else if(estadoActual == ESTADO_CONFIGURACION)
         {
-            menuDificultadDibujar(&menuPrincipal, renderer);
+            menuConfiguracionDibujar(&menuPrincipal, renderer, &config);
         }
         else if(estadoActual == ESTADO_NOMBRE)
         {
@@ -234,7 +210,9 @@ int main(int argc, char *argv[])
         else if(estadoActual == ESTADO_JUGANDO)
         {
             //dibujo el juego en si mismo
-            tableroDibujar(&miTablero, renderer);
+            int mX, mY;
+            SDL_GetMouseState(&mX,&mY);
+            tableroDibujar(&miTablero, renderer,mX,mY);
             dibujarEstadisticas(renderer,fuenteChica,&juego);
         }
         else if(estadoActual == ESTADO_GANO)
@@ -242,7 +220,7 @@ int main(int argc, char *argv[])
             if(tableroCargado)
             {
                 //dibujo la pantalla de victoria, con el tablero de fondo
-                tableroDibujar(&miTablero, renderer);
+                tableroDibujar(&miTablero, renderer, 0, 0);
             }
 
             //dibujo el fondo transparente de fondo
@@ -262,11 +240,11 @@ int main(int argc, char *argv[])
             SDL_Color colorAmarillo = {255, 255, 0};
 
             //dibujo el texto encima del tablero
-            dibujarTextoCentrados(renderer, fuenteGrande, "NIVEL COMPLETADO", 250, colorVerde);
+            dibujarTextoCentrados(renderer, fuenteGrande, "PARTIDA COMPLETADA", 250, colorVerde);
             char puntajeBuffer[64];
-            sprintf(puntajeBuffer, "Puntos Totales: %d", juego.puntos);
+            sprintf(puntajeBuffer, "Jugador: %s - Puntos Totales: %d", juego.nombreJugador, juego.puntos);
             dibujarTextoCentrados(renderer,fuenteMedia,puntajeBuffer,350,colorAmarillo);
-            dibujarTextoCentrados(renderer,fuenteMedia,"Presiona SPACE para continuar",500,colorBlanco);
+            dibujarTextoCentrados(renderer,fuenteMedia,"Presiona SPACE para volver al Menu",500,colorBlanco);
         }
         SDL_RenderPresent(renderer);
     }

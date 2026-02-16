@@ -55,9 +55,13 @@ void menuDestruir(Menu* m);
 int menuManejarOpciones(Menu* m, SDL_Event* e);
 void menuDibujar(Menu* m, SDL_Renderer* renderer);
 
-//menu de dificultad
-void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer);
-int menuDificultadOpciones(Menu* m, SDL_Event* e);
+//menu de configuracion
+//void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer);
+//int menuDificultadOpciones(Menu* m, SDL_Event* e);
+int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config);
+void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config);
+void cargarConfiguracion(Configuracion* config);
+void guardarConfiguracion(Configuracion* config);
 
 //ingreso de nombres
 void ingresoNombreIniciar(IngresoNombre* ing); //funcion que resetea el ingreso a AAA

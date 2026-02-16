@@ -40,6 +40,9 @@ void menuDestruir(Menu* m)
 
     if(m->nombre.fuenteChica)
         TTF_CloseFont(m->nombre.fuenteChica);
+
+    if(m->nombre.fuenteMedia)
+        TTF_CloseFont(m->nombre.fuenteMedia);
 }
 
 int menuManejarOpciones(Menu* m, SDL_Event* e)
@@ -81,8 +84,7 @@ int menuManejarOpciones(Menu* m, SDL_Event* e)
             {
                 case SDLK_LEFT:
                 case SDLK_RIGHT:
-                    // Cambia entre 0 (SI) y 1 (NO)
-                    // Usamos ! para invertir el valor booleano (0 pasa a 1, 1 pasa a 0)
+                    //uso ! para invertir el valor (0 pasa a 1, 1 pasa a 0)
                     m->opcionSalida = !m->opcionSalida;
                     break;
 
@@ -199,48 +201,170 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer)
     }
 }
 
-int menuDificultadOpciones(Menu* m, SDL_Event* e)
+//int menuDificultadOpciones(Menu* m, SDL_Event* e)
+//{
+//    if(e->type == SDL_KEYDOWN)
+//    {
+//        switch (e->key.keysym.sym)
+//        {
+//        case SDLK_UP:
+//            m->opcionSeleccionada--;
+//            if(m->opcionSeleccionada<0)
+//                m->opcionSeleccionada = CANTIDADIFICULTAD - 1;
+//
+//            break;
+//        case SDLK_DOWN:
+//            m->opcionSeleccionada++;
+//            if(m->opcionSeleccionada >= CANTIDADIFICULTAD)
+//                m->opcionSeleccionada = 0;
+//
+//            break;
+//        case SDLK_RETURN:
+//        case SDLK_KP_ENTER:
+//            return m->opcionSeleccionada; //retorna 0 para facil, 1 normal, 2 dificil, 3 volver
+//            break;
+//        }
+//    }
+//    return -1;
+//}
+//
+//void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer)
+//{
+//    SDL_Color colorTitulo = {255,215,0};
+//    dibujarTextoCentrados(renderer,m->fuenteTitulo,"SELECCIONA DIFICULTAD",100,colorTitulo);
+//
+//    const char* opciones[]={"FACIL","NORMAL","DIFICIL","VOLVER"};
+//
+//    //estos los pongo estaticos pero podrian ser macros, vamos viendo
+//    int inicioY = 300; //altura donde esta la primer opcion para tener referencia
+//    int separacion = 70; //espacion entre opciones
+//
+//    for(int i=0;i<CANTIDADIFICULTAD;i++)
+//    {
+//        SDL_Color color = (i==m->opcionSeleccionada) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
+//        dibujarTextoCentrados(renderer,m->fuenteOpciones,opciones[i],inicioY + (i * separacion),color);
+//    }
+//}
+
+int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config)
 {
+    //va a tener 4 opciones: 0(tamanio del tablero), 1(set figuras), 2(jugadores) y 3(guardar y volver)
+    const int opcionesConfig = 4;
+
     if(e->type == SDL_KEYDOWN)
     {
         switch (e->key.keysym.sym)
         {
-        case SDLK_UP:
-            m->opcionSeleccionada--;
-            if(m->opcionSeleccionada<0)
-                m->opcionSeleccionada = CANTIDADIFICULTAD - 1;
+            case SDLK_UP:
+                m->opcionSeleccionada--;
+                if(m->opcionSeleccionada<0)
+                    m->opcionSeleccionada = opcionesConfig-1;
+                break;
+            case SDLK_DOWN:
+                m->opcionSeleccionada++;
+                if(m->opcionSeleccionada>=opcionesConfig)
+                    m->opcionSeleccionada = 0;
+                break;
+            case SDLK_RETURN:
+            case SDLK_KP_ENTER:
+            case SDLK_RIGHT:
+                if(m->opcionSeleccionada == 0)
+                {
+                   if(config->filas == 3 && config->columnas == 4)
+                    {
+                        config->filas=4;
+                        //config->columnas=4;
+                    }
+                    else if(config->filas == 4 && config->filas == 4)
+                    {
+                        //config->filas=4;
+                        config->columnas=5;
+                    }
+                    else
+                    {
+                        config->filas=3;
+                        config->columnas=4;
+                    }
+                }
+                else if(m->opcionSeleccionada == 1)
+                {
+                    config->idSetImagenes = 1 - config->idSetImagenes;
+                }
+                else if(m->opcionSeleccionada == 2)
+                {
+                    config->cantJugadores = (config->cantJugadores == 1) ? 2 : 1;
+                }
+                else if(m->opcionSeleccionada == 3)
+                {
+                    return 1;
+                }
+                break;
 
-            break;
-        case SDLK_DOWN:
-            m->opcionSeleccionada++;
-            if(m->opcionSeleccionada >= CANTIDADIFICULTAD)
-                m->opcionSeleccionada = 0;
-
-            break;
-        case SDLK_RETURN:
-        case SDLK_KP_ENTER:
-            return m->opcionSeleccionada; //retorna 0 para facil, 1 normal, 2 dificil, 3 volver
-            break;
         }
     }
-    return -1;
+    return 0;
 }
 
-void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer)
+void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config)
 {
-    SDL_Color colorTitulo = {255,215,0};
-    dibujarTextoCentrados(renderer,m->fuenteTitulo,"SELECCIONA DIFICULTAD",100,colorTitulo);
+    SDL_Color color = {255,215,0};
+    SDL_Color auxColor = {255,215,0};
+    dibujarTextoCentrados(renderer,m->fuenteTitulo,"CONFIGURACION",50,color);
 
-    const char* opciones[]={"FACIL","NORMAL","DIFICIL","VOLVER"};
+    int inicioY = 200;
+    int separacion = 80;
+    char buffer[100];
 
-    //estos los pongo estaticos pero podrian ser macros, vamos viendo
-    int inicioY = 300; //altura donde esta la primer opcion para tener referencia
-    int separacion = 70; //espacion entre opciones
+    color = (m->opcionSeleccionada == 0) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
+    sprintf(buffer, "Tablero: %d x %d (%d cartas)",config->filas, config->columnas, config->filas*config->columnas);
+    dibujarTextoCentrados(renderer,m->fuenteOpciones,buffer,inicioY,color);
 
-    for(int i=0;i<CANTIDADIFICULTAD;i++)
+    color = (m->opcionSeleccionada == 1) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
+    sprintf(buffer, "Set Grafico: %s",(config->idSetImagenes == 0) ? "SET A (Clasico)" : "SET B (Alternativo)");
+    dibujarTextoCentrados(renderer,m->fuenteOpciones,buffer,inicioY + separacion,color);
+
+    color = (m->opcionSeleccionada == 2) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
+    sprintf(buffer, "Jugadores: %d",config->cantJugadores);
+    dibujarTextoCentrados(renderer,m->fuenteOpciones,buffer,inicioY + (separacion*2),color);
+
+    color = (m->opcionSeleccionada == 0) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
+    dibujarTextoCentrados(renderer,m->fuenteOpciones,"GUARDAR Y VOLVER",inicioY + (separacion*3.5),color);
+
+    color = auxColor;
+    dibujarTextoCentrados(renderer,m->nombre.fuenteChica, "Presione ENTER para cambiar los valores",650,color);
+}
+
+void cargarConfiguracion(Configuracion* config)
+{
+    FILE* arch = fopen(ARCHIVOCONFIG, "rb");
+    if(!arch)
     {
-        SDL_Color color = (i==m->opcionSeleccionada) ? (SDL_Color){50,255,50} : (SDL_Color){200,200,200};
-        dibujarTextoCentrados(renderer,m->fuenteOpciones,opciones[i],inicioY + (i * separacion),color);
+        printf("No existe un config.dat. Usando los valores por defecto...\n");
+        config->filas = 4;
+        config->columnas = 4;
+        config->idSetImagenes = 0; //seria el SET A por defecto
+        config->cantJugadores = 1;
+    }
+    else
+    {
+        fread(config, sizeof(Configuracion),1,arch);
+        fclose(arch);
+        printf("Configuracion cargada con exito...\n");
+    }
+}
+
+void guardarConfiguracion(Configuracion* config)
+{
+    FILE* arch = fopen(ARCHIVOCONFIG, "wb");
+    if(!arch)
+    {
+        printf("No se pudo guardar el archivo de configuracion...\n");
+    }
+    else
+    {
+        fwrite(config,sizeof(Configuracion),1,arch);
+        fclose(arch);
+        printf("Configuracion guardada en %s...\n", ARCHIVOCONFIG);
     }
 }
 

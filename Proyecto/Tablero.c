@@ -1,7 +1,9 @@
 #include "Tablero.h"
 
-void tableroIniciar(Tablero* t, int cant)
+void tableroIniciar(Tablero* t, Configuracion* config)
 {
+    int cant = config->filas * config->columnas;
+
     t->cartas = (Carta*)malloc(sizeof(Carta)*cant);
     if(!t->cartas)
     {
@@ -17,6 +19,10 @@ void tableroIniciar(Tablero* t, int cant)
     {
         t->imagenes[i] = NULL;
     }
+
+    t->rachaActual = 0;
+    t->movimientos = 0;
+    t->parejasEncontradas = 0;
 }
 
 void tableroDestruir(Tablero* t)
@@ -43,29 +49,8 @@ void tableroDestruir(Tablero* t)
     }
 }
 
-void tableroRellenar(Tablero* t)
+void tableroRellenar(Tablero* t, int filas, int columnas)
 {
-    int columnas;
-    if(t->cantidad >=12 && t->cantidad <= 16) //aca se tiene en cuenta la cantidad de 12 y 16 cartas
-    {
-        columnas = 4; //nivel 1: con 12 cartas, entonces el tablero queda de 3x4 (queda centrado)
-    }
-    else if(t->cantidad <= 20)
-    {
-        columnas = 5; //nivel 2: con 20 cartas, entonces el tablero queda de 4x5 (queda centrado)
-    }
-    else if(t->cantidad <= 30)
-    {
-        columnas = 6; //nivel 3: con 30 cartas, entonces el tablero queda de 5x6 (queda centrado)
-    }
-    else if(t->cantidad <= 42)
-    {
-        columnas = 7; //nivel 4: con 42 cartas, entonces el tablero queda de 6x7 (queda centrado)
-    }
-
-    // Calculamos las filas necesarias con la cantidad y las columnas
-    int filas = t->cantidad / columnas;
-
     //el area donde se pueden poder las ventanas
     // Ancho: Toda la ventana menos un margen chico de costado
     // Alto: Toda la ventana menos el espacio de arriba para los tiempos y eso
@@ -107,7 +92,7 @@ void tableroRellenar(Tablero* t)
     }
 }
 
-void tableroDibujar(Tablero* t, SDL_Renderer* render)
+void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
 {
     if(!t || !t->cartas)
     {
@@ -127,7 +112,7 @@ void tableroDibujar(Tablero* t, SDL_Renderer* render)
             texturaActual = t->dorso;
         }
 
-        CartaDibujar(&t->cartas[i], render, texturaActual);
+        CartaDibujar(&t->cartas[i], render, texturaActual, mouseX, mouseY);
     }
 }
 
@@ -173,12 +158,13 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
 
                 //muestro la carta en pantalla
                 carta2->bocaArriba = 1;
+                t->movimientos++;
 
                 //refresco la pantalla (de manera forzada)
                 //debo forzar el dibujo, ya que cuando probre sin hacer
                 //esto la pantalla se congelo antes de mostrar la carta
                 //creo que es un problema de la funcion de Delay
-                tableroDibujar(t,render);
+                tableroDibujar(t,render,0,0);
                 SDL_RenderPresent(render);
 
                 if(carta1->idImagen == carta2->idImagen)
@@ -189,8 +175,9 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     //asigno los valores
                     carta1->encontrada = 1;
                     carta2->encontrada = 1;
-                    puntos = 100;
-
+                    t->parejasEncontradas++;
+                    puntos = 100 + (t->rachaActual * 20);
+                    t->rachaActual++;
                 }
                 else
                 {
@@ -201,6 +188,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     carta1->bocaArriba = 0;
                     carta2->bocaArriba = 0;
                     puntos = -20;
+                    t->rachaActual = 0;
                 }
 
                 t->cartaSeleccionada = NULL;
@@ -211,17 +199,18 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
     return puntos;
 }
 
-void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
+void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 {
     if(!t)
     {
         return;
     }
 
+    const char* rutaDorso = (idSet == 0) ? RUTADORSOA : RUTADORSOB;
     //primero uso la funcion IMG_LoadTexture para abrir el archivo
     //y para subir el dorso a memoria
     //hago la verificacion de si se pudo cargar con exito
-    t->dorso = IMG_LoadTexture(render, "dorso.png");
+    t->dorso = IMG_LoadTexture(render, rutaDorso);
 
     if(!t->dorso)
     {
@@ -229,6 +218,7 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
     }
     //ahora hago la carga de las imagenes
 
+    const char* carpetaFiguras = (idSet == 0) ? RUTASETA : RUTASETB;
     int i=0;
     int seguirBuscando = 1;
     char nombreArchivo[64];
@@ -241,8 +231,7 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render)
         //aca hay que implementar una funcion que dependiendo de los que elija el usuario, va a tomar un
         //pack de textura u otro (tambien con lo del dorso)
 
-        sprintf(nombreArchivo, "A/%d.png", i);
-        //sprintf(nombreArchivo, "B/%d.png", i);
+        sprintf(nombreArchivo, "%s%d.png",carpetaFiguras, i);
 
         SDL_Texture* temp = IMG_LoadTexture(render, nombreArchivo);
         if(temp)
@@ -294,16 +283,12 @@ int tableroCompleto(Tablero* t)
         return 0;
     }
 
-    for(int i=0; i<t->cantidad; i++)
+    if(t->parejasEncontradas == (t->cantidad / 2))
     {
-        //si hay cartas que no fueron encontradas, el juego sigue
-        if(t->cartas[i].encontrada==0)
-        {
-            return 0;//devuelvo 0 porque el juego no termino
-        }
+        return 1; //hubo victoria
     }
 
-    return 1; //devuelvo 1 porque hubo una victoria
+    return 0; //no hubo victoria
 }
 
 void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego)
@@ -311,9 +296,9 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
     SDL_Color colorBlanco = {255,255,255};
     char buffer[100];
 
-    //dibujo el nivel
-    sprintf(buffer, "Nivel: %d", juego->nivelActual);
-    dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
+//    //dibujo el nivel
+//    sprintf(buffer, "Nivel: %d", juego->nivelActual);
+//    dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
 
     //dibujo los puntos
     sprintf(buffer, "Puntos: %d", juego->puntos);
@@ -321,7 +306,8 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
 
     //dibujo el nombre en pantalla
     sprintf(buffer, "Jugador: %s", juego->nombreJugador);
-    dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR + 30, colorBlanco);
+//    dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR + 30, colorBlanco);
+    dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
 
     //dibujo el tiempo
     Uint32 segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;

@@ -17,7 +17,7 @@ void CartaInicial(Carta* c, int id, int x, int y, int w,int h)
     c->posicion.h = h;
 }
 
-void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura)
+void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mouseX, int mouseY)
 {
     if(!c)
     {
@@ -45,10 +45,24 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura)
         SDL_RenderFillRect(render, &c->posicion);
     }
 
-    //tambien dibujo un borde negro para distinguir a las cartas
-    //el color negro en el render es: 0 - 0 - 0 - 255
-    SDL_SetRenderDrawColor(render,0,0,0,255);
-    SDL_RenderDrawRect(render, &(c->posicion));
+    int esHover = 0;
+    if(!c->bocaArriba && !c->encontrada)
+    {
+        if(cartaAdentro(c,mouseX,mouseY))
+        {
+            esHover = 1;
+        }
+    }
+    if(esHover)
+    {
+        SDL_SetRenderDrawColor(render,0,255,255,255); //color cyan
+        SDL_RenderDrawRect(render, &c->posicion);
+    }
+    else
+    {
+        SDL_SetRenderDrawColor(render,255,255,255,255);
+        SDL_RenderDrawRect(render, &c->posicion);
+    }
 }
 
 int cartaAdentro(Carta* c, int x, int y)
@@ -64,35 +78,35 @@ int cartaAdentro(Carta* c, int x, int y)
     return SDL_PointInRect(&clic, &c->posicion);
 }
 
-int obtenerCartasPorDificultad(int dificultad)
-{
-    switch(dificultad)
-    {
-    case FACIL:
-        return 12; //3x4
-    case NORMAL:
-        return 16; //4x4
-    case DIFICIL:
-        return 20; //4x5
-    default:
-        return 16; //por defecto el nivel normal
-    }
-}
-int obtenerCartasPorNivel(int nivel)
-{
-    switch(nivel)
-    {
-    case 1:
-        return 12; //3x4
-    case 2:
-        return 16; //4x4
-    case 3:
-        return 20; //4x5
-    case 4:
-        return 30; //6x5
-    case 5:
-        return 42; //7x6
-    default:
-        return 0; //el 0 es que el nivel termino.
-    }
-}
+//int obtenerCartasPorDificultad(int dificultad)
+//{
+//    switch(dificultad)
+//    {
+//    case FACIL:
+//        return 12; //3x4
+//    case NORMAL:
+//        return 16; //4x4
+//    case DIFICIL:
+//        return 20; //4x5
+//    default:
+//        return 16; //por defecto el nivel normal
+//    }
+//}
+//int obtenerCartasPorNivel(int nivel)
+//{
+//    switch(nivel)
+//    {
+//    case 1:
+//        return 12; //3x4
+//    case 2:
+//        return 16; //4x4
+//    case 3:
+//        return 20; //4x5
+//    case 4:
+//        return 30; //6x5
+//    case 5:
+//        return 42; //7x6
+//    default:
+//        return 0; //el 0 es que el nivel termino.
+//    }
+//}

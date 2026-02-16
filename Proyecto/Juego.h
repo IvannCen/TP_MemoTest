@@ -1,14 +1,22 @@
 #ifndef JUEGO
 #define JUEGO
 
+#include <SDL2/SDL.h>
 #include "sonidos.h"
 
 typedef struct
 {
-    int nivelActual;
+    int filas;
+    int columnas;
+    int idSetImagenes;
+    int cantJugadores;
+}Configuracion;
+
+typedef struct
+{
     int puntos;
     Uint32 tiempoInicio; //tiempo para el cronometro
-    int dificultad; //0=Facil, 1=Normal, 2=Dificil
+    int turnoJugador; //para el modo competitivo
     char nombreJugador[4]; //tres caracteres como juegos retro: AAA
 
     //Pongo estos campos temporalmente, hasta que modularizemos bien la logica
@@ -22,10 +30,11 @@ typedef struct
 typedef enum
 {
     ESTADO_MENU,
-    ESTADO_DIFICULTAD,
+    ESTADO_CONFIGURACION,
     ESTADO_NOMBRE,
     ESTADO_JUGANDO,
-    ESTADO_GANO
+    ESTADO_GANO,
+    ESTADO_SALIR
 }EstadoJuego;
 
 #endif // JUEGO

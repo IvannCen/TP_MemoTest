@@ -16,15 +16,15 @@ typedef struct
 void CartaInicial(Carta* c, int id, int x, int y, int w,int h);
 
 //Funcion para dibujar la carta (renderizado de la carta)
-void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura);
+void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mouseX, int mouseY);
 
 //funcion que devuelve un 1 si el clic esta adentro de la coordenada x e y, 0 si no
 int cartaAdentro(Carta* c, int x, int y);
 
 //funcion que devuelve la cantidad de cartas segun el nivel de dificultad o nivel
-int obtenerCartasPorDificultad(int dificultad);
+//int obtenerCartasPorDificultad(int dificultad);
 
 //funcion para obtener la cantidad de cartas en el modo aventura por niveles
-int obtenerCartasPorNivel(int nivel);
+//int obtenerCartasPorNivel(int nivel);
 
 #endif // CARTA

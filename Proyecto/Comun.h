@@ -30,11 +30,18 @@
 #define FUENTEMEDIA 65
 #define FUENTECHICA 30
 
+//rutas para las imagenes
+#define RUTASETA "A/"
+#define RUTASETB "B/"
+#define RUTADORSOA "A/dorsoA.png"
+#define RUTADORSOB "B/dorsoB.png"
+
 //tiempos de delay
 #define DELAY 1000 //1000 milisegundos es 1 segundo
 #define DELAYCHICO 500 //medio segundo
 
 //limites
 #define LETRASNOMBRE 4
+#define ARCHIVOCONFIG "config.dat"
 
 #endif // COMUN
