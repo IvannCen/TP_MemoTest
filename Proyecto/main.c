@@ -81,21 +81,25 @@ int main(int argc, char *argv[])
                     int seleccion = menuManejarOpciones(&menuPrincipal, &e);
                     if(seleccion != -1)
                     {
-                        if(seleccion == OPCION_AVENTURA)
+                        if(seleccion == OPCION_JUGAR)
                         {
-                            jugadorIngresando = 0;
-                            ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR");
-                            estadoActual = ESTADO_NOMBRE;
+                            if(config.cantJugadores == 1)
+                            {
+                                jugadorIngresando = 0;
+                                ingresoNombreIniciar(&menuPrincipal.nombre,"NOMBRE JUGADOR");
+                                estadoActual = ESTADO_NOMBRE;
+                            }
+                            else
+                            {
+                                jugadorIngresando = 0;
+                                ingresoNombreIniciar(&menuPrincipal.nombre,"NOMBRE JUGADOR 1");
+                                estadoActual = ESTADO_NOMBRE;
+                            }
                         }
-                        else if(seleccion == OPCION_COMPETITIVO)
+                        else if(seleccion == OPCION_SALIR)
+                            corriendo = 0;
+                        else if(seleccion == OPCION_CONFIGURACION)
                         {
-                            config.cantJugadores = 2;
-                            jugadorIngresando = 0;
-                            ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR 1");
-                            estadoActual = ESTADO_NOMBRE;
-                        }
-                        else if(seleccion == OPCION_SALIR) corriendo = 0;
-                        else if(seleccion == OPCION_CONFIGURACION) {
                             menuPrincipal.opcionSeleccionada = 0;
                             estadoActual = ESTADO_CONFIGURACION;
                         }

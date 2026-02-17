@@ -224,6 +224,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     SDL_Delay(DELAY);
                     c1->bocaArriba = 0;
                     c2->bocaArriba = 0;
+                    juego->puntos[juego->turnoJugador] -=
 
                     if(juego->cantJugadores == 2)
                     {

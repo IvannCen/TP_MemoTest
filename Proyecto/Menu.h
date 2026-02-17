@@ -11,8 +11,7 @@
 //defino las opciones del menu enumeradas
 typedef enum
 {
-    OPCION_AVENTURA,
-    OPCION_COMPETITIVO,
+    OPCION_JUGAR,
     OPCION_ESTADISTICAS,
     OPCION_CONFIGURACION,
     OPCION_SALIR,
@@ -51,7 +50,6 @@ int menuManejarOpciones(Menu* m, SDL_Event* e);
 void menuDibujar(Menu* m, SDL_Renderer* renderer);
 
 //menu de configuracion
-int obtenerYConfig(int opcion);
 int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config);
 void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config);
 void cargarConfiguracion(Configuracion* config);

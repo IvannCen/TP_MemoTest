@@ -187,15 +187,6 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer)
     }
 }
 
-int obtenerYConfig(int opcion)
-{
-    int inicioY = 200;
-    int sep = 80;
-    if(opcion == 2)
-        return inicioY + (int)(sep*3.5);
-    return inicioY + (opcion * sep);
-}
-
 int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config)
 {
     const int maxOpciones = 4; // 0:Tablero, 1:Set, 2:Jugadores, 3:Guardar
@@ -420,10 +411,8 @@ const char* menuObtenerTexto(int opcion)
 {
     switch(opcion)
     {
-    case OPCION_AVENTURA:
-        return "Aventura";
-    case OPCION_COMPETITIVO:
-        return "Competitivo";
+    case OPCION_JUGAR:
+        return "Jugar";
     case OPCION_ESTADISTICAS:
         return "Ranking";
     case OPCION_CONFIGURACION:
