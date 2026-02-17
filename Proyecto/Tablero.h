@@ -36,6 +36,7 @@ typedef struct
 
     SDL_Texture* dorso; // el dorso de las cartas
     SDL_Texture* imagenes[CANTIDADIMAGENES]; //vector dinamico con las imagenes
+    SDL_Texture* texturaFondoJuego;
     int cantidadImagenesCargadas; //cantidad de imagenes cargadas
 
     Carta* cartaSeleccionada; //dir de la carta seleccionada
@@ -69,7 +70,7 @@ void tableroRellenar(Tablero* t);
 int tableroCompleto(Tablero* t);
 
 //funcion que maneja los clics en el tablero
-int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego);
+int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font);
 
 //funcion que va a cargar las imagenes
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet);
@@ -80,7 +81,7 @@ void tableroMezclar(Tablero* t);
 void tableroManejarHover(Tablero* t, int x, int y);
 
 //funcion que maneja el teclado en el juego
-void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego);
+void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font);
 
 ////////////////////////////////////////////FUNCIONES DE RENDERIZADO////////////////////////////////////////////
 
@@ -101,7 +102,7 @@ void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* tex
 
 ////////////////////////////////////////////FUNCIONES DE RANKING////////////////////////////////////////////
 void rankingGuardar(const char* nombre, int puntos, int tiempo);
-void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista);
+void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista, SDL_Texture* fondo);
 
 
 #endif // TABLERO

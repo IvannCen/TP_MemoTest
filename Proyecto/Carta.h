@@ -17,7 +17,7 @@ typedef struct
 void CartaInicial(Carta* c, int id, int x, int y, int w,int h);
 
 //Funcion para dibujar la carta (renderizado de la carta)
-void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mouseX, int mouseY);
+void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int esCursor);
 
 //funcion que devuelve un 1 si el clic esta adentro de la coordenada x e y, 0 si no
 int cartaAdentro(Carta* c, int x, int y);

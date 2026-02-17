@@ -235,7 +235,8 @@ int main(int argc, char *argv[])
                             else if(SDL_PointInRect(&p, &rNo))
                                 juego.confirmandoSalida = 0;
                         }
-                        else if(e.type == SDL_MOUSEMOTION) {
+                        else if(e.type == SDL_MOUSEMOTION)
+                        {
                             int mx = e.motion.x, my = e.motion.y;
                             SDL_Point p = {mx, my};
                             int cY = (ALTOVENTANA-200)/2;
@@ -257,7 +258,7 @@ int main(int argc, char *argv[])
                             }
                             else
                             {
-                                tableroManejarTeclado(&miTablero, &e, renderer, &juego);
+                                tableroManejarTeclado(&miTablero, &e, renderer, &juego, fuenteChica);
                                 if(tableroCompleto(&miTablero))
                                 {
                                     SDL_Delay(DELAYCHICO);
@@ -267,7 +268,7 @@ int main(int argc, char *argv[])
                         }
                         else if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                         {
-                            tableroClic(&miTablero,e.button.x,e.button.y, renderer, &juego);
+                            tableroClic(&miTablero,e.button.x,e.button.y, renderer, &juego, fuenteChica);
                             if(tableroCompleto(&miTablero))
                             {
                                 SDL_Delay(DELAYCHICO);
@@ -312,9 +313,9 @@ int main(int argc, char *argv[])
         else if(estadoActual == ESTADO_CONFIGURACION)
             menuConfiguracionDibujar(&menuPrincipal, renderer, &config);
         else if(estadoActual == ESTADO_NOMBRE)
-            ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
+            ingresoNombreDibujar(&menuPrincipal.nombre, renderer, menuPrincipal.fondoNombres);
         else if(estadoActual == ESTADO_RANKING)
-            rankingDibujar(renderer, fuenteMedia, fuenteChica);
+            rankingDibujar(renderer, fuenteMedia, fuenteChica, menuPrincipal.fondoRanking);
         else if(estadoActual == ESTADO_JUGANDO)
         {
             int mX, mY;
