@@ -38,7 +38,8 @@ typedef enum
     ESTADO_CONFIGURACION,
     ESTADO_NOMBRE,
     ESTADO_JUGANDO,
-    ESTADO_GANO
+    ESTADO_GANO,
+    ESTADO_RANKING
 }EstadoJuego;
 
 #endif // JUEGO

@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
                             menuPrincipal.opcionSeleccionada = 0;
                             estadoActual = ESTADO_CONFIGURACION;
                         }
+                        else if(seleccion == OPCION_ESTADISTICAS)
+                            estadoActual = ESTADO_RANKING;
                     }
                     break;
                 }
@@ -117,6 +119,11 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
+                case ESTADO_RANKING:
+                    {
+                        if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+                            estadoActual = ESTADO_MENU;
+                    }
                 case ESTADO_NOMBRE:
                 {
                     int res = ingresoNombreOpciones(&menuPrincipal.nombre, &e, &juego, jugadorIngresando);
@@ -254,7 +261,16 @@ int main(int argc, char *argv[])
                 {
                     if(e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_SPACE)
                     {
-                        if(tableroCargado) { tableroDestruir(&miTablero); tableroCargado = 0; }
+                        if(juego.cantJugadores == 1)
+                        {
+                            int tiempo = (SDL_GetTicks() - juego.tiempoInicio) / 1000;
+                            rankingGuardar(juego.nombreJugador[0], juego.puntos[0], tiempo);
+                        }
+                        if(tableroCargado)
+                        {
+                            tableroDestruir(&miTablero);
+                            tableroCargado = 0;
+                        }
                         estadoActual=ESTADO_MENU;
                         SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                     }
@@ -272,6 +288,8 @@ int main(int argc, char *argv[])
             menuConfiguracionDibujar(&menuPrincipal, renderer, &config);
         else if(estadoActual == ESTADO_NOMBRE)
             ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
+        else if(estadoActual == ESTADO_RANKING)
+            rankingDibujar(renderer, fuenteMedia, fuenteChica);
         else if(estadoActual == ESTADO_JUGANDO)
         {
             int mX, mY; SDL_GetMouseState(&mX,&mY);

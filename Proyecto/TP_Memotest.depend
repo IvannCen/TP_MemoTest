@@ -468,22 +468,22 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771331658 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771339872 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
-1771297673 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
+1771337759 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
 	"sonidos.h"
 
-1771333861 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771339854 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
 	"Carta.h"
 
-1771323870 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+1771339854 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
 	<SDL2/SDL.h>
 	"sonidos.h"
 	"Comun.h"
@@ -498,7 +498,7 @@
 	"Comun.h"
 	"Juego.h"
 
-1771325892 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771333895 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 

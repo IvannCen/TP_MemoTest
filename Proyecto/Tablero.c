@@ -20,8 +20,6 @@ void tableroIniciar(Tablero* t, Configuracion* config)
     for(int i=0; i<CANTIDADIMAGENES; i++)
     {
         t->imagenes[i] = NULL;
-        //Cada figura tiene un valor entre 50 y 200 puntos, en multiplos de 10
-        t->puntosPorImagen[i] = (rand()%16 + 5) * 10;
     }
 
     t->rachaActual = 0;
@@ -214,7 +212,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     c1->encontrada = 1; c2->encontrada = 1;
                     t->parejasEncontradas++;
 
-                    int puntosBase = t->puntosPorImagen[c1->idImagen] + (t->rachaActual * 20);
+                    int puntosBase = PUNTOS + (t->rachaActual * 20);
                     juego->puntos[juego->turnoJugador] += puntosBase;
                     t->rachaActual++;
                 }
@@ -224,8 +222,12 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     SDL_Delay(DELAY);
                     c1->bocaArriba = 0;
                     c2->bocaArriba = 0;
-                    juego->puntos[juego->turnoJugador] -=
+                    juego->puntos[juego->turnoJugador] -= PUNTOSERROR;
 
+                    if(juego->puntos[juego->turnoJugador] < 0)
+                    {
+                        juego->puntos[juego->turnoJugador] = 0;
+                    }
                     if(juego->cantJugadores == 2)
                     {
                         juego->turnoJugador = (juego->turnoJugador == 0) ? 1 : 0;
@@ -421,4 +423,105 @@ void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* tex
         }
         SDL_FreeSurface(surface);
     }
+}
+
+void rankingGuardar(const char* nombre, int puntos, int tiempo)
+{
+    RegistroRanking registros[MAXREGISTROS+1]; //el +1 es para meter el nuevo temporalmente
+    int cantidad = 0;
+
+    FILE* arch = fopen(ARCHRANKING, "rb");
+    if(arch)
+    {
+        cantidad = fread(registros, sizeof(RegistroRanking),MAXREGISTROS,arch);
+        fclose(arch);
+    }
+
+    strcpy(registros[cantidad].nombre, nombre);
+    registros[cantidad].puntos = puntos;
+    registros[cantidad].tiempo = tiempo;
+    cantidad++;
+
+    //ordeno de mayor a menor
+    for(int i=0;i<cantidad-1;i++)
+    {
+        for(int j=0;j<cantidad-i-1;j++)
+        {
+            int cambio = 0;
+            if(registros[j].puntos < registros[j+1].puntos)
+                cambio = 1;
+            else if(registros[j].puntos == registros[j+1].puntos)
+            {
+                if(registros[j].tiempo > registros[j+1].tiempo)
+                    cambio = 1;
+            }
+
+            if(cambio)
+            {
+                RegistroRanking aux = registros[j];
+                registros[j] = registros[j+1];
+                registros[j+1] = aux;
+            }
+        }
+    }
+
+    if(cantidad > MAXREGISTROS)
+        cantidad = MAXREGISTROS;
+
+    arch = fopen(ARCHRANKING, "wb");
+    if(arch)
+    {
+        fwrite(registros, sizeof(RegistroRanking), cantidad, arch);
+        fclose(arch);
+    }
+}
+
+void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista)
+{
+    SDL_Color colorOro = {255,215,0};
+    SDL_Color colorBlanco = {255,255,255};
+    SDL_Color colorGris = {150,150,150};
+
+    int colPos = 350;
+    int colNom = 630;
+    int colPts = 940;
+    int yCabecera = 150;
+
+    dibujarTextoCentrados(render, fuenteTitulo, "TOP 10 MEJORES PUNTAJES", 50,colorOro);
+
+    dibujarTexto(render, fuenteLista, "POS", colPos, yCabecera, colorBlanco);
+    dibujarTexto(render, fuenteLista, "NOMBRE", colNom, yCabecera, colorBlanco);
+    dibujarTexto(render, fuenteLista, "PUNTOS", colPts, yCabecera, colorBlanco);
+
+    SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+    SDL_RenderDrawLine(render, colPos - 20, yCabecera + 40, colPts + 100, yCabecera + 40);
+
+    FILE* arch = fopen(ARCHRANKING, "rb");
+    if(!arch)
+    {
+        dibujarTextoCentrados(render, fuenteLista, "(No hay ningun registro)", 250, colorGris);
+    }
+    else
+    {
+        RegistroRanking reg;
+        int i=0;
+        int y = 220;
+        char buffer[128];
+
+        while(fread(&reg,sizeof(RegistroRanking),1,arch))
+        {
+            //formateo el string completo de la fila
+            // #01   AAA         0150       12s
+            sprintf(buffer,"#%d", i+1);
+            SDL_Color podio = (i<3) ? colorOro : colorBlanco;
+            dibujarTexto(render, fuenteLista, buffer,colPos, y, podio);
+            dibujarTexto(render, fuenteLista, reg.nombre, colNom, y, podio);
+            sprintf(buffer,"#%d", reg.puntos);
+            dibujarTexto(render, fuenteLista, buffer, colPts, y, colorBlanco);
+            y+=45;
+            i++;
+        }
+        fclose(arch);
+    }
+    dibujarTextoCentrados(render, fuenteLista, "Presiona ESCAPE para volver", ALTOVENTANA - 80, colorGris);
 }

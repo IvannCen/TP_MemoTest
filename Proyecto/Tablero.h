@@ -6,6 +6,12 @@
 #include "Juego.h"
 #include "sonidos.h"
 
+#define PUNTOS 100
+#define PUNTOSERROR 20
+
+#define ARCHRANKING "ranking.dat"
+#define MAXREGISTROS 10
+
 typedef struct
 {
     Carta* cartas; //puntero a la primera pos del vector de cartas
@@ -22,11 +28,16 @@ typedef struct
     int movimientos; //cont de intentos para las estadisticas
     int parejasEncontradas; //cont para saber si gano
 
-    int puntosPorImagen[CANTIDADIMAGENES]; //le asignamos valores aleatorios por cada figura
-
     int cursorX;
     int cursorY;
 }Tablero;
+
+typedef struct
+{
+    char nombre[LETRASNOMBRE];
+    int puntos;
+    int tiempo;
+}RegistroRanking;
 
 ////////////////////////////////////////////FUNCIONES QUE MANEJAN LA MEMORIA////////////////////////////////////////////
 
@@ -72,5 +83,10 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
 
 //funcion para dibujar los textos pero centrados en la pantalla
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color);
+
+////////////////////////////////////////////FUNCIONES DE RANKING////////////////////////////////////////////
+void rankingGuardar(const char* nombre, int puntos, int tiempo);
+void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista);
+
 
 #endif // TABLERO
