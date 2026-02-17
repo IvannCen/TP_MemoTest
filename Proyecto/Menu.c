@@ -1,5 +1,9 @@
 #include "Menu.h"
 #include "Tablero.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 void menuIniciar(Menu* m, SDL_Renderer* renderer)
 {

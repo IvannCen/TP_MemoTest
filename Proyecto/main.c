@@ -16,11 +16,15 @@
   * Entrega: Si/No
   *
   */
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "Tablero.h"
 #include "Juego.h"
 #include "Menu.h"
 #include "Carta.h"
+
 
 int main(int argc, char *argv[])
 {

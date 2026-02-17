@@ -1,7 +1,5 @@
 #ifndef CARTA
 #define CARTA
-
-#include "Comun.h"
 #include "Menu.h" //para conocer los niveles de dificultad
 
 typedef struct

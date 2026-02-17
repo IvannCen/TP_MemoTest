@@ -1,4 +1,8 @@
 #include "Tablero.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 void tableroIniciar(Tablero* t, Configuracion* config)
 {

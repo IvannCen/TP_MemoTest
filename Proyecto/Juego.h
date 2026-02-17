@@ -3,7 +3,16 @@
 
 #include <SDL2/SDL.h>
 #include "sonidos.h"
-#include "Comun.h"
+
+// dimensiones de la ventana
+#define ANCHOVENTANA 1366
+#define ALTOVENTANA 768
+
+// limites
+#define CANTJUGADORES 2
+#define LETRASNOMBRE 4
+#define ARCHIVOCONFIG "config.dat"
+
 
 typedef struct
 {

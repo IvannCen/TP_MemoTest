@@ -1,8 +1,25 @@
 #ifndef MENU
 #define MENU
 
-#include "Comun.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+
 #include "Juego.h"
+
+// recursos (fuentes)
+#define FUENTE "fnt/jersey.ttf"
+#define FUENTEGRANDE 100
+#define FUENTEMEDIA 65
+#define FUENTECHICA 30
+
+// rutas para los fondos
+#define RUTAFONDOMENU     "img/Fondos/fondoMenu.jpg"
+#define RUTAFONDOCONFIG   "img/Fondos/fondoConfig.jpg"
+#define RUTAFONDORANKING  "img/Fondos/fondoRankings.jpg"
+#define RUTAFONDONOMBRES  "img/Fondos/fondoNombres.jpg"
+#define RUTAFONDOJUEGOC   "img/Fondos/fondoJuegoC.jpg"
+#define RUTAFONDOJUEGOL   "img/Fondos/fondoJuegoL.jpg"
 
 #define SETA 0
 #define FILAS 4

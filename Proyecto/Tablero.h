@@ -1,10 +1,35 @@
 #ifndef TABLERO
 #define TABLERO
 
-#include "Comun.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+
+
+#include "Menu.h"
 #include "Carta.h"
-#include "Juego.h"
-#include "sonidos.h"
+//#include "Juego.h"
+//#include "sonidos.h"
+
+// dimensiones de las cartas
+#define ANCHOCARTA 130
+#define ALTOCARTA 170
+#define SEPARACIONCARTA 15
+
+// configuracion de interfaz (usada en Tablero.c)
+#define ALTOINTERFAZ 80
+#define INTERFAZMARGENLATERAL 30
+#define INTERFAZMARGENSUPERIOR 20
+
+// imagenes del tablero
+#define CANTIDADIMAGENES 10
+#define RUTASETA   "img/A/"
+#define RUTASETB   "img/B/"
+#define RUTADORSOA "img/A/dorsoA.png"
+#define RUTADORSOB "img/B/dorsoB.png"
+
+// delays
+#define DELAY 1000
+#define DELAYCHICO 500
 
 #define PUNTOS 100
 #define PUNTOSERROR 20
