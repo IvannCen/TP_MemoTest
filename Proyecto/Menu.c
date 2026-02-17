@@ -1,21 +1,6 @@
 #include "Menu.h"
 #include "Tablero.h"
 
-// Macros de configuracion visual
-#define INICIOY             300 //altura donde esta la primer opcion para tener referencia
-#define SEPARACION          70  //espacio entre opciones
-
-// Macros para el Popup de Salida
-#define POPUP_W             400
-#define POPUP_H             200
-#define POPUP_X             ((ANCHOVENTANA - POPUP_W) / 2)
-#define POPUP_Y             ((ALTOVENTANA - POPUP_H) / 2)
-
-#define CONF_Y_TABLERO      200
-#define CONF_Y_SET          280
-#define CONF_Y_JUGADORES    360
-#define CONF_Y_GUARDAR      480
-
 void menuIniciar(Menu* m, SDL_Renderer* renderer)
 {
     m->opcionSeleccionada = 0; //arranca desde la primer opcion del menu
@@ -73,18 +58,33 @@ int menuManejarOpciones(Menu* m, SDL_Event* e)
             else if(e->key.keysym.sym == SDLK_ESCAPE)
                 m->confirmaSalida = 0;
         }
-        else if (e->type == SDL_MOUSEBUTTONDOWN && e->button.button == SDL_BUTTON_LEFT)
+        else if (e->type == SDL_MOUSEMOTION || (e->type == SDL_MOUSEBUTTONDOWN && e->button.button == SDL_BUTTON_LEFT))
         {
-            int mx = e->button.x, my = e->button.y;
+            int mx = e->button.x;
+            int my = e->button.y;
             SDL_Point p = {mx, my};
+
             SDL_Rect rectSi = { (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, 50, 40 };
             SDL_Rect rectNo = { (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, 50, 40 };
 
             if(SDL_PointInRect(&p, &rectSi))
-                return OPCION_SALIR;
+            {
+                //Actualizo estado visual
+                m->opcionSalida = 0;
+                //Si ademas es click, ejecuto la accion
+                if(e->type == SDL_MOUSEBUTTONDOWN)
+                    return OPCION_SALIR;
+            }
 
             if(SDL_PointInRect(&p, &rectNo))
-                m->confirmaSalida = 0;
+            {
+                //Actualizo estado visual
+                m->opcionSalida = 1;
+                //Si ademas es click, ejecuto la accion
+                if(e->type == SDL_MOUSEBUTTONDOWN)
+                    m->confirmaSalida = 0;
+            }
+
         }
         return -1;
     }
@@ -167,23 +167,7 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer)
 
     if (m->confirmaSalida)
     {
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
-        SDL_Rect overlay = {0, 0, ANCHOVENTANA, ALTOVENTANA};
-        SDL_RenderFillRect(renderer, &overlay);
-        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-
-        SDL_Rect caja = {POPUP_X, POPUP_Y, POPUP_W, POPUP_H};
-        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
-        SDL_RenderFillRect(renderer, &caja);
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderDrawRect(renderer, &caja);
-
-        dibujarTextoCentrados(renderer, m->fuenteOpciones, "Desea salir?", (ALTOVENTANA/2)-40, (SDL_Color){255,255,255});
-        SDL_Color colorSi = (m->opcionSalida == 0) ? (SDL_Color){0, 255, 0} : (SDL_Color){150, 150, 150};
-        SDL_Color colorNo = (m->opcionSalida == 1) ? (SDL_Color){255, 0, 0} : (SDL_Color){150, 150, 150};
-        dibujarTexto(renderer, m->fuenteOpciones, "SI", (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, colorSi);
-        dibujarTexto(renderer, m->fuenteOpciones, "NO", (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, colorNo);
+        dibujarPopupSalida(renderer, m->fuenteOpciones, "Desea salir?", m->opcionSalida);
     }
 }
 

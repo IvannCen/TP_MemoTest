@@ -99,9 +99,7 @@ void tableroRellenar(Tablero* t)
 void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
 {
     if(!t || !t->cartas)
-    {
         return;
-    }
 
     for(int i=0;i<t->cantidad;i++)
     {
@@ -242,7 +240,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
     return 0;
 }
 
-void dibujarPopupSalidaJuego(SDL_Renderer* render, TTF_Font* font, int opcionSeleccionada)
+void dibujarPopupSalida(SDL_Renderer* render, TTF_Font* font, const char* texto, int opcionSeleccionada)
 {
     SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(render, 0, 0, 0, 200);
@@ -250,33 +248,37 @@ void dibujarPopupSalidaJuego(SDL_Renderer* render, TTF_Font* font, int opcionSel
     SDL_RenderFillRect(render, &overlay);
     SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_NONE);
 
-    SDL_Rect caja = {(ANCHOVENTANA-400)/2, (ALTOVENTANA-200)/2, 400, 200};
+    SDL_Rect caja = {POPUP_X, POPUP_Y, POPUP_W, POPUP_H};
     SDL_SetRenderDrawColor(render, 50, 50, 50, 255);
     SDL_RenderFillRect(render, &caja);
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderDrawRect(render, &caja);
 
-    dibujarTextoCentrados(render, font, "Abandonar partida?", caja.y + 40, (SDL_Color){255,255,255});
-
-    SDL_Color colorSi = (opcionSeleccionada == 0) ? (SDL_Color){0,255,0} : (SDL_Color){150,150,150};
-    SDL_Color colorNo = (opcionSeleccionada == 1) ? (SDL_Color){255,0,0} : (SDL_Color){150,150,150};
-
-    dibujarTexto(render, font, "SI", (ANCHOVENTANA/2) - 80, caja.y + 120, colorSi);
-    dibujarTexto(render, font, "NO", (ANCHOVENTANA/2) + 40, caja.y + 120, colorNo);
+    dibujarTextoCentrados(render, font, texto, (ALTOVENTANA/2)-40, (SDL_Color){255,255,255});
+    SDL_Color colorSi = (opcionSeleccionada == 0) ? (SDL_Color){0, 255, 0} : (SDL_Color){150, 150, 150};
+    SDL_Color colorNo = (opcionSeleccionada == 1) ? (SDL_Color){255, 0, 0} : (SDL_Color){150, 150, 150};
+    dibujarTexto(render, font, "SI", (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, colorSi);
+    dibujarTexto(render, font, "NO", (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, colorNo);
 }
 
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 {
-    if(!t) return;
+    if(!t)
+        return;
+
     const char* rutaDorso = (idSet == 0) ? RUTADORSOA : RUTADORSOB;
     t->dorso = IMG_LoadTexture(render, rutaDorso);
-    if(!t->dorso) printf("Error dorso: %s\n", IMG_GetError());
+
+    if(!t->dorso)
+        printf("Error dorso: %s\n", IMG_GetError());
 
     const char* carpeta = (idSet == 0) ? RUTASETA : RUTASETB;
     char buffer[256];
+
     // Para el tablero 4x5 (20 cartas) necesitamos 10 imagenes.
     // Iteramos hasta CANTIDADIMAGENES (que es 10 en comun.h)
-    for(int i=0; i<CANTIDADIMAGENES; i++) {
+    for(int i=0; i<CANTIDADIMAGENES; i++)
+    {
         sprintf(buffer, "%s%d.png", carpeta, i);
         t->imagenes[i] = IMG_LoadTexture(render, buffer);
     }
@@ -286,9 +288,7 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 void tableroMezclar(Tablero* t)
 {
     if(!t)
-    {
         return;
-    }
 
     //ciclo para recorrer la cantidad de cartas en el juego
     //uso la cantidad de cartas que hay, en este caso sobre
@@ -337,14 +337,10 @@ void tableroManejarHover(Tablero* t, int x, int y)
 int tableroCompleto(Tablero* t)
 {
     if(!t)
-    {
         return 0;
-    }
 
     if(t->parejasEncontradas == (t->cantidad / 2))
-    {
         return 1; //hubo victoria
-    }
 
     return 0; //no hubo victoria
 }
@@ -375,7 +371,7 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
         SDL_Color c2 = (juego->turnoJugador == 1) ? colorVerde : colorGris;
         sprintf(buffer, "%s: %d", juego->nombreJugador[1], juego->puntos[1]);
         //calculo la posicion aprox para que no se pise con el tiempo
-        dibujarTexto(render, font, buffer, (ANCHOVENTANA/2) + 190, INTERFAZMARGENSUPERIOR, c2);
+        dibujarTexto(render, font, buffer, (ANCHOVENTANA/2) + 195, INTERFAZMARGENSUPERIOR, c2);
 
         //muestro el turno actual
         sprintf(buffer, "TURNO: %s", juego->nombreJugador[juego->turnoJugador]);
@@ -405,8 +401,6 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
     }
 }
 
-//Revisar si esta funcion es realmente necesaria, podríamos mandar el valor x como parametro
-//reutilizando la función dibujarTexto()
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color)
 {
     SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);

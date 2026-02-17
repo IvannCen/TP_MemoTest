@@ -502,14 +502,14 @@
 	"Menu.h"
 	"Tablero.h"
 
-1771293117 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
+1771336895 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
 1771293117 c:\users\matias\documents\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
 	"Menu.h"
 
-1771291705 c:\users\matias\documents\github\tp_memotest\proyecto\comun.h
+1771331805 c:\users\matias\documents\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -977,31 +977,32 @@
 
 1770985626 c:\users\matias\documents\github\tp_memotest\proyecto\config.h
 
-1771297222 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
+1771338407 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
 	"Carta.h"
 
-1771296920 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
+1771337540 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
 	"sonidos.h"
 
-1771291705 c:\users\matias\documents\github\tp_memotest\proyecto\juego.h
+1771331805 c:\users\matias\documents\github\tp_memotest\proyecto\juego.h
 	<SDL2/SDL.h>
 	"sonidos.h"
+	"Comun.h"
 
-1771293117 c:\users\matias\documents\github\tp_memotest\proyecto\menu.h
+1771334821 c:\users\matias\documents\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
 	"Juego.h"
 
-1771293117 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
+1771339474 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
-1771296920 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
+1771338094 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
 1771005643 source:c:\users\matias\documents\github\tp_memotest\proyecto\sonidos.c
