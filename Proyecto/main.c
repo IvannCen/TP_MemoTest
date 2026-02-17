@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     juego.musMenu = sonidos_cargar_musica(MENU_SND);
     juego.musJuego = sonidos_cargar_musica(JUEGO_SND);
 
-    Mix_Volume(-1, 50);
+    Mix_Volume(-1, VOL_MAX);
     Mix_VolumeMusic(VOL_MAX);
 
     sonidos_reproducir_musica(juego.musMenu, -1);
