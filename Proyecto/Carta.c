@@ -18,53 +18,86 @@ void CartaInicial(Carta* c, int id, int x, int y, int w,int h)
     c->posicion.h = h;
 }
 
-void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mouseX, int mouseY)
+void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int esCursor)
 {
     if(!c)
         return;
 
-    // FONDO BLANCO BASE (Para evitar cartas invisibles si falla textura)
-    SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-    SDL_RenderFillRect(render, &c->posicion);
+    SDL_Rect rect = c->posicion;
+
+    int estaLevantada = (c->hover || esCursor) && !c->encontrada && !c->bocaArriba;
+
+    if(estaLevantada)
+    {
+        rect.y -= 10;
+
+        SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(render, 0, 0, 0, 80); // Sombra suave
+        SDL_Rect rectSombra = c->posicion;
+        rectSombra.x += 4;
+        rectSombra.w -= 8;
+        rectSombra.h = 8;
+        rectSombra.y = c->posicion.y + c->posicion.h - 4;
+        SDL_RenderFillRect(render, &rectSombra);
+        SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_NONE);
+    }
 
     if(textura)
-        SDL_RenderCopy(render, textura, NULL, &c->posicion);
+    {
+        SDL_SetTextureBlendMode(textura, SDL_BLENDMODE_BLEND);
+
+        if(c->encontrada)
+        {
+            SDL_SetTextureAlphaMod(textura,150);
+        }
+        else
+        {
+            SDL_SetTextureAlphaMod(textura,255);
+        }
+
+        SDL_RenderCopy(render, textura, NULL, &rect);
+    }
     else
     {
-        // Fallback colores solidos
         if(c->bocaArriba)
             SDL_SetRenderDrawColor(render,0,255,0,255);
         else
             SDL_SetRenderDrawColor(render,0,0,255,255);
 
-        SDL_RenderFillRect(render, &c->posicion);
+        SDL_RenderFillRect(render, &rect);
     }
 
-    // HOVER CYAN
-//    if(c->hover && !c->encontrada && !c->bocaArriba)
-//    {
-//        SDL_SetRenderDrawColor(render, 0, 255, 255, 255); // Cyan
-//        SDL_Rect r = c->posicion;
-//        SDL_RenderDrawRect(render, &r);
-//        r.x++;
-//        r.y++;
-//        r.w-=2;
-//        r.h-=2;
-//        SDL_RenderDrawRect(render, &r);
-//        r.x++;
-//        r.y++;
-//        r.w-=2;
-//        r.h-=2;
-//        SDL_RenderDrawRect(render, &r);
-//    }
-//    else
-//    {
-//        SDL_SetRenderDrawColor(render, 0, 0, 0, 255); // Borde negro normal
-//        SDL_RenderDrawRect(render, &(c->posicion));
-//    }
-
-    SDL_SetRenderDrawColor(render, 0, 0, 0, 255); // Borde negro normal
-    SDL_RenderDrawRect(render, &(c->posicion));
+    if(esCursor)
+    {
+        SDL_SetRenderDrawColor(render,255,255,0,255);
+        SDL_Rect r = rect; //uso el ya calculado
+        r.x-=3;
+        r.y-=3;
+        r.w+=6;
+        r.h+=6;
+        SDL_RenderDrawRect(render, &r);
+        r.x--;
+        r.y--;
+        r.w+=2;
+        r.h+=2;
+        SDL_RenderDrawRect(render, &r);
+    }
+    else if(c->hover && !c->encontrada && !c->bocaArriba)
+    {
+        SDL_SetRenderDrawColor(render, 0, 255, 255, 255);
+        SDL_RenderDrawRect(render, &rect);
+        SDL_Rect r = rect;
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r);
+    }
+    else
+    {
+        SDL_SetRenderDrawColor(render, 0, 0, 0, 255); // Borde negro normal
+        SDL_RenderDrawRect(render, &(c->posicion));
+    }
 }
 
 int cartaAdentro(Carta* c, int x, int y)

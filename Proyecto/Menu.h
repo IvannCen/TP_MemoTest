@@ -36,6 +36,12 @@ typedef struct
     TTF_Font* fuenteTitulo;
     TTF_Font* fuenteOpciones;
     SDL_Texture* texturaTitulo; //guardo la textura para no generarla en cada frame del menu
+    SDL_Texture* fondoMenu;
+    SDL_Texture* fondoConfig;
+    SDL_Texture* fondoNombres;
+    SDL_Texture* fondoRanking;
+    SDL_Texture* fondoJuegoC;
+    SDL_Texture* fondoJuegoL;
     IngresoNombre nombre;
     int confirmaSalida; //0 = no muestra el cartel, 1 = muestra el cartel
     int opcionSalida; //0 = si, 1 = no;
@@ -57,7 +63,7 @@ void guardarConfiguracion(Configuracion* config);
 
 //ingreso de nombres
 void ingresoNombreIniciar(IngresoNombre* ing, const char* titulo); //funcion que resetea el ingreso a AAA
-void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer);
+void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer, SDL_Texture* fondo);
 //devuelve: 0(nada), 1(confirmar/jugar), 2(volver al menu)
 int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego, int indiceJugador);
 

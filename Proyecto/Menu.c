@@ -17,6 +17,13 @@ void menuIniciar(Menu* m, SDL_Renderer* renderer)
     m->texturaTitulo = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_FreeSurface(surf);
 
+    m->fondoMenu = IMG_LoadTexture(renderer, RUTAFONDOMENU);
+    m->fondoConfig = IMG_LoadTexture(renderer, RUTAFONDOCONFIG);
+    m->fondoRanking = IMG_LoadTexture(renderer, RUTAFONDORANKING);
+    m->fondoNombres = IMG_LoadTexture(renderer, RUTAFONDONOMBRES);
+    m->fondoJuegoC = IMG_LoadTexture(renderer, RUTAFONDOJUEGOC);
+    m->fondoJuegoL= IMG_LoadTexture(renderer, RUTAFONDOJUEGOL);
+
     //inicializo tambien los ingresos del nombre
     m->nombre.fuenteGrande = TTF_OpenFont(FUENTE, FUENTEGRANDE); //letras del nombre
     m->nombre.fuenteChica = TTF_OpenFont(FUENTE, FUENTECHICA); //boton de confirmar
@@ -28,6 +35,24 @@ void menuDestruir(Menu* m)
 {
     if(m->texturaTitulo)
         SDL_DestroyTexture(m->texturaTitulo);
+
+    if(m->fondoMenu)
+        SDL_DestroyTexture(m->fondoMenu);
+
+    if(m->fondoConfig)
+        SDL_DestroyTexture(m->fondoConfig);
+
+    if(m->fondoRanking)
+        SDL_DestroyTexture(m->fondoRanking);
+
+    if(m->fondoNombres)
+        SDL_DestroyTexture(m->fondoNombres);
+
+    if(m->fondoJuegoC)
+        SDL_DestroyTexture(m->fondoJuegoC);
+
+    if(m->fondoJuegoL)
+        SDL_DestroyTexture(m->fondoJuegoL);
 
     if(m->fuenteTitulo)
         TTF_CloseFont(m->fuenteTitulo);
@@ -154,6 +179,14 @@ int menuManejarOpciones(Menu* m, SDL_Event* e)
 
 void menuDibujar(Menu* m, SDL_Renderer* renderer)
 {
+    if(m->fondoMenu)
+        SDL_RenderCopy(renderer, m->fondoMenu, NULL, NULL); // NULL, NULL llena la pantalla
+    else
+    {
+        // Si no hay imagen, fondo gris oscuro
+        SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
+    }
+
     int w,h;
     SDL_QueryTexture(m->texturaTitulo, NULL, NULL, &w, &h);
     SDL_Rect recTitulo = {(ANCHOVENTANA - w)/2, 100, w, h};
@@ -297,6 +330,11 @@ int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config)
 
 void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config)
 {
+    if(m->fondoConfig)
+        SDL_RenderCopy(renderer, m->fondoConfig, NULL, NULL);
+    else
+        SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
+
     SDL_Color oro = {255,215,0};
     dibujarTextoCentrados(renderer, m->fuenteTitulo, "CONFIGURACION", 50, oro);
 
@@ -507,8 +545,13 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
     return 0;
 }
 
-void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer)
+void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer, SDL_Texture* fondo)
 {
+    if(fondo)
+        SDL_RenderCopy(renderer, fondo, NULL, NULL);
+    else
+        SDL_SetRenderDrawColor(renderer,20,20,20,255);
+
     SDL_Color oro = {255,215,0};
     dibujarTextoCentrados(renderer,ing->fuenteGrande,ing->titulo,100,oro);
 

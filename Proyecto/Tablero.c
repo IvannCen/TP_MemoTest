@@ -16,6 +16,7 @@ void tableroIniciar(Tablero* t, Configuracion* config)
     t->cartaSeleccionada = NULL;
     t->cantidadImagenesCargadas = 0;
     t->dorso = NULL;
+    t->texturaFondoJuego = NULL;
 
     for(int i=0; i<CANTIDADIMAGENES; i++)
     {
@@ -41,6 +42,12 @@ void tableroDestruir(Tablero* t)
     {
         SDL_DestroyTexture(t->dorso);
         t->dorso = NULL;
+    }
+
+    if(t->texturaFondoJuego)
+    {
+        SDL_DestroyTexture(t->texturaFondoJuego);
+        t->texturaFondoJuego = NULL;
     }
 
     for(int i=0; i<CANTIDADIMAGENES; i++)
@@ -98,6 +105,11 @@ void tableroRellenar(Tablero* t)
 
 void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
 {
+    if(t->texturaFondoJuego)
+        SDL_RenderCopy(render, t->texturaFondoJuego, NULL, NULL);
+    else
+        SDL_SetRenderDrawColor(render, 20, 20, 20, 255);
+
     if(!t || !t->cartas)
         return;
 
@@ -111,32 +123,18 @@ void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
         if(col == t->cursorX && fil == t->cursorY)
             esCursor = 1;
 
-        CartaDibujar(&t->cartas[i], render, texturaActual, mouseX, mouseY);
-
-        if(esCursor)
-        {
-            SDL_SetRenderDrawColor(render,255,255,0,255); //color amarillo
-            SDL_Rect r = t->cartas[i].posicion;
-
-            r.x-=3;
-            r.y-=3;
-            r.w+=6;
-            r.h+=6; // Un poco mas grande
-            SDL_RenderDrawRect(render, &r);
-
-            r.x--;
-            r.y--;
-            r.w+=2;
-            r.h+=2;
-            SDL_RenderDrawRect(render, &r);
-        }
+        CartaDibujar(&t->cartas[i], render, texturaActual,esCursor);
     }
 }
 
-void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego)
+void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
 {
     if(e->type == SDL_KEYDOWN)
     {
+        for(int k=0;k<t->cantidad;k++)
+        {
+            t->cartas[k].hover = 0;
+        }
         switch(e->key.keysym.sym)
         {
             case SDLK_UP:
@@ -167,14 +165,14 @@ void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, Conte
                 // Llamamos a la logica de clic pasandole el centro de la carta
                 int cx = t->cartas[indice].posicion.x + 1;
                 int cy = t->cartas[indice].posicion.y + 1;
-                tableroClic(t, cx, cy, render, juego);
+                tableroClic(t, cx, cy, render, juego, font);
                 break;
             }
         }
     }
 }
 
-int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego)
+int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
 {
     if(!t || !juego)
         return 0;
@@ -202,6 +200,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
 
                 // Forzar redibujado
                 tableroDibujar(t,render,0,0);
+                dibujarEstadisticas(render, font, juego);
                 SDL_RenderPresent(render);
 
                 if(c1->idImagen == c2->idImagen)
@@ -271,6 +270,9 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 
     if(!t->dorso)
         printf("Error dorso: %s\n", IMG_GetError());
+
+    const char* rutaFondo = (idSet == 0) ? RUTAFONDOJUEGOC : RUTAFONDOJUEGOL;
+    t->texturaFondoJuego = IMG_LoadTexture(render, rutaFondo);
 
     const char* carpeta = (idSet == 0) ? RUTASETA : RUTASETB;
     char buffer[256];
@@ -470,8 +472,12 @@ void rankingGuardar(const char* nombre, int puntos, int tiempo)
     }
 }
 
-void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista)
+void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista, SDL_Texture* fondo)
 {
+    if(fondo)
+        SDL_RenderCopy(render, fondo, NULL, NULL);
+    else
+        SDL_SetRenderDrawColor(render, 20, 20, 20, 255);
     SDL_Color colorOro = {255,215,0};
     SDL_Color colorBlanco = {255,255,255};
     SDL_Color colorGris = {150,150,150};

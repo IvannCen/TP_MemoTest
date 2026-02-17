@@ -36,6 +36,14 @@
 #define RUTADORSOA "img/A/dorsoA.png"
 #define RUTADORSOB "img/B/dorsoB.png"
 
+//rutas para los fondos
+#define RUTAFONDOMENU "img/Fondos/fondoMenu.jpg"
+#define RUTAFONDOCONFIG "img/Fondos/fondoConfig.jpg"
+#define RUTAFONDORANKING "img/Fondos/fondoRankings.jpg"
+#define RUTAFONDONOMBRES "img/Fondos/fondoNombres.jpg"
+#define RUTAFONDOJUEGOC "img/Fondos/fondoJuegoC.jpg"
+#define RUTAFONDOJUEGOL "img/Fondos/fondoJuegoL.jpg"
+
 //tiempos de delay
 #define DELAY 1000 //1000 milisegundos es 1 segundo
 #define DELAYCHICO 500 //medio segundo
