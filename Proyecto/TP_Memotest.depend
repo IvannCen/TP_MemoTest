@@ -468,7 +468,7 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771357296 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771361765 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
 1771361654 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
@@ -477,13 +477,13 @@
 	"Juego.h"
 	"sonidos.h"
 
-1771357201 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771362646 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
 	"Carta.h"
 
-1771339854 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+1771362646 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
 	<SDL2/SDL.h>
 	"sonidos.h"
 	"Comun.h"
@@ -1023,12 +1023,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771025067 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.c
+1771362646 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.c
 	"sonidos.h"
 	<stdio.h>
 	<stdlib.h>
 
-1771211998 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
+1771362646 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\sonidos.h
 	<SDL2/SDL.h>
 	<SDL2/SDL_mixer.h>
 
