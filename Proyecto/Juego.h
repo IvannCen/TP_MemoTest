@@ -24,10 +24,14 @@ typedef struct
     int confirmandoSalida; //0=jugando, 1=mostrar popup "¿Desea Salir?"
     int opcionSalidaPopup; //0=SI, 1=NO
 
-    //Pongo estos campos temporalmente, hasta que modularizemos bien la logica
+    //Sonidos, efectos cortos
     tSonido* sndSeleccion;
     tSonido* sndAcierto;
     tSonido* sndFallo;
+
+    //Musica
+    tMusica* musMenu;
+    tMusica* musJuego;
 }ContextoJuego;
 
 //esta estructura enum va a asignar valores a los distintos estados donde

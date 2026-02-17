@@ -17,7 +17,6 @@
   *
   */
 
-
 #include "Tablero.h"
 #include "Juego.h"
 #include "Menu.h"
@@ -38,7 +37,8 @@ int main(int argc, char *argv[])
     if(formatos == SONIDO_ERR)
         return 1;
 
-    SDL_Window *window = SDL_CreateWindow("TP Memotest", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ANCHOVENTANA, ALTOVENTANA, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    SDL_Window *window = SDL_CreateWindow("TP Memotest", SDL_WINDOWPOS_CENTERED,
+                                          SDL_WINDOWPOS_CENTERED, ANCHOVENTANA, ALTOVENTANA, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_RenderSetLogicalSize(renderer,ANCHOVENTANA,ALTOVENTANA);
 
@@ -63,14 +63,21 @@ int main(int argc, char *argv[])
     int jugadorIngresando = 0;
     SDL_Event e;
 
-    juego.sndSeleccion = sonidos_cargar(SELECCION);
-    juego.sndAcierto = sonidos_cargar(ACIERTO);
-    juego.sndFallo = sonidos_cargar(FALLO);
-    Mix_Volume(-1, 40);
+    juego.sndSeleccion = sonidos_cargar(SELECCION_SND);
+    juego.sndAcierto = sonidos_cargar(ACIERTO_SND);
+    juego.sndFallo = sonidos_cargar(FALLO_SND);
 
-    while (corriendo)
+    juego.musMenu = sonidos_cargar_musica(MENU_SND);
+    juego.musJuego = sonidos_cargar_musica(JUEGO_SND);
+
+    Mix_Volume(-1, 50);
+    Mix_VolumeMusic(VOL_MAX);
+
+    sonidos_reproducir_musica(juego.musMenu, -1);
+
+    while(corriendo)
     {
-        while (SDL_PollEvent(&e))
+        while(SDL_PollEvent(&e))
         {
             if (e.type == SDL_QUIT)
                 corriendo = 0;
@@ -132,6 +139,7 @@ int main(int argc, char *argv[])
                     {
                         if(config.cantJugadores == 2 && jugadorIngresando == 0)
                         {
+                            //Sigue la musica del menu
                             jugadorIngresando = 1;
                             ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR 2");
                         }
@@ -150,13 +158,18 @@ int main(int argc, char *argv[])
                             tableroRellenar(&miTablero);
                             tableroMezclar(&miTablero);
                             tableroCargado = 1;
+
+                            sonidos_reproducir_musica(juego.musJuego, -1);
+
                             estadoActual = ESTADO_JUGANDO;
 
                             // Limpiar cola de eventos para evitar inputs fantasmas al iniciar
                             SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                         }
                     }
-                    else if(res == 2) {
+                    else if(res == 2)
+                    {
+                        //Vuelve al menu (sigue la musica del menu)
                         menuPrincipal.opcionSeleccionada = 0;
                         estadoActual = ESTADO_MENU;
                     }
@@ -181,6 +194,10 @@ int main(int argc, char *argv[])
                                     }
                                     juego.confirmandoSalida = 0;
                                     menuPrincipal.confirmaSalida = 0;
+
+                                    //Cambia la musica a la del menu
+                                    sonidos_reproducir_musica(juego.musMenu, -1);
+
                                     estadoActual = ESTADO_MENU;
                                     SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                                 }
@@ -208,6 +225,10 @@ int main(int argc, char *argv[])
                                 }
                                 juego.confirmandoSalida = 0;
                                 menuPrincipal.confirmaSalida = 0;
+
+                                //Cambia la musica a la del menu
+                                sonidos_reproducir_musica(juego.musMenu, -1);
+
                                 estadoActual = ESTADO_MENU;
                                 SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                             }
@@ -273,6 +294,8 @@ int main(int argc, char *argv[])
                             tableroDestruir(&miTablero);
                             tableroCargado = 0;
                         }
+                        sonidos_reproducir_musica(juego.musMenu, -1);
+
                         estadoActual=ESTADO_MENU;
                         SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                     }
@@ -352,6 +375,10 @@ int main(int argc, char *argv[])
     sonidos_destruir(juego.sndSeleccion);
     sonidos_destruir(juego.sndAcierto);
     sonidos_destruir(juego.sndFallo);
+
+    sonidos_destruir_musica(juego.musMenu);
+    sonidos_destruir_musica(juego.musJuego);
+
     sonidos_finalizar();
 
     TTF_CloseFont(fuenteGrande);

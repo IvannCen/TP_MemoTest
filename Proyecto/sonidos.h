@@ -5,18 +5,21 @@
 #include <SDL2/SDL_mixer.h>
 
 #define FREC_MUESTREO 44100
+#define VOL_MAX 50
 
-#define SELECCION   "snd/seleccion.wav"
-#define ACIERTO     "snd/acierto.wav"
-#define FALLO       "snd/fallo.wav"
+#define SELECCION_SND   "snd/seleccion.wav"
+#define ACIERTO_SND     "snd/acierto.wav"
+#define FALLO_SND       "snd/fallo.wav"
+#define MENU_SND        "snd/menu.mp3"
+#define JUEGO_SND       "snd/juego.mp3"
 
 //Formatos de audio soportados
 typedef enum
 {
     SONIDO_ERR = -1,
-    SONIDO_WAV =  0,
-    SONIDO_MP3 =  1,
-    SONIDO_OGG =  2,
+    SONIDO_WAV = 0x00,
+    SONIDO_MP3 = 0x01,
+    SONIDO_OGG = 0x02,
 } tFormatosSnd;
 
 //Se usa Mix_Chunk porque son efectos cortos cargados desde la unidad de almacenamiento
@@ -25,6 +28,11 @@ typedef struct
     Mix_Chunk* chunk;
     //int esTono;   //Por ahora no vamos a generar ningún tono generado por buffer de audio, pero lo dejo en caso de que cambiemos de opinion
 } tSonido;
+
+typedef struct
+{
+    Mix_Music* music;
+} tMusica;
 
 tFormatosSnd sonidos_inicializar(void);
 
@@ -44,7 +52,17 @@ void sonidos_reproducir(const tSonido *sonido, int cantVeces); //(const tSonido 
 //Libera memoria asociada al sonido
 void sonidos_destruir(tSonido *sonido);
 
+//Carga un archivo de musica
+tMusica* sonidos_cargar_musica(const char *path);
+
+//Reproduce un track "n" veces, determinado por el parametro cantVeces
+void sonidos_reproducir_musica(const tMusica* musica, int cantVeces);
+
+//Liberar memoria asociada a la musica
+void sonidos_destruir_musica(tMusica *musica);
+
 //Finaliza correctamente SDL_mixer, cerrando primero los canales de audio, luego cerrando el mixer y finalmente desinicializandolo
+//Finaliza tanto los sonidos como la musica
 void sonidos_finalizar(void);
 
 #endif // SONIDOS_H_INCLUDED
