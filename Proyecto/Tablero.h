@@ -6,6 +6,21 @@
 #include "Juego.h"
 #include "sonidos.h"
 
+// Macros de configuracion visual
+#define INICIOY             300 //altura donde esta la primer opcion para tener referencia
+#define SEPARACION          70  //espacio entre opciones
+
+// Macros para el Popup de Salida
+#define POPUP_W             400
+#define POPUP_H             200
+#define POPUP_X             ((ANCHOVENTANA - POPUP_W) / 2)
+#define POPUP_Y             ((ALTOVENTANA - POPUP_H) / 2)
+
+#define CONF_Y_TABLERO      200
+#define CONF_Y_SET          280
+#define CONF_Y_JUGADORES    360
+#define CONF_Y_GUARDAR      480
+
 typedef struct
 {
     Carta* cartas; //puntero a la primera pos del vector de cartas
@@ -62,8 +77,8 @@ void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, Conte
 void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY);
 //funcion para dibujar las estadisticas por nivel
 void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego);
-//dibujar el tablero del popup
-void dibujarPopupSalidaJuego(SDL_Renderer* render, TTF_Font* font, int opcionSeleccionada);
+//dibujo el popup de confirmacion de salida
+void dibujarPopupSalida(SDL_Renderer* render, TTF_Font* font, const char* texto, int opcionSeleccionada);
 
 ////////////////////////////////////////////FUNCIONES DE INGRESO DE TEXTO POR PANTALLA////////////////////////////////////////////
 

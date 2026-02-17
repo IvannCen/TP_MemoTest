@@ -278,7 +278,9 @@ int main(int argc, char *argv[])
             tableroDibujar(&miTablero, renderer, mX, mY);
             dibujarEstadisticas(renderer, fuenteChica, &juego);
             if(juego.confirmandoSalida)
-                dibujarPopupSalidaJuego(renderer, fuenteChica, juego.opcionSalidaPopup);
+                dibujarPopupSalida(renderer, menuPrincipal.fuenteOpciones,
+                                   "Abandonar partida?", juego.opcionSalidaPopup);
+
         }
         else if(estadoActual == ESTADO_GANO)
         {
