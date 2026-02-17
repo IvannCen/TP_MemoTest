@@ -10,13 +10,20 @@ typedef struct
 {
     Carta* cartas; //puntero a la primera pos del vector de cartas
     int cantidad;   //cantidad de elementos del vec
+    int filas;
+    int columnas;
+
     SDL_Texture* dorso; // el dorso de las cartas
     SDL_Texture* imagenes[CANTIDADIMAGENES]; //vector dinamico con las imagenes
     int cantidadImagenesCargadas; //cantidad de imagenes cargadas
+
     Carta* cartaSeleccionada; //dir de la carta seleccionada
     int rachaActual; //cant de aciertos consecutivos
     int movimientos; //cont de intentos para las estadisticas
     int parejasEncontradas; //cont para saber si gano
+
+    int cursorX;
+    int cursorY;
 }Tablero;
 
 ////////////////////////////////////////////FUNCIONES QUE MANEJAN LA MEMORIA////////////////////////////////////////////
@@ -29,7 +36,7 @@ void tableroDestruir(Tablero* t);
 ////////////////////////////////////////////FUNCIONES QUE MANEJAN LA LOGICA DEL JUEGO////////////////////////////////////////////
 
 //relleno el trablero, configurando las cartas que contiene
-void tableroRellenar(Tablero* t, int filas, int columnas);
+void tableroRellenar(Tablero* t);
 //funcion para saber si todas las cartas fueron encontradas
 int tableroCompleto(Tablero* t);
 
@@ -44,12 +51,17 @@ void tableroMezclar(Tablero* t);
 //funcion para actualizar el estado de hover de las cartas segun la posicion del mouse
 void tableroManejarHover(Tablero* t, int x, int y);
 
+//funcion que maneja el teclado en el juego
+void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego);
+
 ////////////////////////////////////////////FUNCIONES DE RENDERIZADO////////////////////////////////////////////
 
 //dibujo todas las cartas de adentro del tablero
 void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY);
 //funcion para dibujar las estadisticas por nivel
 void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego);
+//dibujar el tablero del popup
+void dibujarPopupSalidaJuego(SDL_Renderer* render, TTF_Font* font, int opcionSeleccionada);
 
 ////////////////////////////////////////////FUNCIONES DE INGRESO DE TEXTO POR PANTALLA////////////////////////////////////////////
 
@@ -60,6 +72,3 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color);
 
 #endif // TABLERO
-
-//funcion para dibujar un texto centrado matem�ticamente dentro del area especificada
-//void dibujarTextoCentradoEnRect(SDL_Renderer* render, TTF_Font* font, const char* texto, SDL_Rect area, SDL_Color color);

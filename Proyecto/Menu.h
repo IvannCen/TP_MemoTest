@@ -4,6 +4,11 @@
 #include "Comun.h"
 #include "Juego.h"
 
+#define SETA 0
+#define FILAS 4
+#define COLUMNAS 4
+#define CANTJUGADORES 1
+
 //defino las opciones del menu enumeradas
 typedef enum
 {
@@ -28,7 +33,7 @@ typedef enum
 //ingreso de nombre
 typedef struct
 {
-    int cursor; //0,1,2 (letras) o 3 (boton confirmar)
+    int cursor; //0,1,2 (letras) o 3 (boton confirmar), 4 (Volver)
     char nombre[LETRASNOMBRE]; //nombre temporal "AAA"
     TTF_Font* fuenteGrande;
     TTF_Font* fuenteChica;
@@ -58,6 +63,7 @@ void menuDibujar(Menu* m, SDL_Renderer* renderer);
 //menu de configuracion
 //void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer);
 //int menuDificultadOpciones(Menu* m, SDL_Event* e);
+int obtenerYConfig(int opcion);
 int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config);
 void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config);
 void cargarConfiguracion(Configuracion* config);
@@ -66,12 +72,13 @@ void guardarConfiguracion(Configuracion* config);
 //ingreso de nombres
 void ingresoNombreIniciar(IngresoNombre* ing); //funcion que resetea el ingreso a AAA
 void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer);
-int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego); //devuelve un 1 si se confirmo
+//devuelve: 0(nada), 1(confirmar/jugar), 2(volver al menu)
+int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego);
 
 //funciones extra
 char siguienteCaracter(char c);
 char anteriorCaracter(char c);
 const char* menuObtenerTexto(int opcion); //conecta el enum con el texto
-const char* menuDificultadObtenerTexto(int opcion); //idem con dificultad (ESTO SE VA A MODIFICAR CUANDO CAMBIEMOS LA CONFIG)
+//const char* menuDificultadObtenerTexto(int opcion); //idem con dificultad (ESTO SE VA A MODIFICAR CUANDO CAMBIEMOS LA CONFIG)
 
 #endif // MENU

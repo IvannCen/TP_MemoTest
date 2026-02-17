@@ -1,12 +1,12 @@
 # depslib dependency file v1.0
-1771265467 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
+1771284158 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
-1771256427 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
+1771271657 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
 	"Comun.h"
 	"Menu.h"
 
-1771270123 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
+1771276953 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\comun.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -468,22 +468,22 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771265702 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771286300 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
-1771264109 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
+1771286270 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
 	"sonidos.h"
 
-1771265502 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771286270 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
 	"Carta.h"
 
-1771255396 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
+1771285571 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\juego.h
 	<SDL2/SDL.h>
 	"sonidos.h"
 
@@ -493,11 +493,11 @@
 
 1770950517 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\config.h
 
-1771264109 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
+1771286269 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.h
 	"Comun.h"
 	"Juego.h"
 
-1771265899 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771287130 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 

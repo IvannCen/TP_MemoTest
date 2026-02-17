@@ -19,6 +19,9 @@ typedef struct
     int turnoJugador; //para el modo competitivo
     char nombreJugador[4]; //tres caracteres como juegos retro: AAA
 
+    int confirmandoSalida; //0=jugando, 1=mostrar popup "¿Desea Salir?"
+    int opcionSalidaPopup; //0=SI, 1=NO
+
     //Pongo estos campos temporalmente, hasta que modularizemos bien la logica
     tSonido* sndSeleccion;
     tSonido* sndAcierto;
@@ -33,8 +36,7 @@ typedef enum
     ESTADO_CONFIGURACION,
     ESTADO_NOMBRE,
     ESTADO_JUGANDO,
-    ESTADO_GANO,
-    ESTADO_SALIR
+    ESTADO_GANO
 }EstadoJuego;
 
 #endif // JUEGO

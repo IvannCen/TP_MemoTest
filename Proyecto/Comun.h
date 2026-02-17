@@ -31,10 +31,10 @@
 #define FUENTECHICA 30
 
 //rutas para las imagenes
-#define RUTASETA "A/"
-#define RUTASETB "B/"
-#define RUTADORSOA "A/dorsoA.png"
-#define RUTADORSOB "B/dorsoB.png"
+#define RUTASETA "img/A/"
+#define RUTASETB "img/B/"
+#define RUTADORSOA "img/A/dorsoA.png"
+#define RUTADORSOB "img/B/dorsoB.png"
 
 //tiempos de delay
 #define DELAY 1000 //1000 milisegundos es 1 segundo

@@ -79,10 +79,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="Tablero.h" />
-		<Unit filename="config.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="config.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
