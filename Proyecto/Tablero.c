@@ -20,6 +20,8 @@ void tableroIniciar(Tablero* t, Configuracion* config)
     for(int i=0; i<CANTIDADIMAGENES; i++)
     {
         t->imagenes[i] = NULL;
+        //Cada figura tiene un valor entre 50 y 200 puntos, en multiplos de 10
+        t->puntosPorImagen[i] = (rand()%16 + 5) * 10;
     }
 
     t->rachaActual = 0;
@@ -216,7 +218,10 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     sonidos_reproducir(juego->sndAcierto, 1);
                     c1->encontrada = 1; c2->encontrada = 1;
                     t->parejasEncontradas++;
-                    puntos = 100 + (t->rachaActual * 20);
+
+                    int puntosBase = t->puntosPorImagen[c1->idImagen];
+
+                    puntos = puntosBase + (t->rachaActual * 20);
                     t->rachaActual++;
                 }
                 else

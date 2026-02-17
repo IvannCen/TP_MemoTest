@@ -1,3 +1,23 @@
+/**
+  * Apellido(s), nombre(s): [Perez, Juan]
+  * DNI: [11111111]
+  * Entrega: Si/No
+  *
+  * Apellido(s), nombre(s): [Gomez, Maria]
+  * DNI: [22222222]
+  * Entrega: Si/No
+  *
+  * Apellido(s), nombre(s): [Lopez, Carlos]
+  * DNI: [33333333]
+  * Entrega: Si/No
+  *
+  * Apellido(s), nombre(s): [Diaz, Ana]
+  * DNI: [44444444]
+  * Entrega: Si/No
+  *
+  */
+
+
 #include "Tablero.h"
 #include "Juego.h"
 #include "Menu.h"
@@ -6,12 +26,17 @@
 int main(int argc, char *argv[])
 {
     srand(time(NULL));
-    if(SDL_Init(SDL_INIT_VIDEO) < 0) return 1;
-    if(IMG_Init(IMG_INIT_PNG)==0) return 1;
-    if(TTF_Init()==-1) return 1;
+    if(SDL_Init(SDL_INIT_VIDEO) < 0)
+        return 1;
+    if(IMG_Init(IMG_INIT_PNG)==0)
+        return 1;
+    if(TTF_Init()==-1)
+        return 1;
 
     tFormatosSnd formatos = sonidos_inicializar();
-    if(formatos == SONIDO_ERR) return 1;
+
+    if(formatos == SONIDO_ERR)
+        return 1;
 
     SDL_Window *window = SDL_CreateWindow("TP Memotest", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ANCHOVENTANA, ALTOVENTANA, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -122,9 +147,11 @@ int main(int argc, char *argv[])
                                     estadoActual = ESTADO_MENU;
                                     SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                                 }
-                                else juego.confirmandoSalida = 0; // NO
+                                else
+                                    juego.confirmandoSalida = 0; // NO
                             }
-                            else if(e.key.keysym.sym == SDLK_ESCAPE) juego.confirmandoSalida = 0;
+                            else if(e.key.keysym.sym == SDLK_ESCAPE)
+                                juego.confirmandoSalida = 0;
                         }
                         else if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                         {
@@ -134,14 +161,20 @@ int main(int argc, char *argv[])
                             SDL_Rect rSi = { (ANCHOVENTANA/2)-80, cY+120, 50, 40 };
                             SDL_Rect rNo = { (ANCHOVENTANA/2)+40, cY+120, 50, 40 };
 
-                            if(SDL_PointInRect(&p, &rSi)) {
-                                if(tableroCargado) { tableroDestruir(&miTablero); tableroCargado = 0; }
+                            if(SDL_PointInRect(&p, &rSi))
+                            {
+                                if(tableroCargado)
+                                {
+                                    tableroDestruir(&miTablero);
+                                    tableroCargado = 0;
+                                }
                                 juego.confirmandoSalida = 0;
                                 menuPrincipal.confirmaSalida = 0;
                                 estadoActual = ESTADO_MENU;
                                 SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
                             }
-                            else if(SDL_PointInRect(&p, &rNo)) juego.confirmandoSalida = 0;
+                            else if(SDL_PointInRect(&p, &rNo))
+                                juego.confirmandoSalida = 0;
                         }
                         else if(e.type == SDL_MOUSEMOTION) {
                             int mx = e.motion.x, my = e.motion.y;
@@ -190,15 +223,19 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
         SDL_RenderClear(renderer);
 
-        if(estadoActual == ESTADO_MENU) menuDibujar(&menuPrincipal, renderer);
-        else if(estadoActual == ESTADO_CONFIGURACION) menuConfiguracionDibujar(&menuPrincipal, renderer, &config);
-        else if(estadoActual == ESTADO_NOMBRE) ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
+        if(estadoActual == ESTADO_MENU)
+            menuDibujar(&menuPrincipal, renderer);
+        else if(estadoActual == ESTADO_CONFIGURACION)
+            menuConfiguracionDibujar(&menuPrincipal, renderer, &config);
+        else if(estadoActual == ESTADO_NOMBRE)
+            ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
         else if(estadoActual == ESTADO_JUGANDO)
         {
             int mX, mY; SDL_GetMouseState(&mX,&mY);
             tableroDibujar(&miTablero, renderer, mX, mY);
             dibujarEstadisticas(renderer, fuenteChica, &juego);
-            if(juego.confirmandoSalida) dibujarPopupSalidaJuego(renderer, fuenteMedia, juego.opcionSalidaPopup);
+            if(juego.confirmandoSalida)
+                dibujarPopupSalidaJuego(renderer, fuenteChica, juego.opcionSalidaPopup);
         }
         else if(estadoActual == ESTADO_GANO)
         {

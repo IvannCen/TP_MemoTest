@@ -22,6 +22,8 @@ typedef struct
     int movimientos; //cont de intentos para las estadisticas
     int parejasEncontradas; //cont para saber si gano
 
+    int puntosPorImagen[CANTIDADIMAGENES]; //le asignamos valores aleatorios por cada figura
+
     int cursorX;
     int cursorY;
 }Tablero;
