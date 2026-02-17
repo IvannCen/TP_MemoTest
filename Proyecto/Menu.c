@@ -36,7 +36,7 @@ void menuIniciar(Menu* m, SDL_Renderer* renderer)
     m->nombre.fuenteGrande = TTF_OpenFont(FUENTE, FUENTEGRANDE); //letras del nombre
     m->nombre.fuenteChica = TTF_OpenFont(FUENTE, FUENTECHICA); //boton de confirmar
     m->nombre.fuenteMedia = TTF_OpenFont(FUENTE, FUENTEMEDIA);
-    ingresoNombreIniciar(&m->nombre);
+    ingresoNombreIniciar(&m->nombre, "INGRESE NOMBRE");
 }
 
 void menuDestruir(Menu* m)
@@ -385,10 +385,11 @@ void guardarConfiguracion(Configuracion* config)
 
 //ingreso del nombre en el juego
 
-void ingresoNombreIniciar(IngresoNombre* ing)
+void ingresoNombreIniciar(IngresoNombre* ing, const char* titulo)
 {
     ing->cursor = 0;
     strcpy(ing->nombre,"AAA");
+    strcpy(ing->titulo, titulo);
 }
 
 //funcion auxiliar para los caracteres
@@ -434,7 +435,7 @@ const char* menuObtenerTexto(int opcion)
     }
 }
 
-int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego)
+int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego, int indiceJugador)
 {
     if(e->type == SDL_KEYDOWN)
     {
@@ -466,7 +467,7 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
         case SDLK_KP_ENTER:
             if(ing->cursor == 3)
             {
-                strcpy(juego->nombreJugador, ing->nombre);
+                strcpy(juego->nombreJugador[indiceJugador], ing->nombre);
                 return 1;
             }
             if(ing->cursor == 4)
@@ -515,7 +516,7 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
             ing->cursor = 3;
             if(e->type == SDL_MOUSEBUTTONDOWN && e->button.button == SDL_BUTTON_LEFT)
             {
-                strcpy(juego->nombreJugador, ing->nombre);
+                strcpy(juego->nombreJugador[indiceJugador], ing->nombre);
                 return 1;
             }
         }
@@ -536,7 +537,7 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
 void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer)
 {
     SDL_Color oro = {255,215,0};
-    dibujarTextoCentrados(renderer,ing->fuenteGrande,"INGRESE NOMBRE",100,oro);
+    dibujarTextoCentrados(renderer,ing->fuenteGrande,ing->titulo,100,oro);
 
     int inicio = (ANCHOVENTANA / 2) - 100;
 

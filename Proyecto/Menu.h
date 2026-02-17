@@ -7,7 +7,6 @@
 #define SETA 0
 #define FILAS 4
 #define COLUMNAS 4
-#define CANTJUGADORES 1
 
 //defino las opciones del menu enumeradas
 typedef enum
@@ -20,21 +19,12 @@ typedef enum
     CANTIDADOPCIONES //esta variable va a valer 5 automatico
 }OpcionesMenu;
 
-//menu de dificultad
-typedef enum
-{
-    FACIL,
-    NORMAL,
-    DIFICIL,
-    VOLVER,
-    CANTIDADIFICULTAD
-}OpcionesDificultad;
-
 //ingreso de nombre
 typedef struct
 {
     int cursor; //0,1,2 (letras) o 3 (boton confirmar), 4 (Volver)
     char nombre[LETRASNOMBRE]; //nombre temporal "AAA"
+    char titulo[50];
     TTF_Font* fuenteGrande;
     TTF_Font* fuenteChica;
     TTF_Font* fuenteMedia;
@@ -68,10 +58,10 @@ void cargarConfiguracion(Configuracion* config);
 void guardarConfiguracion(Configuracion* config);
 
 //ingreso de nombres
-void ingresoNombreIniciar(IngresoNombre* ing); //funcion que resetea el ingreso a AAA
+void ingresoNombreIniciar(IngresoNombre* ing, const char* titulo); //funcion que resetea el ingreso a AAA
 void ingresoNombreDibujar(IngresoNombre* ing, SDL_Renderer* renderer);
 //devuelve: 0(nada), 1(confirmar/jugar), 2(volver al menu)
-int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego);
+int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego, int indiceJugador);
 
 //funciones extra
 char siguienteCaracter(char c);

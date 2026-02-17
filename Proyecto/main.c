@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
 
     int tableroCargado = 0;
     int corriendo = 1;
+    int jugadorIngresando = 0;
     SDL_Event e;
 
     juego.sndSeleccion = sonidos_cargar(SELECCION);
@@ -80,8 +81,17 @@ int main(int argc, char *argv[])
                     int seleccion = menuManejarOpciones(&menuPrincipal, &e);
                     if(seleccion != -1)
                     {
-                        if(seleccion == OPCION_AVENTURA) {
-                            ingresoNombreIniciar(&menuPrincipal.nombre);
+                        if(seleccion == OPCION_AVENTURA)
+                        {
+                            jugadorIngresando = 0;
+                            ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR");
+                            estadoActual = ESTADO_NOMBRE;
+                        }
+                        else if(seleccion == OPCION_COMPETITIVO)
+                        {
+                            config.cantJugadores = 2;
+                            jugadorIngresando = 0;
+                            ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR 1");
                             estadoActual = ESTADO_NOMBRE;
                         }
                         else if(seleccion == OPCION_SALIR) corriendo = 0;
@@ -95,7 +105,8 @@ int main(int argc, char *argv[])
                 case ESTADO_CONFIGURACION:
                 {
                     int salir = menuConfiguracionOpciones(&menuPrincipal, &e, &config);
-                    if(salir) {
+                    if(salir)
+                    {
                         guardarConfiguracion(&config);
                         menuPrincipal.opcionSeleccionada = 0;
                         estadoActual = ESTADO_MENU;
@@ -104,24 +115,34 @@ int main(int argc, char *argv[])
                 }
                 case ESTADO_NOMBRE:
                 {
-                    int res = ingresoNombreOpciones(&menuPrincipal.nombre, &e, &juego);
+                    int res = ingresoNombreOpciones(&menuPrincipal.nombre, &e, &juego, jugadorIngresando);
                     if(res == 1)
                     {
-                        juego.turnoJugador = 1;
-                        juego.puntos = 0;
-                        juego.tiempoInicio = SDL_GetTicks();
-                        juego.confirmandoSalida = 0;
-                        juego.opcionSalidaPopup = 1;
+                        if(config.cantJugadores == 2 && jugadorIngresando == 0)
+                        {
+                            jugadorIngresando = 1;
+                            ingresoNombreIniciar(&menuPrincipal.nombre, "NOMBRE JUGADOR 2");
+                        }
+                        else
+                        {
+                            juego.turnoJugador = 0;
+                            juego.puntos[0] = 0;
+                            juego.puntos[1] = 0;
+                            juego.cantJugadores = config.cantJugadores;
+                            juego.tiempoInicio = SDL_GetTicks();
+                            juego.confirmandoSalida = 0;
+                            juego.opcionSalidaPopup = 1;
 
-                        tableroIniciar(&miTablero, &config);
-                        tableroCargarImagenes(&miTablero,renderer, config.idSetImagenes);
-                        tableroRellenar(&miTablero);
-                        tableroMezclar(&miTablero);
-                        tableroCargado = 1;
-                        estadoActual = ESTADO_JUGANDO;
+                            tableroIniciar(&miTablero, &config);
+                            tableroCargarImagenes(&miTablero,renderer, config.idSetImagenes);
+                            tableroRellenar(&miTablero);
+                            tableroMezclar(&miTablero);
+                            tableroCargado = 1;
+                            estadoActual = ESTADO_JUGANDO;
 
-                        // Limpiar cola de eventos para evitar inputs fantasmas al iniciar
-                        SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+                            // Limpiar cola de eventos para evitar inputs fantasmas al iniciar
+                            SDL_FlushEvents(SDL_FIRSTEVENT, SDL_LASTEVENT);
+                        }
                     }
                     else if(res == 2) {
                         menuPrincipal.opcionSeleccionada = 0;
@@ -141,7 +162,11 @@ int main(int argc, char *argv[])
                             {
                                 if(juego.opcionSalidaPopup == 0) // SI
                                 {
-                                    if(tableroCargado) { tableroDestruir(&miTablero); tableroCargado = 0; }
+                                    if(tableroCargado)
+                                    {
+                                        tableroDestruir(&miTablero);
+                                        tableroCargado = 0;
+                                    }
                                     juego.confirmandoSalida = 0;
                                     menuPrincipal.confirmaSalida = 0;
                                     estadoActual = ESTADO_MENU;
@@ -182,24 +207,38 @@ int main(int argc, char *argv[])
                             int cY = (ALTOVENTANA-200)/2;
                             SDL_Rect rSi = { (ANCHOVENTANA/2)-80, cY+120, 50, 40 };
                             SDL_Rect rNo = { (ANCHOVENTANA/2)+40, cY+120, 50, 40 };
-                            if(SDL_PointInRect(&p, &rSi)) juego.opcionSalidaPopup = 0;
-                            if(SDL_PointInRect(&p, &rNo)) juego.opcionSalidaPopup = 1;
+                            if(SDL_PointInRect(&p, &rSi))
+                                juego.opcionSalidaPopup = 0;
+                            if(SDL_PointInRect(&p, &rNo))
+                                juego.opcionSalidaPopup = 1;
                         }
                     }
                     else
                     {
                         if(e.type == SDL_KEYDOWN) {
-                            if(e.key.keysym.sym == SDLK_ESCAPE) { juego.confirmandoSalida = 1; juego.opcionSalidaPopup = 1; }
-                            else {
+                            if(e.key.keysym.sym == SDLK_ESCAPE)
+                            {
+                                juego.confirmandoSalida = 1;
+                                juego.opcionSalidaPopup = 1;
+                            }
+                            else
+                            {
                                 tableroManejarTeclado(&miTablero, &e, renderer, &juego);
-                                if(tableroCompleto(&miTablero)) { SDL_Delay(DELAYCHICO); estadoActual=ESTADO_GANO; }
+                                if(tableroCompleto(&miTablero))
+                                {
+                                    SDL_Delay(DELAYCHICO);
+                                    estadoActual=ESTADO_GANO;
+                                }
                             }
                         }
-                        else if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
-                            int puntos = tableroClic(&miTablero,e.button.x,e.button.y, renderer, &juego);
-                            juego.puntos += puntos;
-                            if(juego.puntos<0) juego.puntos = 0;
-                            if(tableroCompleto(&miTablero)) { SDL_Delay(DELAYCHICO); estadoActual=ESTADO_GANO; }
+                        else if(e.type==SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
+                        {
+                            tableroClic(&miTablero,e.button.x,e.button.y, renderer, &juego);
+                            if(tableroCompleto(&miTablero))
+                            {
+                                SDL_Delay(DELAYCHICO);
+                                estadoActual=ESTADO_GANO;
+                            }
                         }
                         else if(e.type == SDL_MOUSEMOTION) {
                             tableroManejarHover(&miTablero, e.motion.x, e.motion.y);
@@ -239,7 +278,8 @@ int main(int argc, char *argv[])
         }
         else if(estadoActual == ESTADO_GANO)
         {
-            if(tableroCargado) tableroDibujar(&miTablero, renderer, 0, 0);
+            if(tableroCargado)
+                tableroDibujar(&miTablero, renderer, 0, 0);
 
             SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 200);
@@ -247,11 +287,32 @@ int main(int argc, char *argv[])
             SDL_RenderFillRect(renderer, &rect);
             SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 
-            dibujarTextoCentrados(renderer, fuenteGrande, "PARTIDA COMPLETADA", 250, (SDL_Color){50, 255, 50});
-            char puntajeBuffer[64];
-            sprintf(puntajeBuffer, "Jugador: %s - Puntos Totales: %d", juego.nombreJugador, juego.puntos);
-            dibujarTextoCentrados(renderer,fuenteMedia,puntajeBuffer,350, (SDL_Color){255, 255, 0});
-            dibujarTextoCentrados(renderer,fuenteMedia,"Presiona SPACE para volver",500, (SDL_Color){255, 255, 255});
+            dibujarTextoCentrados(renderer, fuenteGrande, "PARTIDA COMPLETADA", 200, (SDL_Color){50, 255, 50});
+
+            if(juego.cantJugadores == 1)
+            {
+                char puntajeBuffer[64];
+                sprintf(puntajeBuffer, "Jugador: %s - Puntos Totales: %d", juego.nombreJugador[0], juego.puntos[0]);
+                dibujarTextoCentrados(renderer,fuenteMedia,puntajeBuffer,350, (SDL_Color){255, 255, 0});
+            }
+            else
+            {
+                char buffer1[64], buffer2[64], ganador[64];
+                sprintf(buffer1, "%s: %d", juego.nombreJugador[0], juego.puntos[0]);
+                sprintf(buffer2, "%s: %d", juego.nombreJugador[1], juego.puntos[1]);
+                dibujarTextoCentrados(renderer,fuenteMedia,buffer1,300, (SDL_Color){255, 255, 0});
+                dibujarTextoCentrados(renderer,fuenteMedia,buffer2,360, (SDL_Color){255, 255, 0});
+
+                if(juego.puntos[0] > juego.puntos[1])
+                    sprintf(ganador, "GANADOR: %s", juego.nombreJugador[0]);
+                else if(juego.puntos[1] > juego.puntos[0])
+                    sprintf(ganador, "GANADOR: %s", juego.nombreJugador[1]);
+                else
+                    sprintf(ganador, "EMPATE!");
+                dibujarTextoCentrados(renderer,fuenteMedia,ganador,450, (SDL_Color){0, 255, 255});
+            }
+
+            dibujarTextoCentrados(renderer,fuenteMedia,"Presiona SPACE para volver",600, (SDL_Color){255, 255, 255});
         }
         SDL_RenderPresent(renderer);
     }

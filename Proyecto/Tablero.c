@@ -27,7 +27,6 @@ void tableroIniciar(Tablero* t, Configuracion* config)
     t->rachaActual = 0;
     t->movimientos = 0;
     t->parejasEncontradas = 0;
-
     t->cursorX = 0;
     t->cursorY = 0;
 }
@@ -172,10 +171,7 @@ void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, Conte
                 // Llamamos a la logica de clic pasandole el centro de la carta
                 int cx = t->cartas[indice].posicion.x + 1;
                 int cy = t->cartas[indice].posicion.y + 1;
-                int puntos = tableroClic(t, cx, cy, render, juego);
-                juego->puntos += puntos;
-                if(juego->puntos < 0)
-                    juego->puntos = 0;
+                tableroClic(t, cx, cy, render, juego);
                 break;
             }
         }
@@ -187,7 +183,6 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
     if(!t || !juego)
         return 0;
 
-    int puntos = 0;
     int i = 0;
     int clicResuelto = 0;
 
@@ -219,17 +214,21 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     c1->encontrada = 1; c2->encontrada = 1;
                     t->parejasEncontradas++;
 
-                    int puntosBase = t->puntosPorImagen[c1->idImagen];
-
-                    puntos = puntosBase + (t->rachaActual * 20);
+                    int puntosBase = t->puntosPorImagen[c1->idImagen] + (t->rachaActual * 20);
+                    juego->puntos[juego->turnoJugador] += puntosBase;
                     t->rachaActual++;
                 }
                 else
                 {
                     sonidos_reproducir(juego->sndFallo, 1);
                     SDL_Delay(DELAY);
-                    c1->bocaArriba = 0; c2->bocaArriba = 0;
-                    puntos = -20;
+                    c1->bocaArriba = 0;
+                    c2->bocaArriba = 0;
+
+                    if(juego->cantJugadores == 2)
+                    {
+                        juego->turnoJugador = (juego->turnoJugador == 0) ? 1 : 0;
+                    }
                     t->rachaActual = 0;
                 }
                 t->cartaSeleccionada = NULL;
@@ -237,7 +236,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
         }
         i++;
     }
-    return puntos;
+    return 0;
 }
 
 void dibujarPopupSalidaJuego(SDL_Renderer* render, TTF_Font* font, int opcionSeleccionada)
@@ -350,20 +349,40 @@ int tableroCompleto(Tablero* t)
 void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego)
 {
     SDL_Color colorBlanco = {255,255,255};
+    SDL_Color colorGris = {100,100,100};
+    SDL_Color colorVerde = {0,255,0};
     char buffer[100];
 
-    //dibujo los puntos
-    sprintf(buffer, "Puntos: %d", juego->puntos);
-    dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR, colorBlanco);
+    if(juego->cantJugadores == 1)
+    {
+        sprintf(buffer, "Jugador: %s", juego->nombreJugador[0]);
+        dibujarTexto(render,font,buffer,INTERFAZMARGENLATERAL,INTERFAZMARGENSUPERIOR, colorBlanco);
+        sprintf(buffer, "Puntos: %d", juego->puntos[0]);
+        dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR, colorBlanco);
 
-    //dibujo el nombre en pantalla
-    sprintf(buffer, "Jugador: %s", juego->nombreJugador);
-    dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
+    }
+    else
+    {
+        //jugador 1 (en la parte izquierda)
+        SDL_Color c1 = (juego->turnoJugador == 0) ? colorVerde : colorGris;
+        sprintf(buffer, "%s: %d", juego->nombreJugador[0], juego->puntos[0]);
+        dibujarTexto(render, font, buffer,(ANCHOVENTANA/2) - 250, INTERFAZMARGENSUPERIOR, c1);
+
+        //jugador 1 (en la parte derecha)
+        SDL_Color c2 = (juego->turnoJugador == 1) ? colorVerde : colorGris;
+        sprintf(buffer, "%s: %d", juego->nombreJugador[1], juego->puntos[1]);
+        //calculo la posicion aprox para que no se pise con el tiempo
+        dibujarTexto(render, font, buffer, (ANCHOVENTANA/2) + 190, INTERFAZMARGENSUPERIOR, c2);
+
+        //muestro el turno actual
+        sprintf(buffer, "TURNO: %s", juego->nombreJugador[juego->turnoJugador]);
+        dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorVerde);
+    }
 
     //dibujo el tiempo
     Uint32 segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;
     sprintf(buffer, "Tiempo: %d", segundos);
-    dibujarTexto(render, font, buffer, ANCHOVENTANA - INTERFAZMARGENLATERAL - 120, INTERFAZMARGENSUPERIOR, colorBlanco);
+    dibujarTexto(render, font, buffer, ANCHOVENTANA - INTERFAZMARGENLATERAL - 100, INTERFAZMARGENSUPERIOR, colorBlanco);
     dibujarTexto(render, font, "[ ESC: Salir ]", ANCHOVENTANA - 150, ALTOVENTANA - 50, (SDL_Color){255,100,100});
 }
 

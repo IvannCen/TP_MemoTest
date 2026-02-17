@@ -41,6 +41,7 @@
 #define DELAYCHICO 500 //medio segundo
 
 //limites
+#define CANTJUGADORES 2
 #define LETRASNOMBRE 4
 #define ARCHIVOCONFIG "config.dat"
 

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "sonidos.h"
+#include "Comun.h"
 
 typedef struct
 {
@@ -14,10 +15,11 @@ typedef struct
 
 typedef struct
 {
-    int puntos;
+    int puntos[CANTJUGADORES];
     Uint32 tiempoInicio; //tiempo para el cronometro
     int turnoJugador; //para el modo competitivo
-    char nombreJugador[4]; //tres caracteres como juegos retro: AAA
+    char nombreJugador[CANTJUGADORES][LETRASNOMBRE]; //tres caracteres como juegos retro: AAA
+    int cantJugadores;
 
     int confirmandoSalida; //0=jugando, 1=mostrar popup "¿Desea Salir?"
     int opcionSalidaPopup; //0=SI, 1=NO
