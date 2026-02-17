@@ -69,7 +69,7 @@ void tableroRellenar(Tablero* t)
 
     //si hay pocas cartas, el calculo daria cartas muy grandes
     //asi que pongo un limite maximo de tamanio
-    // Pero si el calculo da menos, uso el calculado
+    //Pero si el calculo da menos, uso el calculado
 
     int anchoFinal = (anchoCalculado > ANCHOCARTA) ? ANCHOCARTA : anchoCalculado;
     int altoFinal = (altoCalculado > ALTOCARTA) ? ALTOCARTA : altoCalculado;
@@ -120,72 +120,47 @@ void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
         {
             SDL_SetRenderDrawColor(render,255,255,0,255); //color amarillo
             SDL_Rect r = t->cartas[i].posicion;
+
             r.x-=3;
             r.y-=3;
             r.w+=6;
             r.h+=6; // Un poco mas grande
             SDL_RenderDrawRect(render, &r);
+
             r.x--;
             r.y--;
             r.w+=2;
             r.h+=2;
             SDL_RenderDrawRect(render, &r);
-
         }
     }
 }
 
 void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego)
 {
-//    if(e->type == SDL_KEYDOWN)
-//    {
-//        switch(e->key.keysym.sym)
-//        {
-//            case SDLK_UP:
-//                if(t->cursorY > 0)
-//                    t->cursorY--;
-//                break;
-//
-//            case SDLK_DOWN:
-//                if(t->cursorY < t->filas-1)
-//                    t->cursorY++;
-//                break;
-//
-//            case SDLK_LEFT:
-//                if(t->cursorX > 0)
-//                    t->cursorX--;
-//                break;
-//
-//            case SDLK_RIGHT:
-//                if(t->cursorX < t->columnas-1)
-//                    t->cursorX++;
-//                break;
-//
-//            case SDLK_RETURN:
-//            case SDLK_SPACE:
-//            {
-//                // Simular Clic en la carta seleccionada
-//                int indice = (t->cursorY * t->columnas) + t->cursorX;
-//                // Llamamos a la logica de clic pasandole el centro de la carta
-//                int cx = t->cartas[indice].posicion.x + 1;
-//                int cy = t->cartas[indice].posicion.y + 1;
-//                int puntos = tableroClic(t, cx, cy, render, juego);
-//                juego->puntos += puntos;
-//                if(juego->puntos < 0)
-//                    juego->puntos = 0;
-//                break;
-//            }
-//        }
-//    }
-
     if(e->type == SDL_KEYDOWN)
     {
         switch(e->key.keysym.sym)
         {
-            case SDLK_UP:    if(t->cursorY > 0) t->cursorY--; break;
-            case SDLK_DOWN:  if(t->cursorY < t->filas-1) t->cursorY++; break;
-            case SDLK_LEFT:  if(t->cursorX > 0) t->cursorX--; break;
-            case SDLK_RIGHT: if(t->cursorX < t->columnas-1) t->cursorX++; break;
+            case SDLK_UP:
+                if(t->cursorY > 0)
+                    t->cursorY--;
+                break;
+
+            case SDLK_DOWN:
+                if(t->cursorY < t->filas-1)
+                    t->cursorY++;
+                break;
+
+            case SDLK_LEFT:
+                if(t->cursorX > 0)
+                    t->cursorX--;
+                break;
+
+            case SDLK_RIGHT:
+                if(t->cursorX < t->columnas-1)
+                    t->cursorX++;
+                break;
 
             case SDLK_RETURN:
             case SDLK_SPACE:
@@ -197,7 +172,8 @@ void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, Conte
                 int cy = t->cartas[indice].posicion.y + 1;
                 int puntos = tableroClic(t, cx, cy, render, juego);
                 juego->puntos += puntos;
-                if(juego->puntos < 0) juego->puntos = 0;
+                if(juego->puntos < 0)
+                    juego->puntos = 0;
                 break;
             }
         }
@@ -206,87 +182,9 @@ void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, Conte
 
 int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego)
 {
-//    if(!t || !juego)
-//    {
-//        return 0;
-//    }
-//
-//    int puntos = 0;
-//    int i = 0;
-//    int clicResuelto = 0;
-//
-//    //recorro mientras haya cartas por revisar y no se haya encontrado un clic
-//    while(i<t->cantidad && clicResuelto == 0)
-//    {
-//
-//        //solo debo procesar las imagenes si se clickea una carta valida
-//        //y ademas debo permitir solo el clic cuando no este encontrada
-//        //ya que si se encontro el par no tiene sentido que pueda hacer
-//        //clic denuevo sobre esa carta y tampoco debe poder hacer clic
-//        //dos veces sobre una misma carta.
-//        if(cartaAdentro(&t->cartas[i],x,y) && !t->cartas[i].encontrada && !t->cartas[i].bocaArriba)
-//        {
-//            clicResuelto = 1; //proceso el clic
-//
-//            //primer clic
-//            if(!t->cartaSeleccionada)
-//            {
-//                //reproduzco el sonido seleccionado (1 vez)
-//                sonidos_reproducir(juego->sndSeleccion, 1);
-//
-//                t->cartas[i].bocaArriba = 1;
-//                t->cartaSeleccionada = &t->cartas[i];//guardo la dir
-//                printf("Seleccion 1: id %d\n", t->cartas[i].idImagen);
-//            }
-//            //segundo clic
-//            else
-//            {
-//                Carta* carta1 = t->cartaSeleccionada; //recupero el puntero
-//                Carta* carta2 = &t->cartas[i]; //puntero actual
-//
-//                //muestro la carta en pantalla
-//                carta2->bocaArriba = 1;
-//                t->movimientos++;
-//
-//                //refresco la pantalla (de manera forzada)
-//                //debo forzar el dibujo, ya que cuando probre sin hacer
-//                //esto la pantalla se congelo antes de mostrar la carta
-//                //creo que es un problema de la funcion de Delay
-//                tableroDibujar(t,render,0,0);
-//                SDL_RenderPresent(render);
-//
-//                if(carta1->idImagen == carta2->idImagen)
-//                {
-//                    printf("Hubo coincidencia\n");
-//                    sonidos_reproducir(juego->sndAcierto, 1);
-//
-//                    //asigno los valores
-//                    carta1->encontrada = 1;
-//                    carta2->encontrada = 1;
-//                    t->parejasEncontradas++;
-//                    puntos = 100 + (t->rachaActual * 20);
-//                    t->rachaActual++;
-//                }
-//                else
-//                {
-//                    printf("No hubo coincidencia\n");
-//                    sonidos_reproducir(juego->sndFallo, 1);
-//
-//                    SDL_Delay(DELAY);
-//                    carta1->bocaArriba = 0;
-//                    carta2->bocaArriba = 0;
-//                    puntos = -20;
-//                    t->rachaActual = 0;
-//                }
-//
-//                t->cartaSeleccionada = NULL;
-//            }
-//        }
-//        i++;
-//    }
-//    return puntos;
+    if(!t || !juego)
+        return 0;
 
-    if(!t || !juego) return 0;
     int puntos = 0;
     int i = 0;
     int clicResuelto = 0;
@@ -408,8 +306,10 @@ void tableroMezclar(Tablero* t)
 
 void tableroManejarHover(Tablero* t, int x, int y)
 {
-    for(int i=0; i<t->cantidad; i++) {
-        if(cartaAdentro(&t->cartas[i],x,y)) {
+    for(int i=0; i<t->cantidad; i++)
+    {
+        if(cartaAdentro(&t->cartas[i],x,y))
+        {
             // Actualizamos la carta del teclado para que coincida con el mouse
             int col = i % t->columnas;
             int fil = i / t->columnas;
@@ -419,7 +319,9 @@ void tableroManejarHover(Tablero* t, int x, int y)
             // Tambien marcamos hover
             if(!t->cartas[i].encontrada && !t->cartas[i].bocaArriba)
                 t->cartas[i].hover = 1;
-        } else {
+        }
+        else
+        {
             t->cartas[i].hover = 0;
         }
     }
@@ -445,17 +347,12 @@ void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* ju
     SDL_Color colorBlanco = {255,255,255};
     char buffer[100];
 
-//    //dibujo el nivel
-//    sprintf(buffer, "Nivel: %d", juego->nivelActual);
-//    dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
-
     //dibujo los puntos
     sprintf(buffer, "Puntos: %d", juego->puntos);
     dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR, colorBlanco);
 
     //dibujo el nombre en pantalla
     sprintf(buffer, "Jugador: %s", juego->nombreJugador);
-//    dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR + 30, colorBlanco);
     dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorBlanco);
 
     //dibujo el tiempo

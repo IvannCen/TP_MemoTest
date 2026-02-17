@@ -33,8 +33,11 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mous
     else
     {
         // Fallback colores solidos
-        if(c->bocaArriba) SDL_SetRenderDrawColor(render,0,255,0,255);
-        else SDL_SetRenderDrawColor(render,0,0,255,255);
+        if(c->bocaArriba)
+            SDL_SetRenderDrawColor(render,0,255,0,255);
+        else
+            SDL_SetRenderDrawColor(render,0,0,255,255);
+
         SDL_RenderFillRect(render, &c->posicion);
     }
 
@@ -44,8 +47,16 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mous
         SDL_SetRenderDrawColor(render, 0, 255, 255, 255); // Cyan
         SDL_Rect r = c->posicion;
         SDL_RenderDrawRect(render, &r);
-        r.x++; r.y++; r.w-=2; r.h-=2; SDL_RenderDrawRect(render, &r);
-        r.x++; r.y++; r.w-=2; r.h-=2; SDL_RenderDrawRect(render, &r);
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r);
+        r.x++;
+        r.y++;
+        r.w-=2;
+        r.h-=2;
+        SDL_RenderDrawRect(render, &r);
     }
     else
     {

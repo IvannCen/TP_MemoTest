@@ -61,8 +61,6 @@ int menuManejarOpciones(Menu* m, SDL_Event* e);
 void menuDibujar(Menu* m, SDL_Renderer* renderer);
 
 //menu de configuracion
-//void menuDificultadDibujar(Menu* m, SDL_Renderer* renderer);
-//int menuDificultadOpciones(Menu* m, SDL_Event* e);
 int obtenerYConfig(int opcion);
 int menuConfiguracionOpciones(Menu* m, SDL_Event* e, Configuracion* config);
 void menuConfiguracionDibujar(Menu* m, SDL_Renderer* renderer, Configuracion* config);
@@ -79,6 +77,5 @@ int ingresoNombreOpciones(IngresoNombre* ing, SDL_Event* e, ContextoJuego* juego
 char siguienteCaracter(char c);
 char anteriorCaracter(char c);
 const char* menuObtenerTexto(int opcion); //conecta el enum con el texto
-//const char* menuDificultadObtenerTexto(int opcion); //idem con dificultad (ESTO SE VA A MODIFICAR CUANDO CAMBIEMOS LA CONFIG)
 
 #endif // MENU
