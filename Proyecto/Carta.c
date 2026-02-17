@@ -20,16 +20,15 @@ void CartaInicial(Carta* c, int id, int x, int y, int w,int h)
 
 void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mouseX, int mouseY)
 {
-    if(!c) return;
+    if(!c)
+        return;
 
     // FONDO BLANCO BASE (Para evitar cartas invisibles si falla textura)
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderFillRect(render, &c->posicion);
 
     if(textura)
-    {
         SDL_RenderCopy(render, textura, NULL, &c->posicion);
-    }
     else
     {
         // Fallback colores solidos
@@ -71,9 +70,7 @@ void CartaDibujar(Carta* c, SDL_Renderer* render, SDL_Texture* textura, int mous
 int cartaAdentro(Carta* c, int x, int y)
 {
     if(!c)
-    {
         return 0;
-    }
 
     SDL_Point clic = {x,y};
 

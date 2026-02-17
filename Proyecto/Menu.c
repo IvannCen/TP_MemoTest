@@ -58,18 +58,33 @@ int menuManejarOpciones(Menu* m, SDL_Event* e)
             else if(e->key.keysym.sym == SDLK_ESCAPE)
                 m->confirmaSalida = 0;
         }
-        else if (e->type == SDL_MOUSEBUTTONDOWN && e->button.button == SDL_BUTTON_LEFT)
+        else if (e->type == SDL_MOUSEMOTION || (e->type == SDL_MOUSEBUTTONDOWN && e->button.button == SDL_BUTTON_LEFT))
         {
-            int mx = e->button.x, my = e->button.y;
+            int mx = e->button.x;
+            int my = e->button.y;
             SDL_Point p = {mx, my};
+
             SDL_Rect rectSi = { (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, 50, 40 };
             SDL_Rect rectNo = { (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, 50, 40 };
 
             if(SDL_PointInRect(&p, &rectSi))
-                return OPCION_SALIR;
+            {
+                //Actualizo estado visual
+                m->opcionSalida = 0;
+                //Si ademas es click, ejecuto la accion
+                if(e->type == SDL_MOUSEBUTTONDOWN)
+                    return OPCION_SALIR;
+            }
 
             if(SDL_PointInRect(&p, &rectNo))
-                m->confirmaSalida = 0;
+            {
+                //Actualizo estado visual
+                m->opcionSalida = 1;
+                //Si ademas es click, ejecuto la accion
+                if(e->type == SDL_MOUSEBUTTONDOWN)
+                    m->confirmaSalida = 0;
+            }
+
         }
         return -1;
     }

@@ -72,7 +72,8 @@ int main(int argc, char *argv[])
     {
         while (SDL_PollEvent(&e))
         {
-            if (e.type == SDL_QUIT) corriendo = 0;
+            if (e.type == SDL_QUIT)
+                corriendo = 0;
 
             switch(estadoActual)
             {
@@ -184,7 +185,8 @@ int main(int argc, char *argv[])
                         }
                         else if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT)
                         {
-                            int mx = e.button.x, my = e.button.y;
+                            int mx = e.button.x;
+                            int my = e.button.y;
                             SDL_Point p = {mx, my};
                             int cY = (ALTOVENTANA-200)/2;
                             SDL_Rect rSi = { (ANCHOVENTANA/2)-80, cY+120, 50, 40 };
@@ -274,12 +276,16 @@ int main(int argc, char *argv[])
             ingresoNombreDibujar(&menuPrincipal.nombre, renderer);
         else if(estadoActual == ESTADO_JUGANDO)
         {
-            int mX, mY; SDL_GetMouseState(&mX,&mY);
+            int mX, mY;
+            SDL_GetMouseState(&mX,&mY);
             tableroDibujar(&miTablero, renderer, mX, mY);
             dibujarEstadisticas(renderer, fuenteChica, &juego);
             if(juego.confirmandoSalida)
+            {
                 dibujarPopupSalida(renderer, menuPrincipal.fuenteOpciones,
                                    "Abandonar partida?", juego.opcionSalidaPopup);
+
+            }
 
         }
         else if(estadoActual == ESTADO_GANO)

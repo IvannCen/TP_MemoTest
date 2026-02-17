@@ -21,6 +21,9 @@
 #define CONF_Y_JUGADORES    360
 #define CONF_Y_GUARDAR      480
 
+#define PUNTOS 100
+#define PUNTOSERROR 20
+
 typedef struct
 {
     Carta* cartas; //puntero a la primera pos del vector de cartas

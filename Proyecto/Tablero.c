@@ -101,9 +101,7 @@ void tableroRellenar(Tablero* t)
 void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
 {
     if(!t || !t->cartas)
-    {
         return;
-    }
 
     for(int i=0;i<t->cantidad;i++)
     {
@@ -214,7 +212,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     c1->encontrada = 1; c2->encontrada = 1;
                     t->parejasEncontradas++;
 
-                    int puntosBase = t->puntosPorImagen[c1->idImagen] + (t->rachaActual * 20);
+                    int puntosBase = PUNTOS + (t->rachaActual * 20);
                     juego->puntos[juego->turnoJugador] += puntosBase;
                     t->rachaActual++;
                 }
@@ -224,7 +222,7 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
                     SDL_Delay(DELAY);
                     c1->bocaArriba = 0;
                     c2->bocaArriba = 0;
-                    juego->puntos[juego->turnoJugador] -=
+                    juego->puntos[juego->turnoJugador] -= PUNTOSERROR;
 
                     if(juego->cantJugadores == 2)
                     {
@@ -263,16 +261,22 @@ void dibujarPopupSalida(SDL_Renderer* render, TTF_Font* font, const char* texto,
 
 void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 {
-    if(!t) return;
+    if(!t)
+        return;
+
     const char* rutaDorso = (idSet == 0) ? RUTADORSOA : RUTADORSOB;
     t->dorso = IMG_LoadTexture(render, rutaDorso);
-    if(!t->dorso) printf("Error dorso: %s\n", IMG_GetError());
+
+    if(!t->dorso)
+        printf("Error dorso: %s\n", IMG_GetError());
 
     const char* carpeta = (idSet == 0) ? RUTASETA : RUTASETB;
     char buffer[256];
+
     // Para el tablero 4x5 (20 cartas) necesitamos 10 imagenes.
     // Iteramos hasta CANTIDADIMAGENES (que es 10 en comun.h)
-    for(int i=0; i<CANTIDADIMAGENES; i++) {
+    for(int i=0; i<CANTIDADIMAGENES; i++)
+    {
         sprintf(buffer, "%s%d.png", carpeta, i);
         t->imagenes[i] = IMG_LoadTexture(render, buffer);
     }
@@ -282,9 +286,7 @@ void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
 void tableroMezclar(Tablero* t)
 {
     if(!t)
-    {
         return;
-    }
 
     //ciclo para recorrer la cantidad de cartas en el juego
     //uso la cantidad de cartas que hay, en este caso sobre
@@ -333,14 +335,10 @@ void tableroManejarHover(Tablero* t, int x, int y)
 int tableroCompleto(Tablero* t)
 {
     if(!t)
-    {
         return 0;
-    }
 
     if(t->parejasEncontradas == (t->cantidad / 2))
-    {
         return 1; //hubo victoria
-    }
 
     return 0; //no hubo victoria
 }
@@ -401,8 +399,6 @@ void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x
     }
 }
 
-//Revisar si esta funcion es realmente necesaria, podríamos mandar el valor x como parametro
-//reutilizando la función dibujarTexto()
 void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color)
 {
     SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);

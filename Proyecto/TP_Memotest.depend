@@ -502,7 +502,7 @@
 	"Menu.h"
 	"Tablero.h"
 
-1771331805 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
+1771336895 source:c:\users\matias\documents\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
 1771293117 c:\users\matias\documents\github\tp_memotest\proyecto\carta.h
@@ -977,13 +977,13 @@
 
 1770985626 c:\users\matias\documents\github\tp_memotest\proyecto\config.h
 
-1771334864 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
+1771338407 source:c:\users\matias\documents\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
 	"Carta.h"
 
-1771334864 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
+1771337540 c:\users\matias\documents\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
@@ -998,11 +998,11 @@
 	"Comun.h"
 	"Juego.h"
 
-1771334864 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
+1771339474 source:c:\users\matias\documents\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
-1771334864 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
+1771338094 source:c:\users\matias\documents\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
 1771005643 source:c:\users\matias\documents\github\tp_memotest\proyecto\sonidos.c
