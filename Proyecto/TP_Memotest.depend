@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1771327225 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
+1771342432 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.c
 	"Carta.h"
 
 1771297673 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\carta.h
@@ -468,16 +468,16 @@
 	"begin_code.h"
 	"close_code.h"
 
-1771339872 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
+1771342432 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.c
 	"Tablero.h"
 
-1771337759 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
+1771342577 c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\tablero.h
 	"Comun.h"
 	"Carta.h"
 	"Juego.h"
 	"sonidos.h"
 
-1771339854 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
+1771342432 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\main.c
 	"Tablero.h"
 	"Juego.h"
 	"Menu.h"
@@ -498,7 +498,7 @@
 	"Comun.h"
 	"Juego.h"
 
-1771333895 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
+1771342432 source:c:\users\ivanc\onedrive\documentos\github\tp_memotest\proyecto\menu.c
 	"Menu.h"
 	"Tablero.h"
 
