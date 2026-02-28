@@ -2,49 +2,9 @@
 #define JUEGO
 
 #include <SDL2/SDL.h>
+#include "configuracion.h"
 #include "sonidos.h"
 
-// dimensiones de la ventana
-#define ANCHOVENTANA 1366
-#define ALTOVENTANA 768
-
-// limites
-#define CANTJUGADORES 2
-#define LETRASNOMBRE 4
-#define ARCHIVOCONFIG "config.dat"
-
-
-typedef struct
-{
-    int filas;
-    int columnas;
-    int idSetImagenes;
-    int cantJugadores;
-}Configuracion;
-
-typedef struct
-{
-    int puntos[CANTJUGADORES];
-    Uint32 tiempoInicio; //tiempo para el cronometro
-    int turnoJugador; //para el modo competitivo
-    char nombreJugador[CANTJUGADORES][LETRASNOMBRE]; //tres caracteres como juegos retro: AAA
-    int cantJugadores;
-
-    int confirmandoSalida; //0=jugando, 1=mostrar popup "¿Desea Salir?"
-    int opcionSalidaPopup; //0=SI, 1=NO
-
-    //Sonidos, efectos cortos
-    tSonido* sndSeleccion;
-    tSonido* sndAcierto;
-    tSonido* sndFallo;
-
-    //Musica
-    tMusica* musMenu;
-    tMusica* musJuego;
-}ContextoJuego;
-
-//esta estructura enum va a asignar valores a los distintos estados donde
-//se encuentre el menu. por defecto ESTADO_MENU=0, ESTADO_DIFICULTAD=1 y asi
 typedef enum
 {
     ESTADO_MENU,
@@ -54,5 +14,31 @@ typedef enum
     ESTADO_GANO,
     ESTADO_RANKING
 }EstadoJuego;
+
+typedef struct
+{
+    int filas;
+    int columnas;
+    int idSetImagenes;
+    int cantJugadores;
+}ConfiguracionJuego;
+
+typedef struct
+{
+    int puntos[MAX_JUGADORES];
+    Uint32 tiempoInicio;
+    int turnoJugador;
+    char nombreJugador[MAX_JUGADORES][MAX_LETRAS_NOMBRE];
+    int cantJugadores;
+    int confirmandoSalida;
+    int opcionSalidaPopup;
+    tSonido* sndSeleccion;
+    tSonido* sndAcierto;
+    tSonido* sndFallo;
+    tMusica* musMenu;
+    tMusica* musJuego;
+}ContextoJuego;
+
+int Juego_Ejecutar(SDL_Window* window, SDL_Renderer* renderer);
 
 #endif // JUEGO

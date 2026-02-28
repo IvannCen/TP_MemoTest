@@ -65,27 +65,38 @@
 			<Add directory="lib/SDL2_ttf-2.24.0/x86_64-w64-mingw32/lib" />
 			<Add directory="lib/SDL2_image-2.8.8/x86_64-w64-mingw32/lib" />
 		</Linker>
-		<Unit filename="Carta.c">
+		<Unit filename="carta.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="Carta.h" />
-		<Unit filename="Comun.h" />
-		<Unit filename="Juego.h" />
-		<Unit filename="Menu.c">
+		<Unit filename="carta.h" />
+		<Unit filename="configuracion.h" />
+		<Unit filename="juego.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="Menu.h" />
-		<Unit filename="Tablero.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="Tablero.h" />
+		<Unit filename="juego.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="menu.h" />
+		<Unit filename="ranking.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ranking.h" />
 		<Unit filename="sonidos.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="sonidos.h" />
+		<Unit filename="tablero.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tablero.h" />
+		<Unit filename="vector.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="vector.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
