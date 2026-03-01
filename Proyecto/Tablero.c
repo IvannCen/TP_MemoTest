@@ -1,28 +1,62 @@
-#include "Tablero.h"
+#include "tablero.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-void tableroIniciar(Tablero* t, Configuracion* config)
+void tablero_Iniciar(Tablero* t, ConfiguracionJuego* config)
 {
-    int cant = config->filas * config->columnas;
+    int cant;
+    int i;
+    Carta cVacia;
+    SDL_Texture *nullTex = NULL;
+
+    /* Proteccion contra division por cero si config no fue bien cargado */
+    if(config->filas <= 0)
+        config->filas = 4;
+
+    if(config->columnas <= 0)
+        config->columnas = 4;
+
+    cant = config->filas * config->columnas;
+
+    memset(&cVacia, 0, sizeof(Carta)); //(Revisar esto del memset, ya que no es una función que hayamos visto en clase)
+
+    //Guardamos filas y columnas en el tablero basándonos en la configuración
     t->filas = config->filas;
     t->columnas = config->columnas;
 
-    t->cartas = (Carta*)malloc(sizeof(Carta)*cant);
-    if(!t->cartas)
+    //Inicializamos los TDA pasando la direccion de memoria de los structs
+    if(!vectorCrear(&t->cartas, sizeof(Carta)))
     {
-        printf("Error al crear el vector dinamico inicial.\n");
+        //Uso fprintf en el buffer de stderr para mostrar por consola el error
+        fprintf(stderr, "Error al crear el vector de cartas");
         exit(1);
     }
-    t->cantidad = cant;
+
+    if(!vectorCrear(&t->imagenes, sizeof(SDL_Texture*)))
+    {
+        fprintf(stderr, "Error al crear el vector de imsgenes");
+        exit(1);
+    }
+
+    //Rellenamos con cartas vacías para reservar el tamaño inicial
+    for(i = 0; i < cant; i++)
+    {
+        vectorInsertarAlFinal(&t->cartas, &cVacia);
+    }
+
+    //Rellenamos el vector de texturas con punteros nulos seguros
+    for(i = 0; i < CANTIDAD_IMAGENES; i++)
+    {
+        vectorInsertarAlFinal(&t->imagenes, &nullTex);
+    }
+
+    //Inicializamos el resto de las variables de estado.
     t->cartaSeleccionada = NULL;
     t->cantidadImagenesCargadas = 0;
     t->dorso = NULL;
     t->texturaFondoJuego = NULL;
-
-    for(int i=0; i<CANTIDADIMAGENES; i++)
-    {
-        t->imagenes[i] = NULL;
-    }
-
     t->rachaActual = 0;
     t->movimientos = 0;
     t->parejasEncontradas = 0;
@@ -30,205 +64,232 @@ void tableroIniciar(Tablero* t, Configuracion* config)
     t->cursorY = 0;
 }
 
-void tableroDestruir(Tablero* t)
+void tablero_Destruir(Tablero* t)
 {
-    if(t->cartas)
-    {
-        free(t->cartas);
-        t->cartas = NULL;
-    }
+    int i;
+    SDL_Texture **pTex = NULL;
 
     if(t->dorso)
     {
         SDL_DestroyTexture(t->dorso);
         t->dorso = NULL;
     }
-
     if(t->texturaFondoJuego)
     {
         SDL_DestroyTexture(t->texturaFondoJuego);
         t->texturaFondoJuego = NULL;
     }
-
-    for(int i=0; i<CANTIDADIMAGENES; i++)
+    for(i = 0; i< CANTIDAD_IMAGENES; i++)
     {
-        if(t->imagenes[i])
+        pTex = (SDL_Texture**)vectorObtenerPuntero(&t->imagenes, i);
+        if(pTex && *pTex)
         {
-            SDL_DestroyTexture(t->imagenes[i]);
-            t->imagenes[i] = NULL;
+            SDL_DestroyTexture(*pTex);
+            *pTex = NULL;
         }
     }
+
+    vectorDestruir(&t->cartas);
+    vectorDestruir(&t->imagenes);
 }
 
-void tableroRellenar(Tablero* t)
+void tablero_Rellenar(Tablero* t, int filas, int columnas)
 {
-    //el area donde se pueden poder las ventanas
-    // Ancho: Toda la ventana menos un margen chico de costado
-    // Alto: Toda la ventana menos el espacio de arriba para los tiempos y eso
-    int anchoUtil = ANCHOVENTANA - (INTERFAZMARGENLATERAL * 2); // 20px de margen a los lados
-    int altoUtil = ALTOVENTANA - ALTOINTERFAZ - INTERFAZMARGENSUPERIOR;
+    int cantidad = vectorCantidadDeElementos(&t->cartas);
+    int anchoUtil, altoUtil, anchoCalc, altoCalc, anchoF, altoF, anchoB, altoB, mX, mY;
+    int i, c, f, pX, pY, id, imgDisponibles;
+    Carta *cPtr = NULL;
 
-    //calculo el tamanio de la carta de manera dinamica, para que no sea un numero estatico
-    //de la sig manera: (EspacioTotal - (Separaciones)) / Cantidad
-    int anchoCalculado = (anchoUtil - ((t->columnas - 1) * SEPARACIONCARTA)) / t->columnas;
-    int altoCalculado = (altoUtil - ((t->filas - 1) * SEPARACIONCARTA)) / t->filas;
+    /* Proteccion estructural contra division por cero */
+    if(filas <= 0)
+        filas = 4;
+    if(columnas <= 0)
+        columnas = 4;
 
-    //si hay pocas cartas, el calculo daria cartas muy grandes
-    //asi que pongo un limite maximo de tamanio
-    //Pero si el calculo da menos, uso el calculado
+    /* Si aun no se cargaron imagenes, evitamos dividir por cero usando 1 temporalmente */
+    imgDisponibles = (t->cantidadImagenesCargadas > 0) ? t->cantidadImagenesCargadas : 1;
 
-    int anchoFinal = (anchoCalculado > ANCHOCARTA) ? ANCHOCARTA : anchoCalculado;
-    int altoFinal = (altoCalculado > ALTOCARTA) ? ALTOCARTA : altoCalculado;
+    anchoUtil = ANCHO_VENTANA - (MARGEN_LATERAL * 2);
+    altoUtil = ALTO_VENTANA - ALTO_INTERFAZ - MARGEN_SUPERIOR;
+    anchoCalc = (anchoUtil - ((columnas - 1) * SEPARACION_CARTA)) / columnas;
+    altoCalc = (altoUtil - ((filas - 1) * SEPARACION_CARTA)) / filas;
+    anchoF = (anchoCalc > ANCHO_CARTA) ? ANCHO_CARTA : anchoCalc;
+    altoF = (altoCalc > ALTO_CARTA) ? ALTO_CARTA : altoCalc;
+    anchoB = (columnas * anchoF) + ((columnas - 1) * SEPARACION_CARTA);
+    altoB = (filas * altoF) + ((filas - 1) * SEPARACION_CARTA);
+    mX = (ANCHO_VENTANA - anchoB) / 2;
+    mY = ALTO_INTERFAZ + ((altoUtil - altoB) / 2);
 
-    //calculo cuanto ocupa todo el bloque completo en la ventana
-    int anchoBloque = (t->columnas * anchoFinal) + ((t->columnas - 1) * SEPARACIONCARTA);
-    int altoBloque = (t->filas * altoFinal) + ((t->filas - 1) * SEPARACIONCARTA);
-
-    //margenes para centrar matematicamente en la pantalla
-    int margenX = (ANCHOVENTANA - anchoBloque) / 2;
-    int margenY = ALTOINTERFAZ + ((altoUtil - altoBloque) / 2);
-
-    for(int i=0; i<t->cantidad; i++)
+    for(i = 0; i < cantidad; i++)
     {
-        int col = i % t->columnas;
-        int fil = i / t->columnas;
+        c = i % columnas;
+        f = i / columnas;
+        pX = mX + (c * (anchoF + SEPARACION_CARTA));
+        pY = mY + (f * (altoF + SEPARACION_CARTA));
 
-        int posX = margenX + (col * (anchoFinal + SEPARACIONCARTA));
-        int posY = margenY + (fil * (altoFinal + SEPARACIONCARTA));
+        id = (i / 2) % imgDisponibles;
 
-        int idImagen = (i/2) % t->cantidadImagenesCargadas;
+        cPtr = (Carta*)vectorObtenerPuntero(&t->cartas, i); /* Aca ocurria el crash si imagenes era 0 */
 
-        //mando las variables anchoFinal y altoFinal, no las constantes fijas
-        CartaInicial(&t->cartas[i], idImagen, posX, posY, anchoFinal, altoFinal);
+        if(cPtr)
+            carta_Inicializar(cPtr, id, pX, pY, anchoF, altoF);
     }
 }
 
-void tableroDibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
+void tablero_Dibujar(Tablero* t, SDL_Renderer* render, int mouseX, int mouseY)
 {
+    int i, cantidad, esCursor;
+    Carta *cPtr = NULL;
+    SDL_Texture **pTex = NULL;
+    SDL_Texture *tex = NULL;
+
     if(t->texturaFondoJuego)
         SDL_RenderCopy(render, t->texturaFondoJuego, NULL, NULL);
     else
         SDL_SetRenderDrawColor(render, 20, 20, 20, 255);
 
-    if(!t || !t->cartas)
+    if(!t)
         return;
 
-    for(int i=0;i<t->cantidad;i++)
+    cantidad = vectorCantidadDeElementos(&t->cartas);
+
+    for(i = 0; i < cantidad; i++)
     {
-        SDL_Texture* texturaActual = (t->cartas[i].encontrada || t->cartas[i].bocaArriba) ? t->imagenes[t->cartas[i].idImagen] : t->dorso;
+        cPtr = (Carta*)vectorObtenerPuntero(&t->cartas, i);
 
-        int esCursor = 0;
-        int col = i % t->columnas;
-        int fil = i / t->columnas;
-        if(col == t->cursorX && fil == t->cursorY)
-            esCursor = 1;
+        if(cPtr)
+        {
+            if(cPtr->encontrada || cPtr->bocaArriba)
+            {
+                pTex = (SDL_Texture**)vectorObtenerPuntero(&t->imagenes, cPtr->idImagen);
+                tex = (pTex && *pTex) ? *pTex : t->dorso;
+            }
+            else
+                tex = t->dorso;
 
-        CartaDibujar(&t->cartas[i], render, texturaActual,esCursor);
+            esCursor = 0;
+            if(t->columnas > 0) /* Proteccion vital */
+            {
+                esCursor = (i % t->columnas == t->cursorX && i / t->columnas == t->cursorY);
+            }
+
+            if(esCursor)
+                cPtr->hover = 1;
+
+            carta_Dibujar(cPtr, render, tex, esCursor);
+        }
     }
 }
 
-void tableroManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
+void tablero_ManejarTeclado(Tablero* t, SDL_Event* e, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
 {
+    int k, cantidad, idx, cx, cy;
+    Carta* cPtr = NULL;
+    Carta* target = NULL;
+
     if(e->type == SDL_KEYDOWN)
     {
-        for(int k=0;k<t->cantidad;k++)
+        cantidad = vectorCantidadDeElementos(&t->cartas);
+        for(k = 0; k < cantidad; k++)
         {
-            t->cartas[k].hover = 0;
+            cPtr = (Carta*)vectorObtenerPuntero(&t->cartas, k);
+            if(cPtr)
+                cPtr->hover = 0;
         }
+
         switch(e->key.keysym.sym)
         {
             case SDLK_UP:
                 if(t->cursorY > 0)
                     t->cursorY--;
                 break;
-
             case SDLK_DOWN:
                 if(t->cursorY < t->filas-1)
                     t->cursorY++;
                 break;
-
             case SDLK_LEFT:
                 if(t->cursorX > 0)
                     t->cursorX--;
                 break;
-
             case SDLK_RIGHT:
                 if(t->cursorX < t->columnas-1)
                     t->cursorX++;
                 break;
-
             case SDLK_RETURN:
             case SDLK_SPACE:
             {
-                // Simular Clic en la carta seleccionada
-                int indice = (t->cursorY * t->columnas) + t->cursorX;
-                // Llamamos a la logica de clic pasandole el centro de la carta
-                int cx = t->cartas[indice].posicion.x + 1;
-                int cy = t->cartas[indice].posicion.y + 1;
-                tableroClic(t, cx, cy, render, juego, font);
+                idx = (t->cursorY * t->columnas) + t->cursorX;
+                target = (Carta*)vectorObtenerPuntero(&t->cartas, idx);
+                if(target)
+                {
+                    cx = target->posicion.x + target->posicion.w/2;
+                    cy = target->posicion.y + target->posicion.h/2;
+                    tablero_Clic(t, cx, cy, render, juego, font);
+                }
                 break;
             }
         }
     }
 }
 
-int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
+int tablero_Clic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* juego, TTF_Font* font)
 {
+    int i = 0, resuelto = 0, cantidad, pts;
+    Carta* cActual = NULL;
+    Carta* c1 = NULL;
+    Carta* c2 = NULL;
+
     if(!t || !juego)
         return 0;
 
-    int i = 0;
-    int clicResuelto = 0;
+    cantidad = vectorCantidadDeElementos(&t->cartas);
 
-    while(i<t->cantidad && clicResuelto == 0)
+    while(i < cantidad && !resuelto)
     {
-        if(cartaAdentro(&t->cartas[i],x,y) && !t->cartas[i].encontrada && !t->cartas[i].bocaArriba)
+        cActual = (Carta*)vectorObtenerPuntero(&t->cartas, i);
+        if(cActual && carta_EstaDentro(cActual, x, y) && !cActual->encontrada && !cActual->bocaArriba)
         {
-            clicResuelto = 1;
+            resuelto = 1;
             if(!t->cartaSeleccionada)
             {
-                sonidos_reproducir(juego->sndSeleccion, 1);
-                t->cartas[i].bocaArriba = 1;
-                t->cartaSeleccionada = &t->cartas[i];
+                sonidos_Reproducir(juego->sndSeleccion, 1);
+                cActual->bocaArriba = 1;
+                t->cartaSeleccionada = cActual;
             }
             else
             {
-                Carta* c1 = t->cartaSeleccionada;
-                Carta* c2 = &t->cartas[i];
+                c1 = t->cartaSeleccionada;
+                c2 = cActual;
                 c2->bocaArriba = 1;
                 t->movimientos++;
 
-                // Forzar redibujado
-                tableroDibujar(t,render,0,0);
+                tablero_Dibujar(t, render, 0, 0);
                 dibujarEstadisticas(render, font, juego);
                 SDL_RenderPresent(render);
 
                 if(c1->idImagen == c2->idImagen)
                 {
-                    sonidos_reproducir(juego->sndAcierto, 1);
-                    c1->encontrada = 1; c2->encontrada = 1;
+                    sonidos_Reproducir(juego->sndAcierto, 1);
+                    c1->encontrada = 1;
+                    c2->encontrada = 1;
                     t->parejasEncontradas++;
-
-                    int puntosBase = PUNTOS + (t->rachaActual * 20);
-                    juego->puntos[juego->turnoJugador] += puntosBase;
+                    pts = PUNTOS_BASE_ACIERTO + (t->rachaActual * PUNTOS_BONUS_RACHA);
+                    *(juego->puntos + juego->turnoJugador) += pts;
                     t->rachaActual++;
                 }
                 else
                 {
-                    sonidos_reproducir(juego->sndFallo, 1);
-                    SDL_Delay(DELAY);
+                    sonidos_Reproducir(juego->sndFallo, 1);
+                    SDL_Delay(TIEMPO_DELAY_ERROR);
                     c1->bocaArriba = 0;
                     c2->bocaArriba = 0;
-                    juego->puntos[juego->turnoJugador] -= PUNTOSERROR;
+                    *(juego->puntos + juego->turnoJugador) -= PUNTOS_PENALIZACION;
+                    if(*(juego->puntos + juego->turnoJugador) < 0)
+                        *(juego->puntos + juego->turnoJugador) = 0;
 
-                    if(juego->puntos[juego->turnoJugador] < 0)
-                    {
-                        juego->puntos[juego->turnoJugador] = 0;
-                    }
                     if(juego->cantJugadores == 2)
-                    {
                         juego->turnoJugador = (juego->turnoJugador == 0) ? 1 : 0;
-                    }
+
                     t->rachaActual = 0;
                 }
                 t->cartaSeleccionada = NULL;
@@ -239,289 +300,220 @@ int tableroClic(Tablero* t, int x, int y, SDL_Renderer* render, ContextoJuego* j
     return 0;
 }
 
+void tablero_CargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
+{
+    int i;
+    char buf[100]; //antes era char buf[256], lo modifique
+    const char *rDorso = NULL;
+    const char *rFondo = NULL;
+    const char *carp = NULL;
+    SDL_Texture *texLoad = NULL;
+    SDL_Texture **pTex = NULL;
+
+    if(!t)
+        return;
+
+    rDorso = (idSet == 0) ? RUTA_DORSO_A : RUTA_DORSO_B;
+    t->dorso = IMG_LoadTexture(render, rDorso);
+
+    if(!t->dorso)
+        fprintf(stderr,"Error Dorso: %s\n", IMG_GetError());
+
+    rFondo = (idSet == 0) ? RUTA_FONDO_JUEGO_C : RUTA_FONDO_JUEGO_L;
+    t->texturaFondoJuego = IMG_LoadTexture(render, rFondo);
+
+    carp = (idSet == 0) ? RUTA_SET_A : RUTA_SET_B;
+
+    for(i = 0; i < CANTIDAD_IMAGENES; i++)
+    {
+        sprintf(buf, "%s%d.png", carp, i);
+        texLoad = IMG_LoadTexture(render, buf);
+
+        pTex = (SDL_Texture**)vectorObtenerPuntero(&t->imagenes, i);
+        if(pTex)
+            *pTex = texLoad;
+    }
+
+    t->cantidadImagenesCargadas = CANTIDAD_IMAGENES;
+}
+
+void tablero_Mezclar(Tablero* t)
+{
+    int cantidad = vectorCantidadDeElementos(&t->cartas);
+    int i, j, aux;
+    Carta *c1 = NULL;
+    Carta *c2 = NULL;
+
+    if(!t || cantidad < 2)
+        return;
+
+    for(i = 0; i < cantidad; i++)
+    {
+        j = rand() % cantidad;
+
+        c1 = (Carta*)vectorObtenerPuntero(&t->cartas, i);
+        c2 = (Carta*)vectorObtenerPuntero(&t->cartas, j);
+
+        if(c1 && c2)
+        {
+            aux = c1->idImagen;
+            c1->idImagen = c2->idImagen;
+            c2->idImagen = aux;
+        }
+    }
+}
+
+void tablero_ManejarHover(Tablero* t, int x, int y)
+{
+    int i, cantidad;
+    Carta* c = NULL;
+
+    /* Vital: evitar crash si todavia no hay columnas definidas (al mover el mouse tempranamente) */
+    if(!t || t->columnas <= 0)
+        return;
+
+    cantidad = vectorCantidadDeElementos(&t->cartas);
+
+    for(i = 0; i < cantidad; i++)
+    {
+        c = (Carta*)vectorObtenerPuntero(&t->cartas, i);
+        if(c)
+        {
+            if(carta_EstaDentro(c, x, y))
+            {
+                t->cursorX = i % t->columnas;
+                t->cursorY = i / t->columnas;
+                if(!c->encontrada && !c->bocaArriba)
+                    c->hover = 1;
+            }
+            else
+                c->hover = 0;
+        }
+    }
+}
+
+int tablero_Completo(Tablero* t)
+{
+    int i, cantidad;
+    Carta* c = NULL;
+
+    if(!t)
+        return 0;
+
+    cantidad = vectorCantidadDeElementos(&t->cartas);
+
+    for(i = 0; i < cantidad; i++)
+    {
+        c = (Carta*)vectorObtenerPuntero(&t->cartas, i);
+
+        if(c && c->encontrada == 0)
+            return 0;
+    }
+
+    return 1;
+}
+
+void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego)
+{
+    SDL_Color blanco = COLOR_BLANCO;
+    SDL_Color gris = COLOR_GRIS;
+    SDL_Color verde = COLOR_VERDE;
+    SDL_Color c1, c2;
+    char buf[100];
+    Uint32 seg;
+
+    if(juego->cantJugadores == 1)
+    {
+        sprintf(buf, "Jugador: %s", *(juego->nombreJugador + 0));
+        dibujarTexto(render, font, buf, MARGEN_LATERAL, MARGEN_SUPERIOR, blanco);
+        sprintf(buf, "Puntos: %d", *(juego->puntos + 0));
+        dibujarTextoCentrados(render, font, buf, MARGEN_SUPERIOR, blanco);
+    }
+    else
+    {
+        c1 = (juego->turnoJugador == 0) ? verde : gris;
+        c2 = (juego->turnoJugador == 1) ? verde : gris;
+
+        sprintf(buf, "%s: %d", *(juego->nombreJugador + 0), *(juego->puntos + 0));
+        dibujarTexto(render, font, buf, (ANCHO_VENTANA/2)-250, MARGEN_SUPERIOR, c1);
+
+        sprintf(buf, "%s: %d", *(juego->nombreJugador + 1), *(juego->puntos + 1));
+        dibujarTexto(render, font, buf, (ANCHO_VENTANA/2)+195, MARGEN_SUPERIOR, c2);
+
+        sprintf(buf, "TURNO: %s", *(juego->nombreJugador + juego->turnoJugador));
+        dibujarTexto(render, font, buf, MARGEN_LATERAL, MARGEN_SUPERIOR, verde);
+    }
+
+    seg = (SDL_GetTicks() - juego->tiempoInicio) / 1000;
+    sprintf(buf, "Tiempo: %d", seg);
+    dibujarTexto(render, font, buf, ANCHO_VENTANA-MARGEN_LATERAL-100, MARGEN_SUPERIOR, blanco);
+    dibujarTexto(render, font, "[ ESC: Salir ]", ANCHO_VENTANA-150, ALTO_VENTANA-50, COLOR_ROJO);
+}
+
 void dibujarPopupSalida(SDL_Renderer* render, TTF_Font* font, const char* texto, int opcionSeleccionada)
 {
+    SDL_Rect over = {0, 0, ANCHO_VENTANA, ALTO_VENTANA};
+    SDL_Rect caja = {((ANCHO_VENTANA-400)/2), ((ALTO_VENTANA-200)/2), 400, 200};
+    SDL_Color cSi = (opcionSeleccionada == 0) ? COLOR_VERDE : COLOR_GRIS;
+    SDL_Color cNo = (opcionSeleccionada == 1) ? COLOR_ROJO : COLOR_GRIS;
+
     SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(render, 0, 0, 0, 200);
-    SDL_Rect overlay = {0, 0, ANCHOVENTANA, ALTOVENTANA};
-    SDL_RenderFillRect(render, &overlay);
+    SDL_RenderFillRect(render, &over);
     SDL_SetRenderDrawBlendMode(render, SDL_BLENDMODE_NONE);
 
-    SDL_Rect caja = {POPUP_X, POPUP_Y, POPUP_W, POPUP_H};
     SDL_SetRenderDrawColor(render, 50, 50, 50, 255);
     SDL_RenderFillRect(render, &caja);
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
     SDL_RenderDrawRect(render, &caja);
 
-    dibujarTextoCentrados(render, font, texto, (ALTOVENTANA/2)-40, (SDL_Color){255,255,255});
-    SDL_Color colorSi = (opcionSeleccionada == 0) ? (SDL_Color){0, 255, 0} : (SDL_Color){150, 150, 150};
-    SDL_Color colorNo = (opcionSeleccionada == 1) ? (SDL_Color){255, 0, 0} : (SDL_Color){150, 150, 150};
-    dibujarTexto(render, font, "SI", (ANCHOVENTANA/2) - 80, (ALTOVENTANA/2) + 20, colorSi);
-    dibujarTexto(render, font, "NO", (ANCHOVENTANA/2) + 40, (ALTOVENTANA/2) + 20, colorNo);
+    dibujarTextoCentrados(render, font, texto, (ALTO_VENTANA/2)-40, COLOR_BLANCO);
+    dibujarTexto(render, font, "SI", (ANCHO_VENTANA/2)-80, (ALTO_VENTANA/2)+20, cSi);
+    dibujarTexto(render, font, "NO", (ANCHO_VENTANA/2)+40, (ALTO_VENTANA/2)+20, cNo);
 }
 
-void tableroCargarImagenes(Tablero* t, SDL_Renderer* render, int idSet)
+void dibujarTexto(SDL_Renderer* r, TTF_Font* f, const char* t, int x, int y, SDL_Color c)
 {
-    if(!t)
-        return;
+    SDL_Surface *s = TTF_RenderText_Blended(f, t, c);
+    SDL_Texture *tx = NULL;
+    SDL_Rect dst;
 
-    const char* rutaDorso = (idSet == 0) ? RUTADORSOA : RUTADORSOB;
-    t->dorso = IMG_LoadTexture(render, rutaDorso);
-
-    if(!t->dorso)
-        printf("Error dorso: %s\n", IMG_GetError());
-
-    const char* rutaFondo = (idSet == 0) ? RUTAFONDOJUEGOC : RUTAFONDOJUEGOL;
-    t->texturaFondoJuego = IMG_LoadTexture(render, rutaFondo);
-
-    const char* carpeta = (idSet == 0) ? RUTASETA : RUTASETB;
-    char buffer[256];
-
-    // Para el tablero 4x5 (20 cartas) necesitamos 10 imagenes.
-    // Iteramos hasta CANTIDADIMAGENES (que es 10 en comun.h)
-    for(int i=0; i<CANTIDADIMAGENES; i++)
+    if(s)
     {
-        sprintf(buffer, "%s%d.png", carpeta, i);
-        t->imagenes[i] = IMG_LoadTexture(render, buffer);
-    }
-    t->cantidadImagenesCargadas = CANTIDADIMAGENES;
-}
-
-void tableroMezclar(Tablero* t)
-{
-    if(!t)
-        return;
-
-    //ciclo para recorrer la cantidad de cartas en el juego
-    //uso la cantidad de cartas que hay, en este caso sobre
-    //el tablero van a haber 16 cartas, por lo cual uso esa cantidad
-
-    for(int i=0; i<t->cantidad; i++)
-    {
-        //debo elegir una posicion al azar usando el resto
-        int j = rand() % t->cantidad;
-
-        //ahora hago un swap entre los id de las cartas para
-        //cambiarlas de lugar, usando una variable auxiliar
-        int aux = t->cartas[i].idImagen;
-        t->cartas[i].idImagen = t->cartas[j].idImagen;
-        t->cartas[j].idImagen = aux;
-
-        //solo cambio su id, no su posicion de x e y, ni el puntero
-        //del SDL_Rect, asi que en teoria siguien en su lugar las
-        //cartas, solo que con otra foto
-    }
-}
-
-void tableroManejarHover(Tablero* t, int x, int y)
-{
-    for(int i=0; i<t->cantidad; i++)
-    {
-        if(cartaAdentro(&t->cartas[i],x,y))
+        tx = SDL_CreateTextureFromSurface(r, s);
+        if(tx)
         {
-            // Actualizamos la carta del teclado para que coincida con el mouse
-            int col = i % t->columnas;
-            int fil = i / t->columnas;
-            t->cursorX = col;
-            t->cursorY = fil;
-
-            // Tambien marcamos hover
-            if(!t->cartas[i].encontrada && !t->cartas[i].bocaArriba)
-                t->cartas[i].hover = 1;
+            dst.x = x;
+            dst.y = y;
+            dst.w = s->w;
+            dst.h = s->h;
+            SDL_RenderCopy(r, tx, NULL, &dst);
+            SDL_DestroyTexture(tx);
         }
-        else
+        SDL_FreeSurface(s);
+    }
+}
+
+void dibujarTextoCentrados(SDL_Renderer* r, TTF_Font* f, const char* t, int y, SDL_Color c)
+{
+    SDL_Surface *s = TTF_RenderText_Blended(f, t, c);
+    SDL_Texture *tx = NULL;
+    SDL_Rect dst;
+    int x;
+
+    if(s)
+    {
+        tx = SDL_CreateTextureFromSurface(r, s);
+        if(tx)
         {
-            t->cartas[i].hover = 0;
+            x = (ANCHO_VENTANA - s->w) / 2;
+            dst.x = x;
+            dst.y = y;
+            dst.w = s->w;
+            dst.h = s->h;
+            SDL_RenderCopy(r, tx, NULL, &dst);
+            SDL_DestroyTexture(tx);
         }
+        SDL_FreeSurface(s);
     }
-}
-
-int tableroCompleto(Tablero* t)
-{
-    if(!t)
-        return 0;
-
-    if(t->parejasEncontradas == (t->cantidad / 2))
-        return 1; //hubo victoria
-
-    return 0; //no hubo victoria
-}
-
-void dibujarEstadisticas(SDL_Renderer* render, TTF_Font* font, ContextoJuego* juego)
-{
-    SDL_Color colorBlanco = {255,255,255};
-    SDL_Color colorGris = {100,100,100};
-    SDL_Color colorVerde = {0,255,0};
-    char buffer[100];
-
-    if(juego->cantJugadores == 1)
-    {
-        sprintf(buffer, "Jugador: %s", juego->nombreJugador[0]);
-        dibujarTexto(render,font,buffer,INTERFAZMARGENLATERAL,INTERFAZMARGENSUPERIOR, colorBlanco);
-        sprintf(buffer, "Puntos: %d", juego->puntos[0]);
-        dibujarTextoCentrados(render, font, buffer, INTERFAZMARGENSUPERIOR, colorBlanco);
-
-    }
-    else
-    {
-        //jugador 1 (en la parte izquierda)
-        SDL_Color c1 = (juego->turnoJugador == 0) ? colorVerde : colorGris;
-        sprintf(buffer, "%s: %d", juego->nombreJugador[0], juego->puntos[0]);
-        dibujarTexto(render, font, buffer,(ANCHOVENTANA/2) - 250, INTERFAZMARGENSUPERIOR, c1);
-
-        //jugador 1 (en la parte derecha)
-        SDL_Color c2 = (juego->turnoJugador == 1) ? colorVerde : colorGris;
-        sprintf(buffer, "%s: %d", juego->nombreJugador[1], juego->puntos[1]);
-        //calculo la posicion aprox para que no se pise con el tiempo
-        dibujarTexto(render, font, buffer, (ANCHOVENTANA/2) + 195, INTERFAZMARGENSUPERIOR, c2);
-
-        //muestro el turno actual
-        sprintf(buffer, "TURNO: %s", juego->nombreJugador[juego->turnoJugador]);
-        dibujarTexto(render, font, buffer, INTERFAZMARGENLATERAL, INTERFAZMARGENSUPERIOR, colorVerde);
-    }
-
-    //dibujo el tiempo
-    Uint32 segundos = (SDL_GetTicks() - juego->tiempoInicio) / 1000;
-    sprintf(buffer, "Tiempo: %d", segundos);
-    dibujarTexto(render, font, buffer, ANCHOVENTANA - INTERFAZMARGENLATERAL - 100, INTERFAZMARGENSUPERIOR, colorBlanco);
-    dibujarTexto(render, font, "[ ESC: Salir ]", ANCHOVENTANA - 150, ALTOVENTANA - 50, (SDL_Color){255,100,100});
-}
-
-void dibujarTexto(SDL_Renderer* render, TTF_Font* font, const char* texto, int x, int y, SDL_Color color)
-{
-    SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);
-    if(surface)
-    {
-        SDL_Texture* textura = SDL_CreateTextureFromSurface(render, surface);
-        if(textura)
-        {
-            SDL_Rect destinoRect = {x, y, surface->w, surface->h};
-            SDL_RenderCopy(render, textura, NULL, &destinoRect);
-            SDL_DestroyTexture(textura);
-        }
-        SDL_FreeSurface(surface);
-    }
-}
-
-void dibujarTextoCentrados(SDL_Renderer* render, TTF_Font* font, const char* texto, int y, SDL_Color color)
-{
-    SDL_Surface* surface = TTF_RenderText_Blended(font, texto, color);
-    if(surface)
-    {
-        SDL_Texture* textura = SDL_CreateTextureFromSurface(render, surface);
-        if(textura)
-        {
-            //calculo la variable para centrar los textos
-            int x = (ANCHOVENTANA - surface->w) / 2;
-            SDL_Rect destinoRect = {x, y, surface->w, surface->h};
-            SDL_RenderCopy(render, textura, NULL, &destinoRect);
-            SDL_DestroyTexture(textura);
-        }
-        SDL_FreeSurface(surface);
-    }
-}
-
-void rankingGuardar(const char* nombre, int puntos, int tiempo)
-{
-    RegistroRanking registros[MAXREGISTROS+1]; //el +1 es para meter el nuevo temporalmente
-    int cantidad = 0;
-
-    FILE* arch = fopen(ARCHRANKING, "rb");
-    if(arch)
-    {
-        cantidad = fread(registros, sizeof(RegistroRanking),MAXREGISTROS,arch);
-        fclose(arch);
-    }
-
-    strcpy(registros[cantidad].nombre, nombre);
-    registros[cantidad].puntos = puntos;
-    registros[cantidad].tiempo = tiempo;
-    cantidad++;
-
-    //ordeno de mayor a menor
-    for(int i=0;i<cantidad-1;i++)
-    {
-        for(int j=0;j<cantidad-i-1;j++)
-        {
-            int cambio = 0;
-            if(registros[j].puntos < registros[j+1].puntos)
-                cambio = 1;
-            else if(registros[j].puntos == registros[j+1].puntos)
-            {
-                if(registros[j].tiempo > registros[j+1].tiempo)
-                    cambio = 1;
-            }
-
-            if(cambio)
-            {
-                RegistroRanking aux = registros[j];
-                registros[j] = registros[j+1];
-                registros[j+1] = aux;
-            }
-        }
-    }
-
-    if(cantidad > MAXREGISTROS)
-        cantidad = MAXREGISTROS;
-
-    arch = fopen(ARCHRANKING, "wb");
-    if(arch)
-    {
-        fwrite(registros, sizeof(RegistroRanking), cantidad, arch);
-        fclose(arch);
-    }
-}
-
-void rankingDibujar(SDL_Renderer* render, TTF_Font* fuenteTitulo, TTF_Font* fuenteLista, SDL_Texture* fondo)
-{
-    if(fondo)
-        SDL_RenderCopy(render, fondo, NULL, NULL);
-    else
-        SDL_SetRenderDrawColor(render, 20, 20, 20, 255);
-    SDL_Color colorOro = {255,215,0};
-    SDL_Color colorBlanco = {255,255,255};
-    SDL_Color colorGris = {150,150,150};
-
-    int colPos = 350;
-    int colNom = 630;
-    int colPts = 940;
-    int yCabecera = 150;
-
-    dibujarTextoCentrados(render, fuenteTitulo, "TOP 10 MEJORES PUNTAJES", 50,colorOro);
-
-    dibujarTexto(render, fuenteLista, "POS", colPos, yCabecera, colorBlanco);
-    dibujarTexto(render, fuenteLista, "NOMBRE", colNom, yCabecera, colorBlanco);
-    dibujarTexto(render, fuenteLista, "PUNTOS", colPts, yCabecera, colorBlanco);
-
-    SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-    SDL_RenderDrawLine(render, colPos - 20, yCabecera + 40, colPts + 100, yCabecera + 40);
-
-    FILE* arch = fopen(ARCHRANKING, "rb");
-    if(!arch)
-    {
-        dibujarTextoCentrados(render, fuenteLista, "(No hay ningun registro)", 250, colorGris);
-    }
-    else
-    {
-        RegistroRanking reg;
-        int i=0;
-        int y = 220;
-        char buffer[128];
-
-        while(fread(&reg,sizeof(RegistroRanking),1,arch))
-        {
-            //formateo el string completo de la fila
-            // #01   AAA         0150       12s
-            sprintf(buffer,"#%d", i+1);
-            SDL_Color podio = (i<3) ? colorOro : colorBlanco;
-            dibujarTexto(render, fuenteLista, buffer,colPos, y, podio);
-            dibujarTexto(render, fuenteLista, reg.nombre, colNom, y, podio);
-            sprintf(buffer,"#%d", reg.puntos);
-            dibujarTexto(render, fuenteLista, buffer, colPts, y, colorBlanco);
-            y+=45;
-            i++;
-        }
-        fclose(arch);
-    }
-    dibujarTextoCentrados(render, fuenteLista, "Presiona ESCAPE para volver", ALTOVENTANA - 80, colorGris);
 }
